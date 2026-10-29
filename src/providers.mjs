@@ -1,7 +1,8 @@
 import { normalizeRedditPost, normalizeYouTubeVideo, withinHours } from './core.mjs';
 
-async function getJSON(url, opts = {}) {
-  const res = await fetch(url, { ...opts, signal: AbortSignal.timeout(14000) });
+async function getJSON(url, opts = {}, deadline = Date.now() + 14000) {
+  const timeoutMs = Math.max(1000, Math.min(14000, deadline - Date.now() - 200));
+  const res = await fetch(url, { ...opts, signal: AbortSignal.timeout(timeoutMs) });
   if (!res.ok) throw new Error(`${new URL(url).host} HTTP ${res.status}`);
   return res.json();
 }
@@ -48,28 +49,32 @@ export async function fetchYouTube(env, now = Date.now()) {
   return { status: errors.length ? videos.length ? 'partial' : 'error' : 'complete', videos, channels: channelDetails, errors };
 }
 
-async function redditToken(env) {
+async function redditToken(env, deadline = Date.now() + 14000) {
   const raw = `${env.REDDIT_CLIENT_ID}:${env.REDDIT_CLIENT_SECRET}`;
   const auth = Buffer.from(raw).toString('base64');
   const form = new URLSearchParams({ grant_type: 'client_credentials' });
   const url = 'https://www.reddit.com/api/v1/access_token';
-  const res = await fetch(url, { method: 'POST', headers: { Authorization: `Basic ${auth}`, 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': env.REDDIT_USER_AGENT }, body: form, signal: AbortSignal.timeout(14000) });
+  const res = await fetch(url, { method: 'POST', headers: { Authorization: `Basic ${auth}`, 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': env.REDDIT_USER_AGENT }, body: form, signal: AbortSignal.timeout(Math.max(1000, Math.min(14000, deadline - Date.now() - 200))) });
   if (!res.ok) throw new Error(`Reddit OAuth HTTP ${res.status}`);
   const data = await res.json();
   if (!data.access_token) throw new Error('Reddit OAuth did not provide access token');
   return data.access_token;
 }
-export async function fetchReddit(env, now = Date.now()) {
+export async function fetchReddit(env, now = Date.now(), { cursor = 0, maxListings = 2, deadline = Date.now() + 55000 } = {}) {
   if (!env.REDDIT_CLIENT_ID || !env.REDDIT_CLIENT_SECRET) return { status: 'not_configured', posts: [], errors: [] };
   const errors = [], observed = new Map();
   const subs = (env.REDDIT_SUBREDDITS || 'wowforever,classicwow,wow').split(',').map(x => x.trim().replace(/^r\//,'')).filter(x => /^[a-z0-9_]+$/i.test(x)).slice(0, 10);
   let token;
-  try { token = await redditToken(env); } catch (err) { return { status: 'error', posts: [], errors: [err.message] }; }
-  for (const sub of subs) {
-    for (const sort of ['top', 'hot']) {
-      try {
+  try { token = await redditToken(env, deadline); } catch (err) { return { status: 'error', posts: [], errors: [err.message] }; }
+  const listings = subs.flatMap(sub => ['top', 'hot'].map(sort => ({ sub, sort })));
+  let nextCursor = listings.length ? cursor % listings.length : 0;
+  let checked = 0;
+  for (let i = 0; i < Math.min(maxListings, listings.length); i++) {
+    if (deadline - Date.now() < 2200) break;
+    const { sub, sort } = listings[nextCursor];
+    try {
         const qs = sort === 'top' ? '?t=day&limit=100&raw_json=1' : '?limit=100&raw_json=1';
-        const data = await getJSON(`https://oauth.reddit.com/r/${encodeURIComponent(sub)}/${sort}${qs}`, { headers: { Authorization: `bearer ${token}`, 'User-Agent': env.REDDIT_USER_AGENT } });
+        const data = await getJSON(`https://oauth.reddit.com/r/${encodeURIComponent(sub)}/${sort}${qs}`, { headers: { Authorization: `bearer ${token}`, 'User-Agent': env.REDDIT_USER_AGENT } }, deadline);
         for (const p of data?.data?.children || []) {
           const post = normalizeRedditPost(p.data || {}, sub, sort, now);
           if (post) {
@@ -78,15 +83,16 @@ export async function fetchReddit(env, now = Date.now()) {
             if (!previous || sort === 'top') observed.set(post.id, post);
           }
         }
-      } catch (err) { errors.push(`${sub}/${sort}: ${String(err.message).slice(0,180)}`); }
-    }
+    } catch (err) { errors.push(`${sub}/${sort}: ${String(err.message).slice(0,180)}`); }
+    nextCursor = (nextCursor + 1) % listings.length;
+    checked++;
   }
-  return { status: errors.length ? observed.size ? 'partial' : 'error' : 'complete', posts: [...observed.values()].slice(0, 60), errors };
+  return { status: errors.length ? observed.size ? 'partial' : 'error' : checked < listings.length ? 'progress' : 'complete', posts: [...observed.values()].slice(0, 60), errors, nextCursor, checked, totalListings: listings.length };
 }
-export async function fetchOfficial(env, now = Date.now()) {
+export async function fetchOfficial(env, now = Date.now(), deadline = Date.now() + 14000) {
   if (!env.OFFICIAL_POSTS_JSON_URL) return { status: 'not_configured', posts: [], errors: [] };
   try {
-    const data = await getJSON(env.OFFICIAL_POSTS_JSON_URL);
+    const data = await getJSON(env.OFFICIAL_POSTS_JSON_URL, {}, deadline);
     if (!Array.isArray(data.posts || data)) throw new Error('Feed must be an array or {posts:[]}');
     const entries = Array.isArray(data) ? data : data.posts;
     const posts = entries.map(x => ({ id: `official:${String(x.id || x.url)}`, source: 'Official', title: String(x.title || ''),
