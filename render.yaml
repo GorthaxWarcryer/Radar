@@ -1,0 +1,31 @@
+# Render Blueprint for the standalone Azeroth Radar rebuild.
+# This is a PAID service because SQLite persistence requires a persistent disk.
+# Confirm costs and workspace before creating resources.
+services:
+  - type: web
+    name: azeroth-radar
+    runtime: docker
+    region: frankfurt
+    plan: starter
+    numInstances: 1
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    autoDeployTrigger: commit
+    healthCheckPath: /api/health
+    disk:
+      name: radar-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_PATH
+        value: /data/azeroth.sqlite
+      - key: AUTO_SCAN
+        value: 'true'
+      - key: REDDIT_SUBREDDITS
+        value: wowforever,classicwow,wow
+      - key: ADMIN_TOKEN
+        generateValue: true
+# Add YOUTUBE_API_KEY and YOUTUBE_CHANNELS in Render > Service > Environment.
+# Never put actual API credentials into source control.
