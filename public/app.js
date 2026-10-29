@@ -4,8 +4,8 @@ const $ = s => document.querySelector(s);
 const preferences = { theme: 'azeroth-radar-theme' };
 let storedTheme = 'default';
 try { storedTheme = localStorage.getItem(preferences.theme) || 'default'; } catch {}
-const state = { section: 'popular', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new',
-  theme: storedTheme === 'brd' ? 'brd' : 'default', demo: location.protocol === 'file:', feed: null, expanded: new Set(), adminToken: '' };
+const state = { section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new',
+  theme: storedTheme === 'brd' ? 'brd' : 'default', demo: location.protocol === 'file:' || document.documentElement.dataset.preview === 'true', feed: null, expanded: new Set(), adminToken: '' };
 function esc(value = '') { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
 function safeURL(x) { try { const url = new URL(String(x || '')); return url.protocol === 'https:' ? url.href : ''; } catch { return ''; } }
 function fmt(n) { return Number.isFinite(Number(n)) ? Number(n).toLocaleString('en-US') : '—'; }
@@ -145,6 +145,12 @@ function render() {
   root.innerHTML=renderers[state.section]();
 }
 async function fetchFeed() {
+  if (location.protocol === 'file:' || document.documentElement.dataset.preview === 'true') {
+    $('#sync-label').textContent = 'Illustrative preview — no live connection';
+    $('#connection-label').textContent = 'Preview only';
+    render();
+    return;
+  }
   try { const res=await fetch('/api/feed',{cache:'no-store',headers:state.adminToken?{'X-Admin-Token':state.adminToken}:{}}); if(!res.ok) throw new Error('Feed HTTP '+res.status);
     state.feed=await res.json(); const sources=state.feed.sources||{};
     $('#sync-label').textContent=state.feed.summary?.lastScan?`Updated ${age(state.feed.summary.lastScan)}`:'No scans yet';
