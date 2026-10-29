@@ -52,6 +52,22 @@ test('Public deployment serves UI and health, protects mutations, preserves save
     const feed = await fetch(`http://127.0.0.1:${port}/api/feed`);
     assert.equal(feed.status, 200);
     assert.equal((await feed.json()).savedPrivate, true);
+    const scanStatusUnauthorized = await fetch(`http://127.0.0.1:${port}/api/scan/status`);
+    assert.equal(scanStatusUnauthorized.status, 401);
+    const startScan = await fetch(`http://127.0.0.1:${port}/api/scan`, { method: 'POST', headers: { 'X-Admin-Token': 'local-test-secret' } });
+    assert.equal(startScan.status, 202);
+    const startedJob = await startScan.json();
+    assert.equal(startedJob.status, 'running');
+    assert.ok(startedJob.scanId);
+    let job;
+    for(let i=0;i<50;i++) {
+      const r = await fetch(`http://127.0.0.1:${port}/api/scan/status`, {headers:{'X-Admin-Token':'local-test-secret'}});
+      job = await r.json();
+      if(job.status!=='running') break;
+      await new Promise(resolve => setTimeout(resolve, 20));
+    }
+    assert.equal(job.status, 'complete');
+    assert.equal(job.scanId, startedJob.scanId);
     const unauthorized = await fetch(`http://127.0.0.1:${port}/api/save`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: 'sample', title: 'Sample' }) });
     assert.equal(unauthorized.status, 401);
     const save = await fetch(`http://127.0.0.1:${port}/api/save`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': 'local-test-secret' }, body: JSON.stringify({ id: 'sample', title: 'Saved sample', note: 'Keeps through restart' }) });
