@@ -6,7 +6,7 @@ A **standalone, deployment-ready, editable source-code rebuild** of the original
 
 ## Included
 
-- Popular and HOT, each with **Long Form / Shorts**, **List / Preview**, and **New uploads / Tracked 48 hours**.
+- HOT and Popular, each with **Long Form / Shorts**, **List / Preview**, and **New uploads / Tracked 48 hours**.
 - Popular ranks by **lifetime total views**. HOT ranks by **measured views gained/hour** from two or more real samples; it never substitutes views or views/age for actual measurements.
 - Min **5,000 total views**, videos must be <48 hours old, archived livestreams excluded.
 - Stories include verified Reddit Top/Today or Hot listings plus imported official posts/blue posts; no YouTube Stories; stale stories automatically expire.
@@ -16,7 +16,13 @@ A **standalone, deployment-ready, editable source-code rebuild** of the original
 - Desktop/mobile responsive design, accessible navigation, and demo preview explicitly labeled as illustrative.
 - Node.js 22+, built-in SQLite, and **zero npm dependencies**. Both frontend and backend are editable.
 
-## Deploy to Render
+## ChatGPT Sites handoff (preferred free hosting)
+
+This repository includes a **new-site handoff kit** in `sites/`. Start with `sites/SITE_CREATION_PROMPT.md`, reference `sites/visual-reference.html`, and use `sites/DATA_CONTRACT.md` for the server/database behavior. The HTML reference is **illustrative** and does not connect to live data. ChatGPT Sites requires its own Work/@Sites creation workflow; this code repository cannot silently publish, import the original Site database, or bypass Codex usage. Run `npm run sites:reference` to regenerate the single-file preview.
+
+The original ChatGPT Site is still active and remains independent. There is no reason to move it, pay for Render, or deactivate its scanner to create a new site.
+
+## Optional deploy to Render
 
 The bundle includes a production `Dockerfile`, `render.yaml` Blueprint, `.dockerignore`, a configurable persistent database path, and API smoke tests. See **[DEPLOY.md](DEPLOY.md)** for the Render deployment guide, persistent disk and secret setup. A live public URL requires connecting a hosting account; the files alone do not create a hosted site.
 
