@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en" data-preview="true">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#101318" />
+<meta name="description" content="Azeroth Radar — creator intelligence for World of Warcraft. Discover what's popular, what's accelerating, and what to cover next." />
+<title>Azeroth Radar — Creator Intelligence</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<style>@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap');
+:root { font-family: 'DM Sans', Inter, system-ui, sans-serif; color-scheme: dark; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; background: var(--base); color: var(--text); -webkit-font-smoothing: antialiased; }
+body[data-theme='default'] {
+  --base:#0c0f12; --sidebar:#101419; --panel:#151a20; --panel2:#1a2027; --panel3:#202730; --border:#2b323b; --border-soft:#222930;
+  --text:#e9ecef; --muted:#9aa5b1; --muted2:#67737f; --accent:#e9ba67; --accent-soft:#d9a94f22; --accent-ink:#17120a;
+  --teal:#66c7ad; --red:#f1847b; --blue:#78b0ed; --shadow:0 12px 40px #00000028; --texture:none;
+}
+body[data-theme='brd'] {
+  --base:#0e0d0b; --sidebar:#15120e; --panel:#1d1813; --panel2:#251e16; --panel3:#33281c; --border:#47382a; --border-soft:#34291f;
+  --text:#f3e6d2; --muted:#b2a08b; --muted2:#8b7560; --accent:#ec9a49; --accent-soft:#ed7c2b20; --accent-ink:#1e0e06;
+  --teal:#b6c58d; --red:#f17d5e; --blue:#a5c9e6; --shadow:0 15px 45px #00000088;
+  --texture:radial-gradient(ellipse at 100% 0%, #b94e1017 0%, transparent 38%),repeating-linear-gradient(90deg,transparent,transparent 95px,#f5a04204 96px,#00000000 97px);
+}
+a { color: inherit; text-decoration: none; }
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity:.5; cursor: default; }
+button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.site-shell { display:grid; grid-template-columns: 246px minmax(0,1fr); min-height:100vh; }
+.sidebar { position:sticky; top:0; height:100vh; display:flex; flex-direction:column; padding:29px 16px 24px; background:var(--sidebar); border-right:1px solid var(--border-soft); z-index:5; }
+.brand { display:flex; align-items:center; gap:10px; padding:0 4px 38px; }
+.brand strong { display:block; font-family:'Barlow Condensed',Impact,sans-serif; letter-spacing:.5px; font-size:23px; line-height:1; white-space:nowrap; }
+.brand strong span { color:var(--accent); margin-left:4px; }
+.brand small { display:block; color:var(--muted2); font-weight:800; letter-spacing:2px; font-size:8.5px; margin-top:6px; }
+.brand-mark { width:37px; height:37px; border:3px solid var(--accent); border-radius:50%; position:relative; display:grid; place-items:center; transform:rotate(-20deg); flex-shrink:0; }
+.brand-mark:before { content:''; position:absolute; width:23px; height:23px; border:1px solid var(--accent); opacity:.6; border-radius:50%; }
+.brand-mark:after { content:''; width:22px; height:4px; background:var(--accent); transform:translate(9px,-6px) rotate(-40deg); position:absolute; transform-origin:center; border-radius:5px; }
+.brand-core { width:7px; height:7px; background:var(--accent); border-radius:50%; }
+.brand-mark.small { width:27px; height:27px; border-width:2px; }
+.brand-mark.small:before { width:16px; height:16px; }
+.brand-mark.small:after { width:15px; height:3px; }
+.brand-mark.small .brand-core { width:5px; height:5px; }
+.sidebar-label { color:var(--muted2); font-size:10px; font-weight:800; letter-spacing:1.8px; padding:0 16px 13px; }
+.second-label { margin-top:28px; }
+.side-nav { display:flex; flex-direction:column; gap:5px; }
+.nav-link { display:flex; align-items:center; gap:12px; padding:12px 15px; background:transparent; border:1px solid transparent; color:var(--muted); text-align:left; font-size:13px; font-weight:700; border-radius:7px; min-height:44px; }
+.nav-link:hover { color:var(--text); background:var(--panel2); }
+.nav-link.active { background:var(--accent-soft); color:var(--accent); border-color:#d99b3f1f; }
+.nav-ico { font-size:20px; width:21px; text-align:center; line-height:1; font-weight:500; }
+.mini-hot { border-radius:3px; color:var(--red); background:#d84e3716; font-size:8px; padding:4px 5px; margin-left:auto; letter-spacing:.8px; }
+.side-bottom { margin-top:auto; padding:22px 12px 0; border-top:1px solid var(--border-soft); }
+.status-dot-label { color:var(--muted); font-size:11px; font-weight:700; display:flex; align-items:center; gap:9px; }
+.status-dot { display:inline-block; width:7px; height:7px; flex-shrink:0; border-radius:50%; background:var(--teal); box-shadow:0 0 0 3px #59b78f17; }
+.side-version { display:block; color:var(--muted2); font-size:9px; letter-spacing:1px; font-weight:800; margin-top:16px; }
+.main-area { min-width:0; background:var(--texture),var(--base); }
+.topbar { position:sticky; top:0; z-index:4; min-height:77px; background:color-mix(in srgb,var(--base) 92%,transparent); border-bottom:1px solid var(--border-soft); backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:space-between; padding:15px clamp(18px,3.7vw,54px); gap:20px; }
+.crumb { display:flex; gap:12px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1.4px; color:var(--muted2); }
+.crumb strong { color:var(--text); }
+.slash { color:var(--border); }
+.top-actions { display:flex; align-items:center; gap:14px; }
+.sync-label { font-size:11px; font-weight:700; color:var(--muted); display:flex; align-items:center; gap:8px; white-space:nowrap; }
+.subtle-btn { background:none; border:1px solid var(--border); color:var(--muted); border-radius:5px; font-size:11px; padding:10px 12px; font-weight:800; white-space:nowrap; }
+.subtle-btn:hover { color:var(--accent); border-color:var(--accent); }
+.theme-control { display:flex; background:var(--panel); padding:4px; border:1px solid var(--border); border-radius:7px; gap:2px; }
+.theme-choice { border:0; color:var(--muted); background:transparent; padding:9px 12px; border-radius:5px; white-space:nowrap; font-size:11px; font-weight:800; }
+.theme-choice.active { color:var(--accent-ink); background:var(--accent); }
+.mobile-brand,.mobile-nav { display:none; }
+.main-content { width:min(100%,1490px); margin:0 auto; padding:41px clamp(18px,3.7vw,54px) 60px; }
+.hero-kicker { display:flex; gap:9px; align-items:center; font-weight:800; letter-spacing:2.3px; font-size:10px; color:var(--accent); text-transform:uppercase; }
+.hero-kicker:before { content:''; width:22px; height:2px; background:var(--accent); }
+.section-header { display:flex; justify-content:space-between; align-items:end; gap:24px; margin-bottom:26px; }
+.section-header h1 { margin:10px 0 6px; font-family:'Barlow Condensed',Impact,sans-serif; font-size:clamp(37px,4.2vw,61px); text-transform:uppercase; font-weight:800; letter-spacing:.5px; line-height:1; }
+.section-header h1 span { color:var(--accent); }
+.section-description { margin:11px 0 0; color:var(--muted); font-size:13px; line-height:1.6; max-width:760px; }
+.pulse { display:inline-flex; border-radius:5px; gap:7px; align-items:center; font-size:10px; text-transform:uppercase; letter-spacing:.9px; color:var(--muted); white-space:nowrap; font-weight:800; border:1px solid var(--border); padding:10px 13px; }
+.pulse b { color:var(--teal); }
+.stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:13px; margin:28px 0 33px; }
+.stat { border:1px solid var(--border); background:var(--panel); border-radius:8px; padding:18px 20px; min-height:98px; position:relative; overflow:hidden; }
+.stat:after { content:''; position:absolute; width:50px; height:50px; right:-23px; top:-26px; transform:rotate(45deg); background:var(--accent-soft); border:1px solid var(--accent-soft); }
+.stat-label { color:var(--muted); font-size:10px; letter-spacing:1.4px; font-weight:800; text-transform:uppercase; }
+.stat-value { display:block; font-family:'Barlow Condensed',Impact,sans-serif; font-size:32px; font-weight:800; letter-spacing:.3px; margin-top:7px; line-height:1; }
+.stat-value .suffix { color:var(--accent); font-size:16px; }
+.panel { border:1px solid var(--border); border-radius:9px; background:var(--panel); box-shadow:var(--shadow); overflow:hidden; }
+.toolbar { display:flex; justify-content:space-between; align-items:center; gap:15px; margin-bottom:17px; flex-wrap:wrap; }
+.toolbar-left,.toolbar-right { display:flex; align-items:center; gap:11px; flex-wrap:wrap; }
+.segment { background:var(--panel); display:flex; padding:4px; border:1px solid var(--border); border-radius:6px; }
+.segment button { background:none; border:0; color:var(--muted); border-radius:4px; padding:10px 17px; font-weight:800; font-size:11px; }
+.segment button.active { background:var(--panel3); color:var(--text); box-shadow:0 1px 4px #0003; }
+.segment button.active[data-emphasis='true'] { color:var(--accent); }
+.toolbar-note { font-size:11px; color:var(--muted2); font-weight:700; }
+.section-split { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+.board-title { border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:19px 22px; gap:10px; }
+.board-title h2 { font-family:'Barlow Condensed',Impact,sans-serif; font-size:19px; letter-spacing:.7px; margin:0; text-transform:uppercase; }
+.board-title h2 small { font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; letter-spacing:0; text-transform:none; display:block; color:var(--muted); margin-top:4px; }
+.count { background:var(--panel3); border:1px solid var(--border); color:var(--muted); font-weight:800; font-size:11px; border-radius:4px; padding:5px 9px; }
+.video-list { display:flex; flex-direction:column; padding:8px 10px; gap:3px; }
+.video-item { display:grid; grid-template-columns:135px minmax(0,1fr); gap:14px; padding:12px; border-radius:6px; transition:background .15s; align-items:center; }
+.video-item:hover { background:var(--panel2); }
+.thumb { width:100%; aspect-ratio:16/9; background:linear-gradient(135deg,#3c3429,#151d25 70%); position:relative; border-radius:5px; overflow:hidden; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; }
+.thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.thumb::after { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(0deg,#08080855,transparent 45%); }
+.thumb-glyph { color:#e4bc7355; font-family:'Barlow Condensed',Impact,sans-serif; font-size:38px; letter-spacing:2px; font-weight:800; transform:rotate(-8deg); }
+.video-item .video-copy { min-width:0; }
+.video-title { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; font-size:12px; font-weight:800; line-height:1.5; margin-bottom:7px; }
+.video-title:hover { color:var(--accent); }
+.video-channel { font-size:11px; color:var(--muted); text-overflow:ellipsis; white-space:nowrap; overflow:hidden; }
+.video-bottom { display:flex; justify-content:space-between; align-items:center; gap:7px; margin-top:10px; flex-wrap:wrap; }
+.video-number { color:var(--accent); font-family:'Barlow Condensed',Impact,sans-serif; letter-spacing:.2px; font-weight:800; font-size:19px; white-space:nowrap; }
+.video-number small { font-family:'DM Sans',sans-serif; color:var(--muted2); font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-left:3px; }
+.video-time { color:var(--muted2); font-size:10px; white-space:nowrap; }
+.bookmark { flex-shrink:0; border:1px solid var(--border); color:var(--muted); background:var(--panel2); width:28px; height:27px; display:grid; place-items:center; border-radius:5px; margin-left:auto; }
+.bookmark:hover,.bookmark.saved { color:var(--accent); border-color:var(--accent); }
+.card-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:13px; }
+.video-card { background:var(--panel); border:1px solid var(--border); border-radius:8px; overflow:hidden; min-width:0; }
+.video-card .thumb { border:0; border-radius:0; }
+.video-card .video-copy { padding:15px; }
+.video-card .video-title { font-size:13px; min-height:38px; }
+.video-card .video-bottom { margin-top:13px; }
+.video-card .bookmark { margin:0; }
+.empty { text-align:center; padding:48px 22px; color:var(--muted); }
+.empty .empty-icon { width:53px; height:53px; display:grid; place-items:center; margin:auto auto 17px; border-radius:50%; background:var(--accent-soft); font-size:25px; color:var(--accent); }
+.empty h3 { color:var(--text); font-size:15px; margin:0 0 8px; }
+.empty p { font-size:12px; line-height:1.7; max-width:370px; margin:0 auto 18px; }
+.empty .empty-action { color:var(--accent); font-size:11px; font-weight:800; cursor:pointer; border:1px solid var(--border); background:var(--panel2); padding:9px 13px; border-radius:5px; }
+.info-note { border-left:3px solid var(--accent); background:var(--accent-soft); color:var(--muted); font-size:12px; line-height:1.7; padding:12px 16px; border-radius:2px 5px 5px 2px; margin:0 0 18px; }
+.info-note strong { color:var(--accent); }
+.stories-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+.story-card { padding:20px; border:1px solid var(--border); border-radius:8px; background:var(--panel); display:flex; flex-direction:column; gap:13px; min-width:0; }
+.story-card:hover { border-color:color-mix(in srgb,var(--accent) 40%,var(--border)); }
+.story-top { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+.source-chip { font-size:10px; text-transform:uppercase; letter-spacing:.5px; padding:6px 8px; font-weight:800; color:var(--muted); background:var(--panel3); border-radius:4px; }
+.source-chip.official { color:var(--blue); background:#377cbd1c; }
+.story-time { margin-left:auto; color:var(--muted2); font-size:10px; }
+.story-title { font-size:16px; font-weight:800; line-height:1.4; }
+.story-title:hover { color:var(--accent); }
+.story-summary { font-size:12px; color:var(--muted); line-height:1.7; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin:0; }
+.story-bottom { border-top:1px solid var(--border-soft); padding-top:12px; display:flex; align-items:center; gap:13px; color:var(--muted); font-size:11px; font-weight:800; margin-top:auto; }
+.story-bottom .bookmark { margin-left:auto; }
+.small-link { color:var(--accent); margin-left:auto; font-size:10px; font-weight:800; letter-spacing:.6px; }
+.ideas-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+.idea-card { border:1px solid var(--border); background:var(--panel); border-radius:8px; padding:20px; min-width:0; }
+.idea-top { display:flex; gap:9px; align-items:center; margin-bottom:13px; }
+.idea-index { background:var(--accent-soft); border:1px solid #ac70262c; border-radius:4px; color:var(--accent); font-family:'Barlow Condensed',sans-serif; font-weight:800; padding:7px 9px; font-size:16px; }
+.idea-format { text-transform:uppercase; letter-spacing:1px; color:var(--muted); font-weight:800; font-size:9px; }
+.priority { margin-left:auto; font-size:9px; font-weight:800; border-radius:4px; padding:6px 8px; background:#caaa6220; color:var(--accent); }
+.priority.watch { background:var(--panel3); color:var(--muted); }
+.idea-title { font-size:17px; font-weight:800; line-height:1.4; margin:0 0 10px; }
+.idea-summary { color:var(--muted); font-size:12px; line-height:1.7; margin:0 0 14px; }
+.idea-proposed { border-top:1px solid var(--border); padding-top:14px; margin-top:14px; }
+.idea-proposed .eyebrow { font-size:9px; letter-spacing:1.1px; color:var(--muted2); font-weight:800; }
+.idea-proposed p { font-size:13px; color:var(--accent); font-weight:800; margin:8px 0 0; }
+.expand { display:flex; align-items:center; justify-content:space-between; padding:12px 0 0; gap:8px; }
+.expand button { background:none; border:0; color:var(--muted); font-size:11px; font-weight:800; padding:5px 0; }
+.expand button:hover { color:var(--accent); }
+.idea-details { border-top:1px solid var(--border); padding-top:14px; margin-top:13px; font-size:12px; color:var(--muted); line-height:1.7; }
+.idea-details ol { padding-left:20px; margin:7px 0; }
+.idea-details a { color:var(--accent); font-weight:800; }
+.saved-table { width:100%; border-collapse:collapse; }
+.saved-table th { color:var(--muted2); font-size:10px; text-transform:uppercase; letter-spacing:.9px; text-align:left; padding:16px 18px; border-bottom:1px solid var(--border); }
+.saved-table td { border-bottom:1px solid var(--border-soft); padding:17px 18px; font-size:12px; }
+.saved-table tr:last-child td { border-bottom:0; }
+.saved-table a { font-weight:800; }
+.saved-table a:hover { color:var(--accent); }
+.saved-table textarea { width:100%; min-height:48px; resize:vertical; color:var(--text); border:1px solid var(--border); background:var(--panel2); padding:9px; border-radius:5px; font-size:11px; }
+.small-action { border:1px solid var(--border); background:var(--panel2); color:var(--muted); border-radius:5px; padding:7px 10px; font-size:10px; font-weight:800; }
+.small-action:hover { color:var(--accent); }
+.status-pill { border-radius:4px; background:#6cccab16; color:var(--teal); font-size:10px; text-transform:uppercase; padding:6px 9px; font-weight:800; }
+.status-pill.error { background:#f1847b15; color:var(--red); }
+.status-pill.off { background:var(--panel3); color:var(--muted2); }
+.channel-card { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:17px 19px; border-bottom:1px solid var(--border-soft); }
+.channel-card:last-child { border-bottom:0; }
+.channel-avatar { width:36px; height:36px; background:var(--accent-soft); border:1px solid var(--border); display:grid; place-items:center; color:var(--accent); font-weight:800; border-radius:7px; flex-shrink:0; }
+.channel-detail { flex:1; min-width:0; }
+.channel-detail h3 { font-size:12px; margin:0 0 4px; }
+.channel-detail p { font-size:10px; color:var(--muted2); margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.demo-warning { padding:13px 15px; margin-bottom:24px; border:1px solid var(--accent); background:var(--accent-soft); color:var(--text); font-size:12px; line-height:1.7; display:flex; align-items:center; gap:11px; flex-wrap:wrap; border-radius:6px; }
+.demo-warning span { font-weight:900; color:var(--accent); font-size:10px; letter-spacing:1px; }
+.demo-warning button { background:none; border:0; text-decoration:underline; color:var(--accent); font-size:12px; font-weight:800; }
+.hidden { display:none !important; }
+#toast { opacity:0; pointer-events:none; position:fixed; bottom:20px; left:50%; transform:translate(-50%,10px); z-index:10; background:var(--panel3); color:var(--text); font-size:12px; border:1px solid var(--border); box-shadow:var(--shadow); padding:12px 17px; border-radius:5px; transition:all .2s; }
+#toast.visible { opacity:1; transform:translate(-50%,0); }
+footer { color:var(--muted2); font-size:9px; font-weight:800; letter-spacing:1px; display:flex; justify-content:space-between; gap:15px; margin-top:60px; border-top:1px solid var(--border-soft); padding-top:24px; }
+body[data-theme='brd'] .sidebar { background:linear-gradient(160deg,#1d1711,#100e0c 65%); }
+body[data-theme='brd'] .panel,body[data-theme='brd'] .story-card,body[data-theme='brd'] .idea-card { box-shadow:inset 0 1px 0 #a76d2923,0 12px 35px #0004; }
+body[data-theme='brd'] .brand-mark { box-shadow:0 0 15px #ec702c36,inset 0 0 12px #f6a5341c; }
+body[data-theme='brd'] .stat { background:linear-gradient(135deg,#2a2117,#17130f); }
+@media(max-width:1200px) { .site-shell { grid-template-columns:205px minmax(0,1fr); } .sidebar { padding:25px 11px; } .brand strong { font-size:20px; } .brand { gap:8px; } .top-actions { gap:7px; } .sync-label { display:none; } .section-split { gap:10px; } .video-item { grid-template-columns:110px minmax(0,1fr); gap:10px; padding:10px 6px; } .video-number { font-size:17px; } }
+@media(max-width:900px) { .site-shell { display:block; } .sidebar { display:none; } .topbar { padding:13px 18px; position:sticky; } .mobile-brand { display:flex; align-items:center; gap:9px; font-size:14px; white-space:nowrap; } .mobile-brand b { font-family:'Barlow Condensed',sans-serif; letter-spacing:.5px; font-size:20px; } .mobile-brand em { color:var(--accent); font-style:normal; } .crumb { display:none; } .top-actions { margin-left:auto; } .mobile-nav { display:flex; overflow:auto; gap:17px; padding:0 18px; background:var(--sidebar); border-bottom:1px solid var(--border); scrollbar-width:none; } .mobile-nav::-webkit-scrollbar { display:none; } .mobile-nav button { border:0; background:none; white-space:nowrap; padding:15px 0 13px; font-weight:800; color:var(--muted); font-size:11px; border-bottom:2px solid transparent; } .mobile-nav button.active { color:var(--accent); border-color:var(--accent); } .main-content { padding:30px 20px 50px; } }
+@media(max-width:640px) { .topbar { flex-wrap:wrap; gap:11px; padding:12px 14px; } .top-actions { gap:5px; } .theme-choice { padding:7px 9px; font-size:10px; } .subtle-btn { padding:8px; font-size:10px; } .mobile-brand b { font-size:17px; } .mobile-brand .brand-mark { display:none; } .main-content { padding:28px 14px 40px; } .section-header { align-items:start; } .section-header h1 { font-size:42px; } .pulse { display:none; } .stats { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin:23px 0 25px; } .stat { min-height:87px; padding:15px; } .stat-value { font-size:29px; } .section-split,.stories-grid,.ideas-grid { grid-template-columns:1fr; } .card-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .video-item { grid-template-columns:120px minmax(0,1fr); padding:10px; } .board-title { padding:16px; } .video-list { padding:6px; } .toolbar-note { display:none; } .story-card,.idea-card { padding:17px; } footer { flex-direction:column; } .saved-table td,.saved-table th { padding:12px 8px; } .saved-table td:nth-child(2),.saved-table th:nth-child(2) { display:none; } }
+@media(max-width:420px) { .card-grid { grid-template-columns:1fr; } .video-card .thumb { aspect-ratio:16/8; } .theme-choice { padding:7px; } .topbar { gap:6px; } .mobile-brand b { font-size:15px; } .video-item { grid-template-columns:112px minmax(0,1fr); } .video-title { font-size:11px; } }
+@media(prefers-reduced-motion:reduce) { * { scroll-behavior:auto !important; transition:none !important; } }
+</style>
+
+</head>
+<body data-theme="default">
+<div class="site-shell">
+  <aside class="sidebar" aria-label="Main navigation">
+    <a href="#hot" class="brand" aria-label="Azeroth Radar home">
+      <div class="brand-mark" aria-hidden="true"><span class="brand-core"></span></div>
+      <div><strong>AZEROTH<span>RADAR</span></strong><small>CREATOR INTELLIGENCE</small></div>
+    </a>
+    <div class="sidebar-label">DISCOVER</div>
+    <nav class="side-nav" id="side-nav" aria-label="Sections">
+      <button class="nav-link active" data-section="hot"><span class="nav-ico">↗</span>HOT <span class="mini-hot">LIVE</span></button>
+      <button class="nav-link" data-section="popular"><span class="nav-ico">▦</span>Popular</button>
+      <button class="nav-link" data-section="stories"><span class="nav-ico">▤</span>Stories</button>
+      <button class="nav-link" data-section="ideas"><span class="nav-ico">✦</span>Content Creation</button>
+    </nav>
+    <div class="sidebar-label second-label">YOUR WORKSPACE</div>
+    <nav class="side-nav" aria-label="Workspace sections">
+      <button class="nav-link" data-section="watchlist"><span class="nav-ico">☆</span>Watchlist</button>
+      <button class="nav-link" data-section="channels"><span class="nav-ico">◉</span>Channels</button>
+      <button class="nav-link" data-section="activity"><span class="nav-ico">◷</span>Scan Activity</button>
+    </nav>
+    <div class="side-bottom">
+      <div class="status-dot-label"><i class="status-dot"></i><span id="connection-label">Local project ready</span></div>
+      <span class="side-version">AZEROTH RADAR · REBUILD v0.4</span>
+    </div>
+  </aside>
+  <div class="main-area">
+    <header class="topbar">
+      <div class="mobile-brand"><div class="brand-mark small" aria-hidden="true"><span class="brand-core"></span></div><b>AZEROTH <em>RADAR</em></b></div>
+      <div class="crumb"><span>DISCOVER</span><span class="slash">/</span><strong id="crumb-section">HOT</strong></div>
+      <div class="top-actions">
+        <div class="sync-label"><i class="status-dot"></i><span id="sync-label">Waiting for feed</span></div>
+        <button class="subtle-btn" id="demo-toggle" title="Preview sample layout">Preview demo</button>
+        <div class="theme-control" role="group" aria-label="Website theme"><button id="theme-default" class="theme-choice active">Default</button><button id="theme-brd" class="theme-choice">Blackrock Depths</button></div>
+      </div>
+    </header>
+    <nav class="mobile-nav" aria-label="Mobile sections" id="mobile-nav">
+      <button class="active" data-section="hot">HOT</button><button data-section="popular">Popular</button><button data-section="stories">Stories</button><button data-section="ideas">Creation</button><button data-section="watchlist">Saved</button><button data-section="channels">Channels</button><button data-section="activity">Activity</button>
+    </nav>
+    <main class="main-content" id="main-content" tabindex="-1">
+      <div id="demo-warning" class="demo-warning hidden"><span>PREVIEW MODE</span> Sample cards and metrics are illustrative, not live YouTube/Reddit data. <button id="exit-demo">Use live feed</button></div>
+      <div id="main-view"></div>
+      <footer><span>AZEROTH RADAR · CONTENT INTELLIGENCE</span><span>Source-backed signals. Never confuse total views with measured growth.</span></footer>
+    </main>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>'use strict';
+const root = document.getElementById('main-view');
+const $ = s => document.querySelector(s);
+const preferences = { theme: 'azeroth-radar-theme' };
+let storedTheme = 'default';
+try { storedTheme = localStorage.getItem(preferences.theme) || 'default'; } catch {}
+const state = { section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new',
+  theme: storedTheme === 'brd' ? 'brd' : 'default', demo: location.protocol === 'file:' || document.documentElement.dataset.preview === 'true', feed: null, expanded: new Set(), adminToken: '' };
+function esc(value = '') { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
+function safeURL(x) { try { const url = new URL(String(x || '')); return url.protocol === 'https:' ? url.href : ''; } catch { return ''; } }
+function fmt(n) { return Number.isFinite(Number(n)) ? Number(n).toLocaleString('en-US') : '—'; }
+function age(t) { const dt = Date.now() - Number(t); if (!Number.isFinite(dt) || dt < 0) return 'Recently'; const m = Math.floor(dt/60000); if(m<60) return `${Math.max(1,m)}m ago`; const h = Math.floor(m/60); return h<48 ? `${h}h ago` : `${Math.floor(h/24)}d ago`; }
+function time(t) { return Number(t) ? new Date(Number(t)).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Not yet'; }
+function titleLink(t,url,cl) { const u=safeURL(url); return u ? `<a class="${cl}" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t)}</a>` : `<span class="${cl}">${esc(t)}</span>`; }
+function toast(message) { const t=$('#toast'); t.textContent=message; t.classList.add('visible'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>t.classList.remove('visible'),3200); }
+function btnSegment(options, selected, key) { return `<div class="segment" role="group">${options.map(o=>`<button data-${key}="${o.id}" class="${selected===o.id?'active':''}" aria-pressed="${selected===o.id}">${esc(o.text)}</button>`).join('')}</div>`; }
+function sectionTitle(kicker,title,description,pulse = '') { return `<div class="section-header"><div><div class="hero-kicker">${esc(kicker)}</div><h1>${title}</h1><p class="section-description">${esc(description)}</p></div>${pulse?`<div class="pulse">${pulse}</div>`:''}</div>`; }
+function statCards(data) {
+  const x = data.summary || {};
+  const values = [ ['ELIGIBLE VIDEOS',fmt(x.eligibleVideos||0)], ['FRESH STORIES',fmt(x.freshStories||0)], ['CONTENT IDEAS',fmt(x.ideas||0)], ['LAST SCAN',x.lastScan ? age(x.lastScan) : 'Not yet'] ];
+  return `<div class="stats">${values.map(([label,value])=>`<div class="stat"><span class="stat-label">${label}</span><strong class="stat-value">${esc(value)}</strong></div>`).join('')}</div>`;
+}
+function empty(title,desc,tryDemo=true) { return `<div class="empty"><div class="empty-icon">◉</div><h3>${esc(title)}</h3><p>${esc(desc)}</p>${tryDemo && !state.demo?'<button class="empty-action" data-show-demo="1">Preview the layout with sample data</button>':''}</div>`; }
+function saveButton(v, kind, data) {
+  if(state.demo) return '';
+  const saved = (data.saved || []).some(s=>String(s.id)===String(v.id));
+  return `<button class="bookmark ${saved?'saved':''}" data-save="${esc(v.id)}" data-kind="${esc(kind)}" data-title="${esc(v.title)}" data-url="${esc(v.url||'')}" title="${saved?'Saved':'Save'}" aria-label="Save ${esc(v.title)}">${saved?'★':'☆'}</button>`;
+}
+function thumbnail(v) {
+  const u=safeURL(v.thumbnail);
+  return `<div class="thumb">${u?`<img src="${esc(u)}" loading="lazy" alt="Video thumbnail" referrerpolicy="no-referrer" />`:'<span class="thumb-glyph">WOW</span>'}</div>`;
+}
+function renderVideo(v, data) {
+  const isHot=state.section==='hot';
+  const metric = isHot ? `${fmt(v.growth?.perHour)}<small>views / hr</small>` : `${fmt(v.views)}<small>total views</small>`;
+  const content = `<div class="video-copy">${titleLink(v.title,v.url,'video-title')}<div class="video-channel">${esc(v.channelName||'YouTube creator')}</div><div class="video-bottom"><span class="video-number">${metric}</span>${saveButton(v,'video',data)}</div><div class="video-time">${age(v.publishedAt)} ${isHot&&v.growth?.sampleHours?` · ${v.growth.sampleHours}h sampled`:''}</div></div>`;
+  return state.layout==='preview' ? `<article class="video-card">${thumbnail(v)}${content}</article>` : `<article class="video-item">${thumbnail(v)}${content}</article>`;
+}
+function videoBoard(title,sub,items,data) {
+  return `<section class="panel"><div class="board-title"><h2>${esc(title)}<small>${esc(sub)}</small></h2><span class="count">${items.length}</span></div>${items.length?`<div class="${state.layout==='preview'?'card-grid':'video-list'}" style="${state.layout==='preview'?'padding:12px':''}">${items.map(v=>renderVideo(v,data)).join('')}</div>`:empty(state.section==='hot'?'Growth samples not ready':'No qualifying videos yet',state.section==='hot'?'HOT requires at least two real view snapshots; a lifetime total cannot prove growth.':'Connect YouTube sources or import a verified feed. Only videos published within 48 hours with at least 5,000 views qualify.')}</section>`;
+}
+function videoSection(data,mode) {
+  const isHot=mode==='hot'; const pool=data[mode]?.[state.kind]||[];
+  const fresh=pool.filter(v=>Date.now()-Number(v.publishedAt)<24*3600000);
+  const tracked=pool.filter(v=>Date.now()-Number(v.publishedAt)>=24*3600000);
+  const desc=isHot?'Actual measured views gained per hour from repeated samples. Total lifetime views do not determine HOT ranking.':'Most-watched qualifying videos ranked by lifetime TOTAL views, not views gained. Minimum 5,000 views; archived livestreams are excluded.';
+  return sectionTitle('YouTube Intelligence',isHot?'<span>HOT</span> RIGHT NOW':'WHAT’S <span>POPULAR</span>',desc,
+    '<i class="status-dot"></i> LAST 48 HOURS')+
+    statCards(data)+`<div class="toolbar"><div class="toolbar-left">${btnSegment([{id:'long',text:'Long Form'},{id:'shorts',text:'Shorts'}],state.kind,'kind')}<span class="toolbar-note">${pool.length} qualifying videos</span></div><div class="toolbar-right">${btnSegment([{id:'list',text:'☷ List'},{id:'preview',text:'▦ Preview'}],state.layout,'layout')}</div></div>`+
+    (isHot?'<div class="info-note"><strong>Measured momentum only.</strong> Rankings appear after multiple real view samples. New uploads and previously tracked videos are displayed separately.</div>':'')+
+    `<div class="section-split">${videoBoard('New uploads','Published within the last 24 hours',fresh,data)}${videoBoard('Tracked · 48 Hours','Published 24–48 hours ago',tracked,data)}</div>`;
+}
+function renderStory(s,data) {
+  const official = s.source==='Official';
+  const metrics=official?'':`<span>▲ ${s.score === null || s.score === undefined ? '—' : fmt(s.score)}</span><span>◷ ${s.comments === null || s.comments === undefined ? '—' : fmt(s.comments)} comments</span>`;
+  return `<article class="story-card"><div class="story-top"><span class="source-chip ${official?'official':''}">${official?'Official Source':esc('r/'+(s.subreddit||'wow'))}</span><span class="story-time">${age(s.publishedAt)}</span></div>${titleLink(s.title,s.url,'story-title')}<p class="story-summary">${esc(s.summary || (official?'Official update or blue post':'Reddit discussion currently qualifying for Top/Today or Hot.'))}</p><div class="story-bottom">${metrics}${official?'<span>Blizzard / official update</span>':''}${saveButton(s,'story',data)}</div></article>`;
+}
+function storiesSection(data) {
+  let stories=(data.stories||[]).filter(s=>state.storyType==='all'||(state.storyType==='official'?s.source==='Official':s.source!=='Official'));
+  if(state.storySort==='score') stories.sort((a,b)=>(b.score??-1)-(a.score??-1));
+  else if(state.storySort==='comments') stories.sort((a,b)=>(b.comments??-1)-(a.comments??-1));
+  else stories.sort((a,b)=>b.publishedAt-a.publishedAt);
+  return sectionTitle('Community & Official', 'LATEST <span>STORIES</span>', 'Official blue posts and current Reddit Top/Today or Hot discoveries. Fresh sources only, up to 48 hours old.') +
+    `<div class="toolbar"><div class="toolbar-left">${btnSegment([{id:'all',text:'All'},{id:'reddit',text:'Reddit'},{id:'official',text:'Official'}],state.storyType,'story-type')}</div><div class="toolbar-right">${btnSegment([{id:'new',text:'Newest'},{id:'score',text:'Top score'},{id:'comments',text:'Most comments'}],state.storySort,'story-sort')}</div></div>`+
+    (stories.length?`<div class="stories-grid">${stories.map(s=>renderStory(s,data)).join('')}</div>`:empty('No fresh stories', 'Reddit requires approved API access and successful Top/Today or Hot listing checks. Official posts can be imported from a configured source.'));
+}
+function ideaCard(item,i,data) {
+  const open=state.expanded.has(item.id);
+  return `<article class="idea-card"><div class="idea-top"><span class="idea-index">${String(i+1).padStart(2,'0')}</span><span class="idea-format">${esc(item.format||'Analysis')}</span><span class="priority ${item.priority==='High'?'':'watch'}">${esc(item.priority||'Watch')}</span></div><h2 class="idea-title">${esc(item.title)}</h2><p class="idea-summary">${esc(item.summary||'')}</p><div class="idea-proposed"><span class="eyebrow">PROPOSED VIDEO TITLE</span><p>${esc(item.proposedTitle||item.title)}</p></div><div class="expand"><button data-expand="${esc(item.id)}">${open?'− Hide outline':'+ View content outline'}</button>${safeURL(item.sourceUrl)?`<a class="small-link" href="${esc(safeURL(item.sourceUrl))}" target="_blank" rel="noopener noreferrer">SOURCE ↗</a>`:''}</div>${open?`<div class="idea-details"><strong>Angle</strong><div>${esc(item.angle||'')}</div><strong>Outline</strong><ol>${(item.outline||[]).map(o=>`<li>${esc(o)}</li>`).join('')}</ol><strong>Source: </strong>${esc(item.sourceType||'')} · ${age(item.publishedAt)}</div>`:''}</article>`;
+}
+function ideasSection(data) {
+  const ideas=data.contentCreation?.items||[];
+  return sectionTitle('Research to production','CONTENT <span>CREATION</span>', 'Evidence-linked topics and potential video angles. Verify original sources before making factual claims.') +
+    `<div class="info-note"><strong>Creator workflow:</strong> Prioritize rising or popular sources, avoid recycled recaps, and develop a test, comparison, counterargument, or useful player decision. Suggestions are starting points—not verified gameplay conclusions.</div>`+
+    (ideas.length?`<div class="ideas-grid">${ideas.map((x,i)=>ideaCard(x,i,data)).join('')}</div>`:empty('No eligible content briefs yet','Ideas are built from recent eligible YouTube videos and fresh Reddit/official stories. Connect or import feeds to populate this section.'));
+}
+function watchlistSection(data) {
+  const saved=data.saved||[];
+  if(data.savedPrivate) return sectionTitle('Your workspace','SAVED <span>WATCHLIST</span>','Private bookmarks and notes require the dashboard administrator token.')+`<section class="panel">${empty('Private watchlist locked','Unlock your saved notes with the rebuild’s administrator token.',false)}<div style="text-align:center;padding-bottom:27px"><button class="subtle-btn" data-unlock="1">Unlock watchlist</button></div></section>`;
+  return sectionTitle('Your workspace','SAVED <span>WATCHLIST</span>','Keep references and editorial notes in the rebuild’s local SQLite database. Original Sites bookmarks have not been transferred.') +
+    (saved.length?`<section class="panel"><table class="saved-table"><thead><tr><th>Saved source</th><th>Note</th><th>Actions</th></tr></thead><tbody>${saved.map(s=>`<tr><td>${titleLink(s.title,s.url,'')}<div class="video-time">${esc(s.kind)} · ${time(s.savedAt)}</div></td><td><textarea aria-label="Note for ${esc(s.title)}" id="note-${esc(s.id)}" data-note="${esc(s.id)}">${esc(s.note||'')}</textarea></td><td><button class="small-action" data-note-save="${esc(s.id)}">Save note</button> <button class="small-action" data-remove="${esc(s.id)}">Remove</button></td></tr>`).join('')}</tbody></table></section>`:empty('No saved sources','Save a qualifying video, Reddit discussion, or official post to build your research watchlist.'));
+}
+function channelsSection(data) {
+  const ch=data.channels||[]; const status=data.sources||{};
+  return sectionTitle('YouTube sources','TRACKED <span>CHANNELS</span>','Configured channel sources and integration health. Channel credentials are supplied through the server configuration.')+
+    `<section class="panel"><div class="board-title"><h2>Connected YouTube sources</h2><span class="status-pill ${status.youtube==='error'?'error':status.youtube==='not_configured'?'off':''}">${esc(status.youtube||'Not configured')}</span></div>${ch.length?ch.map(c=>`<div class="channel-card"><div class="channel-avatar">▶</div><div class="channel-detail"><h3>${esc(c.title)}</h3><p>${esc(c.id)} · ${esc(c.handle||'')}</p></div><span class="status-pill">Tracked</span></div>`).join(''):empty('No channel configuration','Add YOUTUBE_API_KEY and YOUTUBE_CHANNELS to .env. Channel IDs and @handles are supported.')}</section>`+
+    `<div class="info-note" style="margin-top:20px"><strong>Configuration:</strong> Update <code>.env</code> on the server. The original ChatGPT Sites YouTube connection cannot be inherited automatically by this rebuild.</div>`;
+}
+function activitySection(data) {
+  const scans=data.scans||[], sources=data.sources||{};
+  return sectionTitle('System health','SCAN <span>ACTIVITY</span>','Provider results, errors, and hourly refresh history from this rebuilt project.')+
+    `<div class="toolbar"><div class="toolbar-left"><span class="status-pill ${sources.youtube==='error'?'error':sources.youtube==='not_configured'?'off':''}">YouTube: ${esc(sources.youtube||'n/a')}</span><span class="status-pill ${sources.reddit==='error'?'error':sources.reddit==='not_configured'?'off':''}">Reddit: ${esc(sources.reddit||'n/a')}</span><span class="status-pill ${sources.official==='error'?'error':sources.official==='not_configured'?'off':''}">Official: ${esc(sources.official||'n/a')}</span></div><button class="subtle-btn" data-scan-now="1">↻ Scan now</button></div>`+
+    `<div class="info-note"><strong>Hourly schedule:</strong> The rebuild scans at the top of each hour while its Node server is running. The original ChatGPT automation remains separate and is not modified.</div>`+
+    (scans.length?`<section class="panel"><table class="saved-table"><thead><tr><th>Provider</th><th>Result</th><th>Time / details</th></tr></thead><tbody>${scans.map(s=>`<tr><td><strong>${esc(s.provider)}</strong></td><td><span class="status-pill ${s.status==='error'?'error':s.status==='not_configured'?'off':''}">${esc(s.status)} · ${fmt(s.count)} items</span></td><td>${time(s.at)}${s.error?`<div class="video-time" title="${esc(s.error)}">${esc(s.error)}</div>`:''}</td></tr>`).join('')}</tbody></table></section>`:empty('No scans recorded yet','With configured integrations, the server scans on startup and at the top of each hour.'));
+}
+const DEMO_AGE=Date.now();
+function demoData() {
+  const t=DEMO_AGE; const video = (id,title,channel,views,hours,kind,gain) => ({ id:`demo-${id}`,title,channelName:channel,views,publishedAt:t-hours*3600000,kind,thumbnail:'',url:'',growth:gain?{perHour:gain,sampleHours:4}:null });
+  const longs=[
+    video('l1','The New WoW Forever Patch Changes Everything','Example Creator',284600,3,'long',12500),
+    video('l2','Protection Warrior: Testing The Latest Talent Tree','Example PvP Channel',184200,7,'long',7400),
+    video('l3','First Look at the New Dungeon and Boss Mechanics','Example Guides',156800,19,'long',5100),
+    video('l4','Racial Balance — What Actually Matters?','Example Podcast',112600,29,'long',2700),
+    video('l5','Paladin Changes After The Latest Balance Pass','Example Creator',92500,41,'long',1400)
+  ];
+  const shorts=[
+    video('s1','A Surprise in Stormwind','Example Clips',194000,5,'shorts',9200),
+    video('s2','Protection Warrior Trick You Might Have Missed','Example Clips',77300,27,'shorts',3800),
+    video('s3','This Dungeon Boss Mechanic Is Wild','Example Shorts',64000,16,'shorts',2900)
+  ];
+  const story=(id,title,source,hours,score,comments,summary) => ({id:`demo-story-${id}`,title,source,subreddit:'wowforever',publishedAt:t-hours*3600000,score,comments,summary,url:''});
+  const stories=[
+    story('r1','Players are discussing the new Warrior balance changes','Reddit',2,1040,241,'Illustrative Reddit discussion describing feedback on class performance.'),
+    story('b1','Developer update: class tuning and racial abilities','Official',4,null,null,'Illustrative summary of an official development post.'),
+    story('r2','What should the next dungeon update focus on?','Reddit',8,746,181,'Illustrative player discussion about dungeon pacing and mechanics.'),
+    story('r3','The latest PvP tournament meta discussion','Reddit',12,511,137,'Illustrative community reaction to shifting player choices.'),
+    story('b2','Development notes: upcoming interface adjustments','Official',21,null,null,'Illustrative preview of interface update notes.'),
+    story('r4','Thoughts on the most recent Paladin adjustment','Reddit',33,308,78,'Illustrative player feedback and differing opinions.')
+  ];
+  const topics=[...longs,...shorts,...stories].map((item,i)=>({id:`demo-idea-${i}`,title:item.title,summary:'Illustrative creator briefing. Combine direct evidence with a gameplay test, a counterargument, and actionable takeaways.',
+    proposedTitle:i%2===0?`The BIG Question About ${item.title.replace(/[!?]+$/,'')}`:`What Everyone Is Missing About ${item.title.replace(/[!?]+$/,'')}`,
+    angle:'Compare the claim with tested gameplay outcomes, highlight trade-offs and avoid unverified conclusions.',outline:['What sparked the conversation','Evidence from the original source','How to test the claim','Implications for different players','Conclusion and follow-up'],format:i%3===0?'Gameplay test':'Reaction + analysis',priority:i<3?'High':'Watch',sourceType:item.source||'YouTube',publishedAt:item.publishedAt,sourceUrl:''}));
+  return { isDemo:true, generatedAt:t, summary:{eligibleVideos:longs.length+shorts.length,freshStories:stories.length,ideas:topics.length,lastScan:t-15*60000},
+    popular:{long:longs,shorts},hot:{long:longs.filter(v=>v.growth).sort((a,b)=>b.growth.perHour-a.growth.perHour),shorts:shorts.filter(v=>v.growth).sort((a,b)=>b.growth.perHour-a.growth.perHour)},
+    stories,contentCreation:{items:topics},saved:[],channels:[{id:'demo-channel',title:'Example Creator',handle:'@example'}],scans:[{at:t-15*60000,provider:'youtube',status:'demo',count:8,error:''}],sources:{youtube:'demo',reddit:'demo',official:'demo'} };
+}
+function updateTheme() {
+  document.body.dataset.theme=state.theme;
+  $('#theme-default').classList.toggle('active',state.theme==='default');
+  $('#theme-brd').classList.toggle('active',state.theme==='brd');
+  try {localStorage.setItem(preferences.theme,state.theme);}catch{}
+}
+function updateNav() {
+  document.querySelectorAll('[data-section]').forEach(el=>{ const selected=el.dataset.section===state.section; el.classList.toggle('active',selected); if(el.tagName==='BUTTON') el.setAttribute('aria-current',selected?'page':'false'); });
+  const names={popular:'Popular',hot:'HOT',stories:'Stories',ideas:'Content Creation',watchlist:'Watchlist',channels:'Channels',activity:'Scan Activity'};
+  $('#crumb-section').textContent=names[state.section]; document.title=`${names[state.section]} · Azeroth Radar`;
+}
+function render() {
+  updateTheme();updateNav();
+  const data=state.demo?demoData():state.feed;
+  $('#demo-warning').classList.toggle('hidden',!state.demo);
+  $('#demo-toggle').textContent=state.demo?'Live feed':'Preview demo';
+  if(!data) {root.innerHTML=empty('Loading Azeroth Radar','Reading the local API and its saved sources...',false);return;}
+  const renderers={popular:()=>videoSection(data,'popular'),hot:()=>videoSection(data,'hot'),stories:()=>storiesSection(data),ideas:()=>ideasSection(data),watchlist:()=>watchlistSection(data),channels:()=>channelsSection(data),activity:()=>activitySection(data)};
+  root.innerHTML=renderers[state.section]();
+}
+async function fetchFeed() {
+  if (location.protocol === 'file:' || document.documentElement.dataset.preview === 'true') {
+    $('#sync-label').textContent = 'Illustrative preview — no live connection';
+    $('#connection-label').textContent = 'Preview only';
+    render();
+    return;
+  }
+  try { const res=await fetch('/api/feed',{cache:'no-store',headers:state.adminToken?{'X-Admin-Token':state.adminToken}:{}}); if(!res.ok) throw new Error('Feed HTTP '+res.status);
+    state.feed=await res.json(); const sources=state.feed.sources||{};
+    $('#sync-label').textContent=state.feed.summary?.lastScan?`Updated ${age(state.feed.summary.lastScan)}`:'No scans yet';
+    $('#connection-label').textContent=Object.values(sources).some(x=>x==='complete')?'Feed source connected':'Configure data sources';
+  } catch(error) { state.feed={popular:{long:[],shorts:[]},hot:{long:[],shorts:[]},stories:[],contentCreation:{items:[]},summary:{},saved:[],channels:[],scans:[],sources:{}};
+    $('#sync-label').textContent='API unavailable'; toast(`Feed error: ${error.message}`);
+  }
+  render();
+}
+async function adminFetch(url, options={}) {
+  const go=async()=>fetch(url,{...options,headers:{'Content-Type':'application/json',...(state.adminToken?{'X-Admin-Token':state.adminToken}:{}),...(options.headers||{})}});
+  let res=await go();
+  if(res.status===401) { const token=window.prompt('Enter the rebuild server ADMIN_TOKEN (kept in memory for this tab only):'); if(!token) throw new Error('Authorization required'); state.adminToken=token; res=await go(); }
+  const response=await res.json(); if(!res.ok) throw new Error(response.error||`HTTP ${res.status}`); return response;
+}
+function moveSection(section) {state.section=section; window.location.hash=section; render(); window.scrollTo({top:0,behavior:'smooth'});}
+document.addEventListener('click',async e=>{
+  const button=e.target.closest('button'); if(!button) return;
+  try {
+    if(button.dataset.section) return moveSection(button.dataset.section);
+    if(button.id==='theme-default') {state.theme='default';return render();}
+    if(button.id==='theme-brd') {state.theme='brd';return render();}
+    if(button.dataset.kind) {state.kind=button.dataset.kind;return render();}
+    if(button.dataset.layout) {state.layout=button.dataset.layout;return render();}
+    if(button.dataset.storyType) {state.storyType=button.dataset.storyType;return render();}
+    if(button.dataset.storySort) {state.storySort=button.dataset.storySort;return render();}
+    if(button.dataset.expand) {const id=button.dataset.expand; if(state.expanded.has(id))state.expanded.delete(id);else state.expanded.add(id);return render();}
+    if(button.dataset.showDemo||button.id==='demo-toggle'||button.id==='exit-demo') {state.demo=button.id==='exit-demo'?false:!state.demo; return render();}
+    if(button.dataset.unlock) {const token=window.prompt('Enter the rebuild ADMIN_TOKEN:'); if(token){state.adminToken=token;await fetchFeed();} return;}
+    if(button.dataset.save) {await adminFetch('/api/save',{method:'POST',body:JSON.stringify({id:button.dataset.save,kind:button.dataset.kind,title:button.dataset.title,url:button.dataset.url})});toast('Saved to watchlist');return fetchFeed();}
+    if(button.dataset.remove) {await adminFetch('/api/save/'+encodeURIComponent(button.dataset.remove),{method:'DELETE'});toast('Removed from watchlist');return fetchFeed();}
+    if(button.dataset.noteSave) { const id=button.dataset.noteSave;const note=[...document.querySelectorAll('[data-note]')].find(el=>el.dataset.note===id)?.value||'';
+      const item=(state.feed?.saved||[]).find(s=>s.id===id); if(!item)return;await adminFetch('/api/save',{method:'POST',body:JSON.stringify({id,kind:item.kind,title:item.title,url:item.url,note})});toast('Note saved');return fetchFeed(); }
+    if(button.dataset.scanNow){button.disabled=true;button.textContent='Scanning…'; const resp=await adminFetch('/api/scan',{method:'POST'});toast(resp.status==='busy'?'Scan already running':'Scan finished');return fetchFeed();}
+  } catch(error) {toast(error.message);} finally {if(button?.dataset.scanNow){button.disabled=false;button.textContent='↻ Scan now';}}
+});
+window.addEventListener('hashchange',()=>{const page=location.hash.replace('#','');if(['popular','hot','stories','ideas','watchlist','channels','activity'].includes(page)){state.section=page;render();}});
+if(location.hash) {const page=location.hash.slice(1);if(['popular','hot','stories','ideas','watchlist','channels','activity'].includes(page))state.section=page;}
+render();fetchFeed();setInterval(fetchFeed,60000);
+</script></body>
+</html>
