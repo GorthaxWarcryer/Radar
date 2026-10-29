@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#101318" />
+<meta name="description" content="Azeroth Radar — creator intelligence for World of Warcraft. Discover what's popular, what's accelerating, and what to cover next." />
+<title>Azeroth Radar — Creator Intelligence</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/style.css" />
+<script defer src="/app.js"></script>
+</head>
+<body data-theme="default">
+<div class="site-shell">
+  <aside class="sidebar" aria-label="Main navigation">
+    <a href="#popular" class="brand" aria-label="Azeroth Radar home">
+      <div class="brand-mark" aria-hidden="true"><span class="brand-core"></span></div>
+      <div><strong>AZEROTH<span>RADAR</span></strong><small>CREATOR INTELLIGENCE</small></div>
+    </a>
+    <div class="sidebar-label">DISCOVER</div>
+    <nav class="side-nav" id="side-nav" aria-label="Sections">
+      <button class="nav-link active" data-section="popular"><span class="nav-ico">▦</span>Popular</button>
+      <button class="nav-link" data-section="hot"><span class="nav-ico">↗</span>HOT <span class="mini-hot">LIVE</span></button>
+      <button class="nav-link" data-section="stories"><span class="nav-ico">▤</span>Stories</button>
+      <button class="nav-link" data-section="ideas"><span class="nav-ico">✦</span>Content Creation</button>
+    </nav>
+    <div class="sidebar-label second-label">YOUR WORKSPACE</div>
+    <nav class="side-nav" aria-label="Workspace sections">
+      <button class="nav-link" data-section="watchlist"><span class="nav-ico">☆</span>Watchlist</button>
+      <button class="nav-link" data-section="channels"><span class="nav-ico">◉</span>Channels</button>
+      <button class="nav-link" data-section="activity"><span class="nav-ico">◷</span>Scan Activity</button>
+    </nav>
+    <div class="side-bottom">
+      <div class="status-dot-label"><i class="status-dot"></i><span id="connection-label">Local project ready</span></div>
+      <span class="side-version">AZEROTH RADAR · REBUILD v0.2</span>
+    </div>
+  </aside>
+  <div class="main-area">
+    <header class="topbar">
+      <div class="mobile-brand"><div class="brand-mark small" aria-hidden="true"><span class="brand-core"></span></div><b>AZEROTH <em>RADAR</em></b></div>
+      <div class="crumb"><span>DISCOVER</span><span class="slash">/</span><strong id="crumb-section">Popular</strong></div>
+      <div class="top-actions">
+        <div class="sync-label"><i class="status-dot"></i><span id="sync-label">Waiting for feed</span></div>
+        <button class="subtle-btn" id="demo-toggle" title="Preview sample layout">Preview demo</button>
+        <div class="theme-control" role="group" aria-label="Website theme"><button id="theme-default" class="theme-choice active">Default</button><button id="theme-brd" class="theme-choice">Blackrock Depths</button></div>
+      </div>
+    </header>
+    <nav class="mobile-nav" aria-label="Mobile sections" id="mobile-nav">
+      <button class="active" data-section="popular">Popular</button><button data-section="hot">HOT</button><button data-section="stories">Stories</button><button data-section="ideas">Creation</button><button data-section="watchlist">Saved</button><button data-section="channels">Channels</button><button data-section="activity">Activity</button>
+    </nav>
+    <main class="main-content" id="main-content" tabindex="-1">
+      <div id="demo-warning" class="demo-warning hidden"><span>PREVIEW MODE</span> Sample cards and metrics are illustrative, not live YouTube/Reddit data. <button id="exit-demo">Use live feed</button></div>
+      <div id="main-view"></div>
+      <footer><span>AZEROTH RADAR · CONTENT INTELLIGENCE</span><span>Source-backed signals. Never confuse total views with measured growth.</span></footer>
+    </main>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
