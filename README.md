@@ -87,3 +87,18 @@ Send it to `POST /api/import` as `application/json`. This imports provided conte
 | Regression tests | `tests/core.test.mjs` |
 
 **Future workflow:** Keep this folder or ZIP available in the conversation. Ask for targeted changes and I can update the relevant source files and return a new ZIP. Without a native Sites editing tool, changes made here will still need to be run/deployed on a host that serves this project.
+
+## Scanner resilience (v0.5)
+
+The **standalone rebuild** now runs bounded YouTube discovery slices, saves its
+channel cursor and pending video IDs in SQLite, samples tracked video views
+independently, and rotates Reddit listing checks. Manual scans return a job ID
+immediately. An authenticated `GET /api/scan/status` returns the running or
+terminal result. Only one scanner executes at once, and the next slice resumes
+without erasing pending items. Health and Scan Activity report progress
+separately from genuine provider errors. Tune with `SCAN_BUDGET_MS`,
+`YOUTUBE_CHANNELS_PER_SCAN`, and `YOUTUBE_VIDEOS_PER_SCAN`.
+
+**This does not change the already hosted ChatGPT Sites website.** The
+Sites-managed backend requires the tailored patch in
+`sites/LIVE_SCANNER_PATCH_SPEC.md` using its original code, tools, and database.
