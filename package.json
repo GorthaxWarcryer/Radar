@@ -1,6 +1,6 @@
 {
   "name": "azeroth-radar-rebuild",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "description": "Editable Azeroth Radar rebuild: HOT, Popular, Reddit/official Stories, ideas, two themes, SQLite persistence.",
   "type": "module",
@@ -12,6 +12,7 @@
     "start": "node server.mjs",
     "test": "node --test tests/*.test.mjs",
     "check": "node --check server.mjs && node --check src/core.mjs && node --check src/providers.mjs && node --check public/app.js",
-    "preview": "node scripts/build-preview.mjs"
+    "preview": "node scripts/build-preview.mjs",
+    "sites:reference": "node scripts/build-sites-reference.mjs"
   }
 }
