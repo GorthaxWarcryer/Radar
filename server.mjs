@@ -3,7 +3,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createStore } from './src/db.mjs';
-import { fetchYouTube, fetchReddit, fetchOfficial } from './src/providers.mjs';
+import { fetchReddit, fetchOfficial } from './src/providers.mjs';
+import { scanYouTubeSlice } from './src/incremental.mjs';
+import { randomUUID } from 'node:crypto';
 
 const BASE = path.dirname(fileURLToPath(import.meta.url));
 const envPath = path.join(BASE, '.env');
@@ -48,34 +50,81 @@ function staticFile(req, res, pathname) {
     res.writeHead(200, { 'Content-Type': MIME[path.extname(resolved)] || 'application/octet-stream', 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff' }); res.end(bytes);
   });
 }
-async function scan() {
-  if (running) return { status: 'busy' };
-  running = true;
-  const now = Date.now(), summary = {};
-  try {
-    for (const [name, provider, key] of [
-      ['youtube', fetchYouTube, 'videos'], ['reddit', fetchReddit, 'posts'], ['official', fetchOfficial, 'posts']
-    ]) {
-      const result = await provider(process.env, now);
-      if (name === 'youtube' && result.channels) knownChannels = result.channels;
-      latestStatuses[name] = result.status;
-      const found = result[key] || [];
-      if (result.status !== 'not_configured') {
-        store.importData({ [name === 'youtube' ? 'videos' : name === 'reddit' ? 'reddit' : 'official']: found }, now);
-        store.record(name, result.status, found.length, result.errors, now);
-      }
-      summary[name] = { status: result.status, count: found.length, errors: result.errors };
+const initialJob = (() => { try { return JSON.parse(store.getMeta('scanJob') || 'null'); } catch { return null; } })();
+let scanJob = initialJob?.status === 'running'
+  ? { ...initialJob, status: 'interrupted', finishedAt: Date.now(), note: 'Worker restarted; pending items remain queued' }
+  : initialJob;
+if (scanJob?.status === 'interrupted') store.setMeta('scanJob', JSON.stringify(scanJob));
+const scanLimit = Math.max(15000, Math.min(120000, Number(process.env.SCAN_BUDGET_MS) || 60000));
+
+async function doScan() {
+  const started = Date.now(), deadline = started + scanLimit, summary = {};
+  const providers = ['youtube', 'reddit', 'official'];
+  const startAt = Number(store.getMeta('scanNextProvider') || 0) % providers.length;
+  let worked = 0;
+  for (let i = 0; i < providers.length; i++) {
+    const index = (startAt + i) % providers.length;
+    const name = providers[index];
+    if (deadline - Date.now() < 3000) {
+      summary[name] = { status: 'deferred', count: 0, errors: ['Slice budget reached; provider queued for next run'] };
+      store.setMeta('scanNextProvider', index);
+      break;
     }
-    store.setMeta('lastScan', now);
-    return { status: 'complete', providers: summary };
-  } catch (error) {
-    store.record('system', 'error', 0, [error.message], now);
-    return { status: 'error', message: error.message };
-  } finally { running = false; }
+    try {
+      let result;
+      if (name === 'youtube') {
+        result = await scanYouTubeSlice({ env: process.env, store, deadline: Math.min(deadline, Date.now() + 26000) });
+        if (result.channels?.length) knownChannels = result.channels;
+      } else if (name === 'reddit') {
+        const cursor = Number(store.getMeta('redditCursor') || 0);
+        result = await fetchReddit(process.env, Date.now(), { cursor, maxListings: 2, deadline });
+        if (Number.isInteger(result.nextCursor)) store.setMeta('redditCursor', result.nextCursor);
+        if (result.status !== 'not_configured') store.importData({ reddit: result.posts || [] }, Date.now());
+      } else {
+        result = await fetchOfficial(process.env, Date.now(), deadline);
+        if (result.status !== 'not_configured') store.importData({ official: result.posts || [] }, Date.now());
+      }
+      latestStatuses[name] = result.status;
+      const found = result.count ?? (result.posts || []).length;
+      if (result.status !== 'not_configured') store.record(name, result.status, found, result.errors || [], Date.now());
+      summary[name] = { status: result.status, count: found, errors: result.errors || [], progress: result.progress || null };
+      if (['progress', 'complete', 'partial'].includes(result.status)) worked++;
+    } catch (error) {
+      latestStatuses[name] = 'error';
+      store.record(name, 'error', 0, [String(error.message)], Date.now());
+      summary[name] = { status: 'error', count: 0, errors: [String(error.message)] };
+    }
+    store.setMeta('scanNextProvider', (index + 1) % providers.length);
+    scanJob = { ...scanJob, providers: summary, updatedAt: Date.now() };
+    store.setMeta('scanJob', JSON.stringify(scanJob));
+  }
+  if (worked > 0) store.setMeta('lastScan', Date.now());
+  const anyError = Object.values(summary).some(x => x.status === 'error' || x.status === 'partial');
+  const unfinished = Object.values(summary).some(x => x.status === 'deferred' || x.status === 'progress');
+  return { status: anyError ? 'partial' : unfinished ? 'progress' : 'complete', providers: summary, durationMs: Date.now() - started };
+}
+function startScan() {
+  if (running) return { status: 'busy', scanId: scanJob?.scanId };
+  running = true;
+  scanJob = { status: 'running', scanId: randomUUID(), startedAt: Date.now(), updatedAt: Date.now(), providers: {} };
+  store.setMeta('scanJob', JSON.stringify(scanJob));
+  setImmediate(async () => {
+    try {
+      const result = await doScan();
+      scanJob = { ...scanJob, ...result, finishedAt: Date.now(), updatedAt: Date.now() };
+    } catch (error) {
+      scanJob = { ...scanJob, status: 'error', message: String(error.message), finishedAt: Date.now() };
+      store.record('system', 'error', 0, [String(error.message)], Date.now());
+    } finally {
+      running = false;
+      store.setMeta('scanJob', JSON.stringify(scanJob));
+    }
+  });
+  return { status: 'running', scanId: scanJob.scanId };
 }
 function runHourly() {
   const untilNextHour = 3600000 - Date.now() % 3600000 + 1500;
-  const timer = setTimeout(async () => { try { await scan(); } catch (e) { console.error('Scheduled scan:', e.message); } runHourly(); }, untilNextHour);
+  const timer = setTimeout(async () => { try { startScan(); } catch (e) { console.error('Scheduled scan:', e.message); } runHourly(); }, untilNextHour);
   timer.unref();
 }
 const server = http.createServer(async (req, res) => {
@@ -88,9 +137,11 @@ const server = http.createServer(async (req, res) => {
       if (!authorized(req)) { body.saved = []; body.savedPrivate = true; }
       else body.savedPrivate = false;
       body.sources = { ...latestStatuses };
+      body.scanJob = scanJob;
+      body.scanProgress = (() => { try { return JSON.parse(store.getMeta('youtubeLastProgress') || 'null'); } catch { return null; } })();
       return json(res, 200, body);
     }
-    if (req.method === 'GET' && pathname === '/api/health') return json(res, 200, { ok: true, running, providers: latestStatuses, time: Date.now(), originalSiteConnected: false });
+    if (req.method === 'GET' && pathname === '/api/health') return json(res, 200, { ok: true, running, providers: latestStatuses, scanJob, time: Date.now(), originalSiteConnected: false });
     if (pathname === '/api/save' && req.method === 'POST') {
       if (!authorized(req)) return json(res, 401, { error: 'Admin authorization required' });
       store.save(await readBody(req)); return json(res, 200, { ok: true });
@@ -99,9 +150,13 @@ const server = http.createServer(async (req, res) => {
       if (!authorized(req)) return json(res, 401, { error: 'Admin authorization required' });
       store.del(pathname.substring('/api/save/'.length)); return json(res, 200, { ok: true });
     }
+    if (pathname === '/api/scan/status' && req.method === 'GET') {
+      if (!authorized(req)) return json(res, 401, { error: 'Admin authorization required' });
+      return json(res, 200, scanJob || { status: 'not_started' });
+    }
     if (pathname === '/api/scan' && req.method === 'POST') {
       if (!authorized(req)) return json(res, 401, { error: 'Admin authorization required' });
-      return json(res, 200, await scan());
+      return json(res, 202, startScan());
     }
     if (pathname === '/api/import' && req.method === 'POST') {
       if (!authorized(req)) return json(res, 401, { error: 'Admin authorization required' });
@@ -121,7 +176,7 @@ server.listen(PORT, HOST, () => {
   console.log(`Database location: ${path.dirname(databasePath)} (configure a persistent volume in production)`);
   console.log('This is a rebuilt database; original Sites data and credentials are not connected.');
   if (process.env.AUTO_SCAN !== 'false') {
-    setTimeout(() => scan().catch(e => console.error(e)), 1000).unref();
+    setTimeout(() => startScan(), 1000).unref();
     runHourly();
   }
 });
