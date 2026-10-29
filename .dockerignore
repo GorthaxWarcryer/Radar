@@ -1,0 +1,13 @@
+# Do not send secrets, private data or local runtime files in deployment builds
+.env
+.env.*
+!.env.example
+data/
+node_modules/
+.git/
+*.sqlite
+*.sqlite-*
+*.db
+*.zip
+.DS_Store
+preview.html
