@@ -81,6 +81,12 @@ export function createStore(dbPath = 'data/azeroth.sqlite') {
       channels, scans, sources: { youtube: Boolean(channels.length), reddit: null, official: null },
       note: 'This is a rebuilt database; original Sites data is not automatically synchronized.' };
   }
+  function trackedVideoIds(now = Date.now()) {
+    // Only published-within-48h videos are worth re-sampling. Avoid tracking archived VODs.
+    return asJson(db.prepare('SELECT payload FROM videos WHERE last_seen >= ? ORDER BY last_seen DESC LIMIT 4000').all(now - 7 * 86400000))
+      .filter(v => !v.isVod && withinHours(v.publishedAt, 48, now))
+      .map(v => String(v.id));
+  }
   function save(s) {
     if (!s.id || !s.title) throw new Error('id and title are required');
     q.putSaved.run(String(s.id).slice(0, 300), String(s.kind || 'video').slice(0, 30), String(s.title).slice(0, 400), String(s.url || '').slice(0, 1000), String(s.note || '').slice(0, 3000), Date.now());
@@ -93,5 +99,5 @@ export function createStore(dbPath = 'data/azeroth.sqlite') {
       reddit: asJson(db.prepare('SELECT payload FROM reddit').all()), official: asJson(db.prepare('SELECT payload FROM official').all()),
       saved: db.prepare('SELECT id,kind,title,url,note,saved_at as savedAt FROM saved').all() };
   }
-  return { db, record, importData, feed, save, del, getMeta, setMeta, exportAll };
+  return { db, record, importData, feed, save, del, getMeta, setMeta, trackedVideoIds, exportAll };
 }
