@@ -21,7 +21,7 @@ jobs:
           def walk(x):
             if isinstance(x,dict):
               if 'published' in x and x.get('status')=='live':
-                print('ARTICLE',json.dumps({k:v for k,v in x.items() if k in ['id','title','url','published','summary','author','status','shortUrl','locale','body','content']})[:2500])
+                print('ARTICLE',json.dumps({k:(v[:700] if k in ['body','content'] else v) for k,v in x.items() if k in ['id','title','url','published','summary','author','status','shortUrl','locale','body','content']}))
               for v in x.values(): walk(v)
             elif isinstance(x,list):
               for v in x: walk(v)
