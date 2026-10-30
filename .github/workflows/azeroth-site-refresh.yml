@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      ACTIVATE_COLLECTION: 'false'
+      ACTIVATE_COLLECTION: 'true'
     steps:
       - name: Verify identity and advance bounded collection
         shell: python {0}
