@@ -3,6 +3,9 @@ on:
   schedule:
     - cron: '0 5,8,11,14,17,20 * * *'
       timezone: Europe/Kyiv
+    # Temporary single-date test. Remove after October 30, 2026.
+    - cron: '48 11 30 10 *'
+      timezone: Europe/Kyiv
   workflow_dispatch:
   push:
     paths: ['.github/workflows/azeroth-site-refresh.yml']
