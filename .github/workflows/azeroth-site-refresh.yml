@@ -31,7 +31,7 @@ jobs:
               with urllib.request.urlopen(auth, timeout=20) as response:
                   token = json.load(response)['value']
               # This short-lived token is sent only to the original Site and never logged.
-              req = urllib.request.Request(audience, data=json.dumps({'operation': operation}).encode(), headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'})
+              req = urllib.request.Request(audience, data=json.dumps({'operation': operation}).encode(), headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'User-Agent': 'AzerothRadar-Scheduler/1.0'})
               with urllib.request.urlopen(req, timeout=35) as response:
                   return json.load(response)
           verified = call('verify')
