@@ -1,0 +1,22 @@
+name: Radar HOT diagnostic
+on:
+  push:
+    paths: ['.github/workflows/hot-diagnostics.yml']
+permissions:
+  contents: none
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Read public persisted feed without triggering collection
+        shell: python {0}
+        run: |
+          import urllib.request,json,time
+          url='https://azeroth-radar-petro.honestrhino21.chatgpt.site/api/feed?view=dashboard'
+          req=urllib.request.Request(url,headers={'User-Agent':'AzerothRadar-Verification/1.0'})
+          with urllib.request.urlopen(req,timeout=40) as r:
+            d=json.load(r)
+          now=int(time.time()*1000)
+          rows=[{k:v.get(k) for k in ['id','title','publishedAt','views','vph','fresh','lastSeen','duration','width','height','intervalMinutes','hotMeasuredAt','hotPriorAt','hotVph']} for v in d['videos'] if now-86400000<=v['publishedAt']<=now and v['views']>=5000]
+          print('EVIDENCE',json.dumps({'at':now,'lastScan':d.get('lastScan'),'lastDiscovery':d.get('lastDiscovery'),'hot':d.get('rankings',{}).get('hot'),'diagnostics':d.get('hotDiagnostics'),'rows':rows}))
