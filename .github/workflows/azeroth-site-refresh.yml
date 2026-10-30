@@ -1,0 +1,52 @@
+name: Azeroth Site deterministic refresh
+on:
+  schedule:
+    - cron: '0 5,8,11,14,17,20 * * *'
+      timezone: Europe/Kyiv
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/azeroth-site-refresh.yml']
+permissions:
+  id-token: write
+  contents: none
+concurrency:
+  group: azeroth-original-site-refresh
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ACTIVATE_COLLECTION: 'false'
+    steps:
+      - name: Verify identity and advance bounded collection
+        shell: python {0}
+        run: |
+          import os, json, urllib.request, urllib.parse, time
+          base = 'https://azeroth-radar-petro.honestrhino21.chatgpt.site'
+          audience = base + '/api/refresh'
+          def call(operation):
+              request_url = os.environ['ACTIONS_ID_TOKEN_REQUEST_URL'] + '&audience=' + urllib.parse.quote(audience, safe='')
+              auth = urllib.request.Request(request_url, headers={'Authorization': 'Bearer ' + os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']})
+              with urllib.request.urlopen(auth, timeout=20) as response:
+                  token = json.load(response)['value']
+              # This short-lived token is sent only to the original Site and never logged.
+              req = urllib.request.Request(audience, data=json.dumps({'operation': operation}).encode(), headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'})
+              with urllib.request.urlopen(req, timeout=35) as response:
+                  return json.load(response)
+          verified = call('verify')
+          assert verified.get('status') == 'verified', 'Site identity verification failed'
+          print('Signed workflow identity verified; no paid AI calls.')
+          if os.environ['GITHUB_EVENT_NAME'] == 'push' or os.environ.get('ACTIVATE_COLLECTION') != 'true':
+              print('Verification only. Automatic collection is not activated.')
+          else:
+              for step in range(100):
+                  result = call('youtube')
+                  print(json.dumps({k: result.get(k) for k in ['status','stage','pending','sampled','retryAt']}))
+                  if result.get('waiting') or not result.get('continuing'):
+                      break
+                  time.sleep(min(10, max(1, result.get('retryAfter', 1))))
+              else:
+                  print('Slice limit reached. Remaining queue persists for the next permitted slot.')
+              reddit = call('reddit')
+              print('Reddit coverage:', reddit.get('status', 'unavailable'))
