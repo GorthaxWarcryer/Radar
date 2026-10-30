@@ -18,5 +18,5 @@ jobs:
           s=r.read(2000000).decode()
           print('STATUS',r.status,'SIZE',len(s))
           for x in re.findall(r'<script[^>]*>.*?</script>',s,re.S):
-            if 'application/ld+json' in x or '__NEXT_DATA__' in x: print('STRUCTURED',x[:18000])
-          for x in re.findall(r'.{0,180}(?:publish|created|articleId|/news/\\d+).{0,280}',s): print('MATCH',x[:460])
+            print('SCRIPT',x[:500])
+          i=s.find('"published"'); print('AROUND',s[i-1000:i+900])
