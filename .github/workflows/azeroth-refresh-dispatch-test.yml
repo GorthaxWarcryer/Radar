@@ -1,4 +1,4 @@
-name: Final Azeroth persisted recovery verification
+name: Final Azeroth snapshot and duplicate-slot verification
 on:
   push:
     paths: ['.github/workflows/azeroth-refresh-dispatch-test.yml']
