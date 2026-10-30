@@ -17,6 +17,12 @@ jobs:
           r=urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'AzerothRadar/1.0 (official news reader)'}),timeout=10)
           s=r.read(2000000).decode()
           print('STATUS',r.status,'SIZE',len(s))
-          for x in re.findall(r'<script[^>]*>.*?</script>',s,re.S):
-            print('SCRIPT',x[:500])
-          i=s.find('"published"'); print('AROUND',s[i-1000:i+900])
+          m=json.loads(re.search(r'<script id="model">model = (.*?);?</script>',s,re.S)[1].rstrip(';'))
+          def walk(x):
+            if isinstance(x,dict):
+              if 'published' in x and x.get('status')=='live':
+                print('ARTICLE',json.dumps({k:v for k,v in x.items() if k in ['id','title','url','published','summary','author','status','shortUrl','locale','body','content']})[:2500])
+              for v in x.values(): walk(v)
+            elif isinstance(x,list):
+              for v in x: walk(v)
+          walk(m)
