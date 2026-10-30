@@ -34,9 +34,9 @@ jobs:
           import time
           import urllib.parse
           import urllib.request
-
+          
           BASE = 'https://azeroth-radar-petro.honestrhino21.chatgpt.site'
-
+          
           def request(operation):
               audience = BASE + '/api/refresh'
               token_url = os.environ['ACTIONS_ID_TOKEN_REQUEST_URL'] + '&audience=' + urllib.parse.quote(audience, safe='')
@@ -46,7 +46,7 @@ jobs:
               req = urllib.request.Request(audience, data=json.dumps({'operation': operation}).encode(), headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'User-Agent': 'AzerothRadar-Scheduler/1.0'})
               with urllib.request.urlopen(req, timeout=35) as response:
                   return json.load(response)
-
+          
           def run(call=request, max_steps=100, clock=time.monotonic, sleep=time.sleep, emit=print):
               started = clock()
               identity = call('verify')
@@ -99,7 +99,7 @@ jobs:
                   reddit = call('reddit')
                   summary['redditCoverage'] = reddit.get('status', 'unavailable')
               return summary
-
+          
           if __name__ == '__main__':
               outcome = run(max_steps=int(os.environ.get('MAX_SLICES', '100')))
               text = json.dumps(outcome, indent=2)
@@ -108,3 +108,36 @@ jobs:
               if summary_file:
                   with open(summary_file, 'a', encoding='utf-8') as f:
                       f.write('## Azeroth Radar refresh outcome\n```json\n' + text + '\n```\n')
+      - name: Collect official Blizzard news independently
+        if: ${{ always() && github.event_name != 'push' }}
+        shell: python {0}
+        run: |
+          """Standard-library GitHub scheduler client. Never handles Site/API secrets."""
+          import json
+          import os
+          import time
+          import urllib.parse
+          import urllib.request
+          
+          BASE = 'https://azeroth-radar-petro.honestrhino21.chatgpt.site'
+          
+          def request(operation):
+              audience = BASE + '/api/refresh'
+              token_url = os.environ['ACTIONS_ID_TOKEN_REQUEST_URL'] + '&audience=' + urllib.parse.quote(audience, safe='')
+              auth = urllib.request.Request(token_url, headers={'Authorization': 'Bearer ' + os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']})
+              with urllib.request.urlopen(auth, timeout=20) as response:
+                  token = json.load(response)['value']
+              req = urllib.request.Request(audience, data=json.dumps({'operation': operation}).encode(), headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'User-Agent': 'AzerothRadar-Scheduler/1.0'})
+              with urllib.request.urlopen(req, timeout=35) as response:
+                  return json.load(response)
+          
+          request('verify')
+          result = request('blizzard')
+          readback = request('status').get('sources', {}).get('blizzard', {})
+          print(json.dumps({'blizzard': result, 'persistedHealth': readback}, indent=2))
+          if result.get('status') == 'complete' and (readback.get('lastSuccessAt') != result.get('lastSuccessAt') or readback.get('persisted') != result.get('persisted')):
+              raise RuntimeError('Blizzard database readback mismatch')
+          if result.get('status') in ('unavailable', 'busy', 'cooldown'):
+              print('::warning::Blizzard coverage incomplete: ' + str(result.get('message', result.get('status'))))
+          if result.get('status') in ('unauthorized', 'forbidden', 'verify-required', 'invalid-operation'):
+              raise RuntimeError('Blizzard refresh authorization failed')
