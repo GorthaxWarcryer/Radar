@@ -3,26 +3,20 @@ on:
   push:
     paths: ['.github/workflows/source-access-check.yml']
 permissions:
-  contents: read
+  actions: write
+  contents: none
 jobs:
-  check:
+  dispatch:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 2
     steps:
-      - name: Check official news structure
-        shell: python
+      - name: Dispatch original refresh workflow
+        shell: python {0}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          import urllib.request,re,json
-          u='https://worldofwarcraft.blizzard.com/en-us/news'
-          r=urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'AzerothRadar/1.0 (official news reader)'}),timeout=10)
-          s=r.read(2000000).decode()
-          print('STATUS',r.status,'SIZE',len(s))
-          m=json.loads(re.search(r'<script id="model">model = (.*?);?</script>',s,re.S)[1].rstrip(';'))
-          def walk(x):
-            if isinstance(x,dict):
-              if 'published' in x and x.get('status')=='live':
-                print('ARTICLE',json.dumps({k:(v[:700] if k in ['body','content'] else v) for k,v in x.items() if k in ['id','title','url','published','summary','author','status','shortUrl','locale','body','content']}))
-              for v in x.values(): walk(v)
-            elif isinstance(x,list):
-              for v in x: walk(v)
-          walk(m)
+          import os,json,urllib.request
+          url='https://api.github.com/repos/GorthaxWarcryer/Radar/actions/workflows/azeroth-site-refresh.yml/dispatches'
+          req=urllib.request.Request(url,data=json.dumps({'ref':'main','inputs':{'max_slices':'2'}}).encode(),headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json'})
+          with urllib.request.urlopen(req,timeout=20) as r:
+            print('Dispatch status:',r.status)
