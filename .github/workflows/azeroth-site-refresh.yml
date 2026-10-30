@@ -86,7 +86,7 @@ jobs:
                       outcome = 'complete-no-eligible-samples'
               else:
                   raise RuntimeError('No persisted collection progress: inspect Site checkpoint, lease and provider status')
-              summary = {'outcome': outcome, 'event': os.environ.get('GITHUB_EVENT_NAME'), 'scanId': current_scan.get('scanId'), 'pendingBefore': previous_scan.get('pending'), 'pendingAfter': current_scan.get('pending'), 'newSnapshots': snapshots, 'observedYouTubeCalls': calls, 'latestSnapshotAt': a.get('latestSnapshotAt'), 'checkpointAt': a.get('checkpointAt'), 'sampled': current_scan.get('sampled'), 'discovered': current_scan.get('discovered')}
+              summary = {'outcome': outcome, 'event': os.environ.get('GITHUB_EVENT_NAME'), 'scanId': current_scan.get('scanId'), 'pendingBefore': previous_scan.get('pending'), 'pendingAfter': current_scan.get('pending'), 'newSnapshots': snapshots, 'observedYouTubeCalls': calls, 'cycleSnapshots': a.get('cycleSnapshots'), 'latestDiscoveryAt': current_scan.get('lastFullDiscoveryAt'), 'latestSnapshotAt': a.get('latestSnapshotAt'), 'checkpointAt': a.get('checkpointAt'), 'sampled': current_scan.get('sampled'), 'discovered': current_scan.get('discovered')}
               if outcome not in ('overnight-suppressed', 'deferred-cooldown'):
                   reddit = call('reddit')
                   summary['redditCoverage'] = reddit.get('status', 'unavailable')
