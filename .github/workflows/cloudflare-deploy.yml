@@ -90,10 +90,10 @@ jobs:
           fi
       - name: Set optional creative AI activation (disabled unless explicitly opted in)
         env:
-          CLOUDFLARE_API_TOKEN: ${ secrets.CLOUDFLARE_API_TOKEN }}
-          RADAR_OPENAI_API_KEY: ${ secrets.RADAR_OPENAI_API_KEY }}
-          RADAR_AI_IDEAS_ENABLED: ${ vars.RADAR_AI_IDEAS_ENABLED }}
-          RADAR_OPENAI_MODEL: ${ vars.RADAR_OPENAI_MODEL }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          RADAR_OPENAI_API_KEY: ${{ secrets.RADAR_OPENAI_API_KEY }}
+          RADAR_AI_IDEAS_ENABLED: ${{ vars.RADAR_AI_IDEAS_ENABLED }}
+          RADAR_OPENAI_MODEL: ${{ vars.RADAR_OPENAI_MODEL }}
         shell: bash
         run: |
           enabled=false
