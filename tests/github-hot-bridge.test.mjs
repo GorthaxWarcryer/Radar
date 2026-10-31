@@ -52,7 +52,7 @@ const ID1='abcABC123_-', ID2='QWEasd123_-', ID3='Zxy9876_asD';
 const createAPI=(views={})=>async uri=>{
   const u=new URL(uri), ids=u.searchParams.get('id').split(',');
   assert.equal(u.hostname,'www.googleapis.com');
-  assert.equal(u.searchParams.get('part'),'statistics');
+  assert.equal(u.searchParams.get('part'),'statistics,snippet');
   assert.equal(u.searchParams.get('key'),'test-secret-not-for-logs');
   return {ok:true,status:200,json:async()=>({items:ids.filter(id=>views[id]!=null)
     .map(id=>({id,statistics:{viewCount:String(views[id])}}))})};
