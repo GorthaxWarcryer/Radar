@@ -36,7 +36,7 @@ function renderVideo(v, data, position=0) {
   const isHot=state.section==='hot';
   const metric = isHot ? `${fmt(v.growth?.perHour)}<small>views / hr</small>` : `${fmt(v.views)}<small>total views</small>`;
   const growthDetails=isHot?(v.growth?.kind==='estimated-since-upload'?'Estimated average since publication':'Based on recorded YouTube view-count snapshots'):'Lifetime video views, not growth';
-  const content = `<div class="video-copy">${titleLink(v.title,v.url,'video-title')}<div class="video-channel-row"><span class="video-channel">${esc(v.channelName||'YouTube creator')}</span>${v.officialSource?'<span class="source-chip official video-official-badge">Official Source</span>':''}</div><div class="video-bottom"><span class="video-number" title="${esc(growthDetails)}">${metric}</span>${saveButton(v,'video',data)}${data.canManage?`<button class="small-action" data-hide-video="${esc(v.id)}" title="Hide this video from Radar">Hide</button>`:''}</div><div class="video-time">${age(v.publishedAt)} ${isHot&&v.growth?.kind==='estimated-since-upload'?' · Estimated since upload':isHot&&v.growth?.sampleHours?` · Measured over ${v.growth.sampleHours}h`:''}</div></div>`;
+  const content = `<div class="video-copy">${titleLink(v.title,v.url,'video-title')}<div class="video-channel-row"><span class="video-channel">${esc(v.channelName||'YouTube creator')}</span>${v.officialSource?'<span class="source-chip official video-official-badge">Official Source</span>':''}</div><div class="video-bottom"><span class="video-number" title="${esc(growthDetails)}">${metric}</span>${saveButton(v,'video',data)}${data.canManage?`<button class="small-action" data-hide-video="${esc(v.id)}" title="Hide this video from Radar">Hide</button>`:''}</div><div class="video-time">${age(v.publishedAt)} ${isHot&&v.growth?.kind==='estimated-since-upload'?' · Estimated since upload':isHot&&v.growth?.sampleHours?` · Measured over ${v.growth.sampleHours}h`:''}${Number.isFinite(v.likes)?' · '+fmt(v.likes)+' likes':''}${Number.isFinite(v.comments)?' · '+fmt(v.comments)+' comments':''}</div></div>`;
   return state.layout==='preview' ? `<article class="video-card">${thumbnail(v,position===0)}${content}</article>` : `<article class="video-item">${thumbnail(v,position===0)}${content}</article>`;
 }
 function videoBoard(title,sub,items,data) {
@@ -137,7 +137,7 @@ function ideaCard(item,i,data) {
   const score=Number.isFinite(item.opportunityScore)?item.opportunityScore:null;
   const sourceList=sources.map(s=>`<li><span class="source-kind">${esc(s.sourceType)}</span>
     ${titleLink(s.title,s.url,'idea-source-title')}
-    <small>${esc(s.channelName||'')} · ${age(s.publishedAt)}${Number.isFinite(s.views)?' · '+fmt(s.views)+' views':''}${Number.isFinite(s.growthPerHour)?' · '+fmt(s.growthPerHour)+' views/hour':''}</small></li>`).join('');
+    <small>${esc(s.channelName||'')} · ${age(s.publishedAt)}${Number.isFinite(s.views)?' · '+fmt(s.views)+' views':''}${Number.isFinite(s.growthPerHour)?' · '+fmt(s.growthPerHour)+' views/hour':''}</small>${s.description?`<p class="source-excerpt">${esc(s.description.slice(0,210))}</p>`:''}</li>`).join('');
   const angleList=angles.map((a,j)=>`<div class="idea-angle"><span class="idea-angle-number">${j+1}</span>
     <div><span class="idea-angle-type">${esc(a.type||'Creator angle')}</span><strong>${esc(a.title)}</strong><p>${esc(a.approach||'')}</p></div></div>`).join('');
   return `<article class="idea-card opportunity-card">
