@@ -27,6 +27,7 @@ jobs:
       - name: Run migration tests
         run: |
           node --check cloudflare/worker.mjs
+          node --check public/app.js
           node --test cloudflare/tests/*.test.mjs
       - name: Resolve Cloudflare account automatically from private API token
         env:
