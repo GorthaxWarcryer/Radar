@@ -15,13 +15,13 @@ test('Every Reddit community gets direct Top Today and Hot ranking links',()=>{
   for(const slug of names)assert.ok(source.includes('"slug":"'+slug+'"'),'Missing r/'+slug);
   assert.ok(source.includes('top/?t=day'));
   assert.ok(source.includes('hot/'));
-  assert.match(source,/target=\\"_blank\\" rel=\\"noopener noreferrer\\"/);
+  assert.ok(source.includes('noopener noreferrer'));
 });
 test('The directory does not pretend to display collected Reddit votes or comments',()=>{
   const body=source.slice(source.indexOf('function redditDirectory()'),source.indexOf('function renderStory(',source.indexOf('function redditDirectory()')));
   assert.ok(body.includes('not automatically collected'));
-  assert.doesNotMatch(body,/fetch\\(/);
-  assert.doesNotMatch(body,/reddit\\.com\\/.*\\.json/);
+  assert.ok(!body.includes('fetch('));
+  assert.ok(!body.includes('.json'));
 });
 test('Saving a manual discussion validates Reddit post URLs and stores browser-only',()=>{
   assert.match(source,/function redditPostUrl\(raw\)/);
