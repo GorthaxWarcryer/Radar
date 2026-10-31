@@ -1,0 +1,33 @@
+name: GitHub independent WoW YouTube discovery
+on:
+  schedule:
+    # Discover new videos three-hourly during the daytime, before hourly HOT polling.
+    - cron: '8 5,8,11,14,17,20 * * *'
+      timezone: Europe/Kyiv
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/github-youtube-discovery.yml'
+      - 'scripts/github-hot-discover.mjs'
+      - 'tests/github-hot-discover.test.mjs'
+permissions:
+  contents: write
+concurrency:
+  group: github-independent-youtube-discovery
+  cancel-in-progress: false
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify discovery quota and policy filters
+        run: node --test tests/github-hot-discover.test.mjs
+      - name: Fetch official YouTube search results and publish video IDs
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          GH_DISCOVERY_TOKEN: ${{ github.token }}
+        run: node scripts/github-hot-discover.mjs
