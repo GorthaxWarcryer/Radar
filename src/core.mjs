@@ -88,7 +88,7 @@ export function makeContentIdeas({ videos, stories }, now = Date.now()) {
     if (!normalized || dedup.has(normalized)) continue;
     dedup.add(normalized);
     const topic = String(s.title || '').replace(/\s*\|.*$/, '').slice(0, 110);
-    const hotSignal = s.growth?.perHour ? `Measured +${s.growth.perHour.toLocaleString('en-US')} views/hour` : s.sourceType === 'YouTube' ? `${(s.views || 0).toLocaleString('en-US')} total views` : `${s.score ?? '—'} Reddit score · ${s.comments ?? '—'} comments`;
+    const hotSignal = s.growth?.perHour ? `${s.growth.kind==='estimated-since-upload'?'Estimated average since upload':'Measured interval growth'}: ${s.growth.perHour.toLocaleString('en-US')} views/hour` : s.sourceType === 'YouTube' ? `${(s.views || 0).toLocaleString('en-US')} total views` : `${s.score ?? '—'} Reddit score · ${s.comments ?? '—'} comments`;
     result.push({ id: `idea:${s.id}`, title: topic, proposedTitle: `What ${topic.replace(/[!?]+$/,'')} Means for WoW Players`,
       summary: `${s.sourceType} signal: ${hotSignal}. Review the linked source before asserting mechanics or community consensus.`,
       angle: 'Test the claim, compare player outcomes, and explain the practical decision.',
@@ -96,7 +96,15 @@ export function makeContentIdeas({ videos, stories }, now = Date.now()) {
       format: s.sourceType === 'YouTube' ? 'Reaction + analysis' : 'Explainer / discussion',
       priority: result.length < 3 ? 'High' : 'Watch', sourceUrl: s.url, sourceTitle: s.title,
       sourceType: s.sourceType, publishedAt: s.publishedAt,
-      evidence: [s.id] });
+      evidence: [s.id],
+      whyNow: 'Published '+Math.max(0,Math.round((now-s.publishedAt)/3600000))+' hours ago; '+hotSignal+'. This is a discovery signal, not proof of a game mechanic.',
+      viewerPayoff: 'Explain the practical player decision, backed by the original source and your own test.',
+      recordingPlan: ['Open the original source and distinguish verified facts from reactions',
+        'Capture an in-game comparison or reproducible test where possible',
+        'Present uncertainty and cite source links in the description',
+        'End with what players should do or check next'],
+      coverage:{verifiedSources:1,sourceLinks:[s.url].filter(Boolean),
+        note:'Single originating item; independent corroboration not provided'} });
     if (result.length >= 12) break;
   }
   return result;
