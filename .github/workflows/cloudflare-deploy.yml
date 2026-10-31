@@ -88,25 +88,6 @@ jobs:
           else
             echo 'Private administrator features remain locked until RADAR_ADMIN_TOKEN secret is configured.'
           fi
-      - name: Set optional creative AI activation (disabled unless explicitly opted in)
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          RADAR_OPENAI_API_KEY: ${{ secrets.RADAR_OPENAI_API_KEY }}
-          RADAR_AI_IDEAS_ENABLED: ${{ vars.RADAR_AI_IDEAS_ENABLED }}
-          RADAR_OPENAI_MODEL: ${{ vars.RADAR_OPENAI_MODEL }}
-        shell: bash
-        run: |
-          enabled=false
-          if [ "$RADAR_AI_IDEAS_ENABLED" = 'true' ] && [ -n "$RADAR_OPENAI_API_KEY" ]; then
-            printf '%s' "$RADAR_OPENAI_API_KEY" | npx --yes wrangler@4 secret put OPENAI_API_KEY --config wrangler.jsonc
-            enabled=true
-            echo 'Optional AI available only after authenticated user click.'
-          fi
-          printf '%s' "$enabled" | npx --yes wrangler@4 secret put AI_IDEAS_ENABLED --config wrangler.jsonc
-          if [ "$enabled" = 'true' ] && [ -n "$RADAR_OPENAI_MODEL" ]; then
-            printf '%s' "$RADAR_OPENAI_MODEL" | npx --yes wrangler@4 secret put OPENAI_MODEL --config wrangler.jsonc
-          fi
-          if [ "$enabled" = 'false' ]; then echo 'Paid AI generation disabled by default.'; fi
       - name: Verify deployed Worker D1 and public feed
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
