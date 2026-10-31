@@ -89,11 +89,12 @@ async function readRows(db,sql,params=[]) {
   return (await q.all()).results||[];
 }
 async function state(env,req,now=Date.now(),fetcher=fetch) {
+  const isAdmin=await verifyAdmin(req,env);
   const [videoRows,redditRows,officialRows,savedRows,scans,meta]=await Promise.all([
     readRows(env.DB,'SELECT payload FROM videos WHERE last_seen>=? ORDER BY last_seen DESC LIMIT 1500',[now-7*86400000]),
     readRows(env.DB,'SELECT payload FROM reddit WHERE last_seen>=? ORDER BY last_seen DESC LIMIT 400',[now-2*3600000]),
     readRows(env.DB,'SELECT payload FROM official ORDER BY last_seen DESC LIMIT 150'),
-    verifyAdmin(req,env).then(ok=>ok?readRows(env.DB,'SELECT id,kind,title,url,note,saved_at AS savedAt FROM saved ORDER BY saved_at DESC LIMIT 1000'):[]),
+    isAdmin?readRows(env.DB,'SELECT id,kind,title,url,note,saved_at AS savedAt FROM saved ORDER BY saved_at DESC LIMIT 1000'):[],
     readRows(env.DB,'SELECT at,provider,status,count,error FROM scans ORDER BY id DESC LIMIT 50'),
     readRows(env.DB,"SELECT key,value FROM meta WHERE key IN ('githubLastGeneratedAt','lastCloudflareSyncAt')")
   ]);
@@ -105,7 +106,7 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
     catch {/* D1-only fallback */}
   }
   return buildFeed({videos,reddit:parsePayload(redditRows),official:parsePayload(officialRows),
-    saved:savedRows,scans,privateSaved:savedRows.length>0&&await verifyAdmin(req,env),
+    saved:savedRows,scans,privateSaved:isAdmin,
     now,githubAt:Number(metaObj.githubLastGeneratedAt)||null});
 }
 async function adminRequired(req,env) {
@@ -173,7 +174,7 @@ async function exportAll(env) {
     official:parsePayload(official),saved};
 }
 export default {
-  async fetch(req,env) {
+  async fetch(req,env,ctx) {
     const url=new URL(req.url), path=url.pathname, now=Date.now();
     if(!path.startsWith('/api/'))return env.ASSETS?.fetch(req)||error('Asset not found',404);
     try {
@@ -183,7 +184,20 @@ export default {
         return reply({ok:true,platform:'cloudflare-workers',database:'d1',originalSiteConnected:false,
           meta:Object.fromEntries(meta.map(x=>[x.key,Number(x.value)])),time:now});
       }
-      if(req.method==='GET'&&path==='/api/feed')return reply(await state(env,req,now));
+      if(req.method==='GET'&&path==='/api/feed') {
+        // Never cache authenticated responses or private notes.
+        const anonymous=!req.headers.has('x-admin-token');
+        const cache=anonymous&&typeof caches!=='undefined'?caches.default:null;
+        const cacheKey=new Request(url.origin+'/api/feed',{method:'GET'});
+        if(cache) {
+          const hit=await cache.match(cacheKey);
+          if(hit)return hit;
+        }
+        const res=reply(await state(env,req,now),200,
+          anonymous?{'cache-control':'public, max-age=45'}:{'cache-control':'no-store'});
+        if(cache&&ctx?.waitUntil)ctx.waitUntil(cache.put(cacheKey,res.clone()));
+        return res;
+      }
       if(req.method==='GET'&&path==='/api/scan/status'){
         const denied=await adminRequired(req,env);if(denied)return denied;
         const scans=await readRows(env.DB,'SELECT at,provider,status,count,error FROM scans ORDER BY id DESC LIMIT 1');
