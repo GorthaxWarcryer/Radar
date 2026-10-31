@@ -33,21 +33,21 @@ function thumbnail(v) {
 function renderVideo(v, data) {
   const isHot=state.section==='hot';
   const metric = isHot ? `${fmt(v.growth?.perHour)}<small>views / hr</small>` : `${fmt(v.views)}<small>total views</small>`;
-  const content = `<div class="video-copy">${titleLink(v.title,v.url,'video-title')}<div class="video-channel">${esc(v.channelName||'YouTube creator')}</div><div class="video-bottom"><span class="video-number">${metric}</span>${saveButton(v,'video',data)}</div><div class="video-time">${age(v.publishedAt)} ${isHot&&v.growth?.sampleHours?` · ${v.growth.sampleHours}h sampled`:''}</div></div>`;
+  const content = `<div class="video-copy">${titleLink(v.title,v.url,'video-title')}<div class="video-channel">${esc(v.channelName||'YouTube creator')}</div><div class="video-bottom"><span class="video-number">${metric}</span>${saveButton(v,'video',data)}</div><div class="video-time">${age(v.publishedAt)} ${isHot&&v.growth?.kind==='estimated-since-upload'?' · Estimated since upload':isHot&&v.growth?.sampleHours?` · Measured over ${v.growth.sampleHours}h`:''}</div></div>`;
   return state.layout==='preview' ? `<article class="video-card">${thumbnail(v)}${content}</article>` : `<article class="video-item">${thumbnail(v)}${content}</article>`;
 }
 function videoBoard(title,sub,items,data) {
-  return `<section class="panel"><div class="board-title"><h2>${esc(title)}<small>${esc(sub)}</small></h2><span class="count">${items.length}</span></div>${items.length?`<div class="${state.layout==='preview'?'card-grid':'video-list'}" style="${state.layout==='preview'?'padding:12px':''}">${items.map(v=>renderVideo(v,data)).join('')}</div>`:empty(state.section==='hot'?'Growth samples not ready':'No qualifying videos yet',state.section==='hot'?'HOT requires at least two real view snapshots; a lifetime total cannot prove growth.':'Connect YouTube sources or import a verified feed. Only videos published within 48 hours with at least 5,000 views qualify.')}</section>`;
+  return `<section class="panel"><div class="board-title"><h2>${esc(title)}<small>${esc(sub)}</small></h2><span class="count">${items.length}</span></div>${items.length?`<div class="${state.layout==='preview'?'card-grid':'video-list'}" style="${state.layout==='preview'?'padding:12px':''}">${items.map(v=>renderVideo(v,data)).join('')}</div>`:empty(state.section==='hot'?'No HOT videos yet':'No qualifying videos yet',state.section==='hot'?'New uploads enter HOT using average views/hour since publication; later real observations update that rate.':'Connect YouTube sources or import a verified feed. Qualifying videos need at least 5,000 views.')}</section>`;
 }
 function videoSection(data,mode) {
   const isHot=mode==='hot'; const pool=data[mode]?.[state.kind]||[];
   const fresh=pool.filter(v=>Date.now()-Number(v.publishedAt)<24*3600000);
   const tracked=pool.filter(v=>Date.now()-Number(v.publishedAt)>=24*3600000);
-  const desc=isHot?'Actual measured views gained per hour from repeated samples. Total lifetime views do not determine HOT ranking.':'Most-watched qualifying videos ranked by lifetime TOTAL views, not views gained. Minimum 5,000 views; archived livestreams are excluded.';
+  const desc=isHot?'New videos start with estimated views per hour since upload; later scans replace estimates with measured growth.':'Most-watched qualifying videos ranked by lifetime TOTAL views, not views gained. Minimum 5,000 views; archived livestreams are excluded.';
   return sectionTitle('YouTube Intelligence',isHot?'<span>HOT</span> RIGHT NOW':'WHAT’S <span>POPULAR</span>',desc,
     '<i class="status-dot"></i> LAST 48 HOURS')+
     statCards(data)+`<div class="toolbar"><div class="toolbar-left">${btnSegment([{id:'long',text:'Long Form'},{id:'shorts',text:'Shorts'}],state.kind,'kind')}<span class="toolbar-note">${pool.length} qualifying videos</span></div><div class="toolbar-right">${btnSegment([{id:'list',text:'☷ List'},{id:'preview',text:'▦ Preview'}],state.layout,'layout')}</div></div>`+
-    (isHot?'<div class="info-note"><strong>Measured momentum only.</strong> Rankings appear after multiple real view samples. New uploads and previously tracked videos are displayed separately.</div>':'')+
+    (isHot?'<div class="info-note"><strong>HOT growth:</strong> Initial average since publication is labeled estimated; later snapshots produce measured views per hour. Last observation time matters.</div>':'')+
     `<div class="section-split">${videoBoard('New uploads','Published within the last 24 hours',fresh,data)}${videoBoard('Tracked · 48 Hours','Published 24–48 hours ago',tracked,data)}</div>`;
 }
 function renderStory(s,data) {
