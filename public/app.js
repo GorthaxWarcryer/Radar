@@ -53,7 +53,7 @@ function videoSection(data,mode) {
 function renderStory(s,data) {
   const official = s.source==='Official';
   const metrics=official?'':`<span>▲ ${s.score === null || s.score === undefined ? '—' : fmt(s.score)}</span><span>◷ ${s.comments === null || s.comments === undefined ? '—' : fmt(s.comments)} comments</span>`;
-  return `<article class="story-card"><div class="story-top"><span class="source-chip ${official?'official':''}">${official?'Official Source':esc('r/'+(s.subreddit||'wow'))}</span><span class="story-time">${age(s.publishedAt)}</span></div>${titleLink(s.title,s.url,'story-title')}<p class="story-summary">${esc(s.summary || (official?'Official update or blue post':'Reddit discussion currently qualifying for Top/Today or Hot.'))}</p><div class="story-bottom">${metrics}${official?`<span>${esc(s.sourceName||'Blizzard / official update')}</span>`:''}${saveButton(s,'story',data)}</div></article>`;
+  return `<article class="story-card"><div class="story-top"><span class="source-chip ${official?'official':''}">${official?'Official Source':esc('r/'+(s.subreddit||'wow'))}</span><span class="story-time">${age(s.publishedAt)}</span></div>${titleLink(s.title,s.url,'story-title')}<p class="story-summary">${esc(s.summary || (official?'Official update or blue post':'Reddit discussion currently qualifying for Top/Today or Hot.'))}</p><div class="story-bottom">${metrics}${official?`<span>${esc(s.sourceId==='blue'?((s.author?s.author+' · ':'')+'Blizzard forum · via independent tracker'):(s.sourceName||'Blizzard / official update'))}</span>`:''}${saveButton(s,'story',data)}</div></article>`;
 }
 function storiesSection(data) {
   let stories=(data.stories||[]).filter(s=>state.storyType==='all'||(state.storyType==='official'?s.source==='Official':s.source!=='Official'));
@@ -62,7 +62,7 @@ function storiesSection(data) {
   else stories.sort((a,b)=>b.publishedAt-a.publishedAt);
   return sectionTitle('Community & Official', 'LATEST <span>STORIES</span>', 'Official blue posts and current Reddit Top/Today or Hot discoveries. Fresh sources only, up to 48 hours old.') +
     `<div class="toolbar"><div class="toolbar-left">${btnSegment([{id:'all',text:'All'},{id:'reddit',text:'Reddit'},{id:'official',text:'Official'}],state.storyType,'story-type')}</div><div class="toolbar-right">${btnSegment([{id:'new',text:'Newest'},{id:'score',text:'Top score'},{id:'comments',text:'Most comments'}],state.storySort,'story-sort')}</div></div>`+
-    (stories.length?`<div class="stories-grid">${stories.map(s=>renderStory(s,data)).join('')}</div>`:empty('No fresh stories', 'Reddit requires approved API access and successful Top/Today or Hot listing checks. Official posts can be imported from a configured source.'));
+    (stories.length?`<div class="stories-grid">${stories.map(s=>renderStory(s,data)).join('')}</div>`:empty('No fresh stories', 'Reddit requires approved API access and successful Top/Today or Hot listing checks. Blizzard news and blue posts are collected hourly when their sources are reachable. Check Channels or Scan Activity for any source errors.'));
 }
 function ideaCard(item,i,data) {
   const open=state.expanded.has(item.id);
@@ -92,7 +92,7 @@ function channelsSection(data) {
   return sectionTitle('YouTube & Blizzard sources','TRACKED <span>CHANNELS</span>','Monitor creators and official World of Warcraft announcements. Official Blizzard posts automatically feed into Stories.')+
     youtube+
     `<section class="panel" style="margin-top:20px"><div class="board-title"><h2>Official World of Warcraft sources</h2><span class="status-pill ${status.official==='error'?'error':status.official==='pending'?'off':''}">${esc(status.official||'Pending')}</span></div>${official.length?officialRows:empty('Official sources not configured','Blizzard feeds are available on Cloudflare deployments after the next official news sync.')}</section>`+
-    `<div class="info-note" style="margin-top:20px"><strong>Official posts:</strong> Azeroth Radar checks Blizzard's World of Warcraft and WoW: Forever news feeds every hour, including overnight. Links open the original Blizzard article. X/Twitter posts and forum replies are not included until separately integrated.</div>`;
+    `<div class="info-note" style="margin-top:20px"><strong>Official posts:</strong> Azeroth Radar checks Blizzard news every hour and discovers WoW Forever blue posts using an independent RSS tracker. Forum posts link directly to Blizzard. Both run overnight; X/Twitter posts are not yet connected.</div>`;
 }
 function activitySection(data) {
   const scans=data.scans||[], sources=data.sources||{};
