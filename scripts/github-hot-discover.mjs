@@ -7,7 +7,7 @@ const QUERIES=['WoW Forever','World of Warcraft Forever','WoW Classic'];
 const ID=/^[A-Za-z0-9_-]{11}$/;
 const TOPICAL=/\b(wow|world of warcraft|warcraft|azeroth|classic wow|blizzard)\b/i;
 const NON_ENGLISH_SCRIPT=/[¿¡\u00c0-\u024f\u0370-\u052f\u0590-\u0dff\u3040-\u30ff\u3400-\u9fff]/;
-const PERIOD=36*3600000;
+const PERIOD=50*3600000;
 const MAX_SAVED=500;
 
 export function durationSeconds(iso) {
@@ -15,12 +15,14 @@ export function durationSeconds(iso) {
   if(!m)return null;
   return Number(m[1]||0)*3600+Number(m[2]||0)*60+Number(m[3]||0);
 }
-export function normalizeDiscovery(entry,observedAt) {
+export function normalizeDiscovery(entry,observedAt,followedIds=new Set()) {
   if(!ID.test(entry?.id||''))return null;
   const s=entry.snippet||{},stats=entry.statistics||{};
   const publishedAt=Date.parse(s.publishedAt||'');
   const views=Number(stats.viewCount);
   const title=String(s.title||''),channelTitle=String(s.channelTitle||'');
+  const channelId=String(s.channelId||'');
+  const relevant=TOPICAL.test(title)||TOPICAL.test(String(s.description||'').slice(0,700))||followedIds.has(channelId);
   const lang=s.defaultAudioLanguage||s.defaultLanguage||'';
   const duration=durationSeconds(entry.contentDetails?.duration);
   const live=!!entry.liveStreamingDetails||(s.liveBroadcastContent&&s.liveBroadcastContent!=='none');
@@ -30,7 +32,7 @@ export function normalizeDiscovery(entry,observedAt) {
     !Number.isSafeInteger(views)||views<0||live)return null;
   const short=duration!==null&&duration<=180&&(duration<=90||/#shorts?\b/i.test(title));
   return {
-    id:entry.id,title:title.slice(0,300),channelTitle:channelTitle.slice(0,140),
+    id:entry.id,title:title.slice(0,300),channelTitle:channelTitle.slice(0,140),channelId,
     channelId:String(s.channelId||'').slice(0,64),
     publishedAt,views,hotMeasuredAt:observedAt,hotLatestViews:views,
     lastSeen:observedAt,observedAt,videoDurationSeconds:duration,
@@ -51,11 +53,11 @@ async function youtube(endpoint,params,key,fetcher) {
   if(!Array.isArray(data.items))throw Error('Malformed YouTube '+endpoint+' response');
   return data;
 }
-export async function discover(key,{fetcher=fetch,now=Date.now(),queries=QUERIES}={}) {
+export async function discover(key,{fetcher=fetch,now=Date.now(),queries=QUERIES,channels=[],blockedChannels=[],hiddenVideos=[]}={}) {
   if(!key)throw Error('YOUTUBE_API_KEY GitHub secret missing');
   const ids=new Set();let searches=0,detailCalls=0,officialPlaylistCalls=0;
   const after=new Date(now-PERIOD).toISOString();
-  for(const q of queries.slice(0,3)) {
+  for(const q of queries.slice(0,6)) {
     const data=await youtube('search',{part:'snippet',q,type:'video',order:'date',
       publishedAfter:after,relevanceLanguage:'en',maxResults:50},key,fetcher);
     searches++;
@@ -77,8 +79,8 @@ export async function discover(key,{fetcher=fetch,now=Date.now(),queries=QUERIES
       id:list.slice(i,i+50).join(',')},key,fetcher);
     detailCalls++;
     for(const x of d.items) {
-      const v=normalizeDiscovery(x,now);
-      if(v)videos.push(v);
+      const v=normalizeDiscovery(x,now,followed);
+      if(v&&!blockedChannels.includes(v.channelId)&&!hiddenVideos.includes(v.id))videos.push(v);
     }
   }
   return {videos,stats:{searches,officialPlaylistCalls,detailCalls,
@@ -112,12 +114,29 @@ async function file(token,repo,method,data,sha) {
   const x=await r.json();
   return {sha:x.sha,data:JSON.parse(Buffer.from(x.content.replace(/\s/g,''),'base64').toString())};
 }
+async function readPublicConfig(fetcher=fetch){
+  const fallback={queries:QUERIES,channels:[],blockedChannels:[],hiddenVideos:[]};
+  try {
+    const r=await fetcher('https://azeroth-radar.azeroth-radar-gorthax.workers.dev/api/discovery/config',
+      {headers:{accept:'application/json'},signal:AbortSignal.timeout(10000)});
+    if(!r.ok)return fallback;
+    const d=await r.json();
+    return {
+      queries:Array.isArray(d.queries)&&d.queries.length?
+        d.queries.filter(x=>typeof x==='string'&&x.length>=3&&x.length<=80).slice(0,6):QUERIES,
+      channels:Array.isArray(d.channels)?d.channels.slice(0,20):[],
+      blockedChannels:Array.isArray(d.blockedChannels)?d.blockedChannels.slice(0,200):[],
+      hiddenVideos:Array.isArray(d.hiddenVideos)?d.hiddenVideos.slice(0,500):[]
+    };
+  }catch{return fallback;}
+}
 async function main(){
   const key=process.env.YOUTUBE_API_KEY;
   const gh=process.env.GH_DISCOVERY_TOKEN,repo=process.env.GITHUB_REPOSITORY;
   if(!gh||!repo)throw Error('GitHub write identity missing');
   const prior=await file(gh,repo,'GET');
-  const result=await discover(key);
+  const settings=await readPublicConfig();
+  const result=await discover(key,{...settings});
   const joined=merge(prior.data,result.videos,result.now);
   await file(gh,repo,'PUT',joined,prior.sha);
   const status={outcome:'complete',source:'youtube-independent',...result.stats,
