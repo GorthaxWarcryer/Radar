@@ -2,10 +2,8 @@
 const root = document.getElementById('main-view');
 const $ = s => document.querySelector(s);
 const preferences = { theme: 'azeroth-radar-theme' };
-let storedTheme = 'default';
-try { storedTheme = localStorage.getItem(preferences.theme) || 'default'; } catch {}
 const state = { section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new',
-  theme: storedTheme === 'brd' ? 'brd' : 'default', demo: location.protocol === 'file:' || document.documentElement.dataset.preview === 'true', feed: null, expanded: new Set(), adminToken: '' };
+  theme: 'default', demo: location.protocol === 'file:' || document.documentElement.dataset.preview === 'true', feed: null, expanded: new Set(), adminToken: '' };
 function esc(value = '') { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
 function safeURL(x) { try { const url = new URL(String(x || '')); return url.protocol === 'https:' ? url.href : ''; } catch { return ''; } }
 function fmt(n) { return Number.isFinite(Number(n)) ? Number(n).toLocaleString('en-US') : '—'; }
@@ -179,8 +177,6 @@ document.addEventListener('click',async e=>{
   const button=e.target.closest('button'); if(!button) return;
   try {
     if(button.dataset.section) return moveSection(button.dataset.section);
-    if(button.id==='theme-default') {state.theme='default';return render();}
-    if(button.id==='theme-brd') {state.theme='brd';return render();}
     if(button.dataset.kind) {state.kind=button.dataset.kind;return render();}
     if(button.dataset.layout) {state.layout=button.dataset.layout;return render();}
     if(button.dataset.storyType) {state.storyType=button.dataset.storyType;return render();}
