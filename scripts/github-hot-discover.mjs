@@ -5,7 +5,7 @@ const DEST='docs/hot/discovered.json';
 const QUERIES=['WoW Forever','World of Warcraft Forever','WoW Classic'];
 const ID=/^[A-Za-z0-9_-]{11}$/;
 const TOPICAL=/\b(wow|world of warcraft|warcraft|azeroth|classic wow|blizzard)\b/i;
-const CYRILLIC=/[\u0400-\u052f]/;
+const NON_ENGLISH_SCRIPT=/[¿¡\u00c0-\u024f\u0370-\u052f\u0590-\u0dff\u3040-\u30ff\u3400-\u9fff]/;
 const PERIOD=36*3600000;
 const MAX_SAVED=500;
 
@@ -23,7 +23,7 @@ export function normalizeDiscovery(entry,observedAt) {
   const lang=s.defaultAudioLanguage||s.defaultLanguage||'';
   const duration=durationSeconds(entry.contentDetails?.duration);
   const live=!!entry.liveStreamingDetails||(s.liveBroadcastContent&&s.liveBroadcastContent!=='none');
-  if(!title||!TOPICAL.test(title)||CYRILLIC.test(title+' '+channelTitle)||
+  if(!title||!TOPICAL.test(title)||NON_ENGLISH_SCRIPT.test(title)||
     (lang&&!/^en(?:-|$)/i.test(lang))||!Number.isFinite(publishedAt)||
     publishedAt>observedAt||observedAt-publishedAt>PERIOD||
     !Number.isSafeInteger(views)||views<0||live)return null;
