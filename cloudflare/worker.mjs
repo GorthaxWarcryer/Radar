@@ -369,8 +369,9 @@ export default {
     catch(e) {console.error('Blue post sync failure:',fail(e));}
     const hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Kyiv',hour:'2-digit',hourCycle:'h23'}).format(new Date(event.scheduledTime)));
     if(hour<5||hour>20)return;
+    let sourceSyncError=null;
     try{const result=await synchronize(env,fetch,now);console.log('Cloudflare scheduled sync:',JSON.stringify(result));}
-    catch(e){console.error('Cloudflare scheduled sync failure:',fail(e));}
+    catch(e){sourceSyncError=e;console.error('Cloudflare scheduled sync failure:',fail(e));}
     // Fully automatic AI runs ONLY on the cron, not for visitors or refreshes.
     // Read the current evidence-based opportunities, then cache at most two
     // creative briefs per scan and six requests in total per UTC day.
@@ -378,5 +379,6 @@ export default {
       const feed=await state(env,new Request('https://radar.internal/api/feed'),now);
       console.log('Scheduled free AI:',JSON.stringify(await automaticallyGenerate(env,feed.contentCreation.items,now)));
     } catch(e) {console.error('Scheduled free AI unavailable:',fail(e));}
+    if(sourceSyncError)throw sourceSyncError; // Keep scanner failure visible to monitoring.
   }
 };
