@@ -32,6 +32,26 @@ jobs:
                     parsed=json.loads(data)
                     print('top-level-keys',sorted(parsed.keys()) if isinstance(parsed,dict) else type(parsed).__name__)
                     if isinstance(parsed,dict):
+                      for k in ['rankings','hot','popular','storyColumns']:
+                        section=parsed.get(k)
+                        if isinstance(section,dict):
+                          counts={}
+                          for kind,collection in section.items():
+                            if isinstance(collection,list): counts[kind]=len(collection)
+                            elif isinstance(collection,dict): counts[kind]={name:len(v) for name,v in collection.items() if isinstance(v,list)}
+                          print('  '+k+' counts',counts)
+                      for k in ['contentCreation','bluePosts','formatCounts']:
+                        section=parsed.get(k)
+                        if isinstance(section,dict):
+                          print('  '+k+' list-counts',{name:len(v) for name,v in section.items() if isinstance(v,list)})
+                      if isinstance(parsed.get('config'),dict):
+                        c=parsed['config']
+                        print('  discovery-settings:',{k:len(v) if isinstance(v,list) else v for k,v in c.items() if k in ['queries','englishOnly','excludeRussian']})
+                      if isinstance(parsed.get('health'),dict):
+                        h=parsed['health']; print('  health-flags',{k:h.get(k) for k in ['automationActive','sleeping','stale','discoveryStale','recoveryStalled','trackedVideos'] if k in h})
+                      for k in ['canManage','connected']:
+                        if k in parsed:print('  public-flag '+k,parsed[k])
+                    if isinstance(parsed,dict):
                       for key in ['videos','stories','channels','scans','savedVideos','saved','contentCreation','popular','hot','reddit','bluePosts','storyColumns','health','config','sources','summary']:
                         item=parsed.get(key)
                         if isinstance(item,list): print('  '+key,'list-count',len(item))
