@@ -170,6 +170,7 @@ function ideaCard(item,i,data) {
       <strong>Research outline</strong><ol>${(item.outline||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
       <strong>Recording plan</strong><ol>${(item.recordingPlan||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
       <p class="opportunity-disclaimer">${esc(item.coverage?.note||'Verify every claim from primary sources before publication.')}</p></div>`:''}
+    ${window.RadarIntelligence.extra(item,state.ideaView==='for-you')}
   </article>`;
 }
 function ideasSection(data) {
@@ -179,11 +180,12 @@ function ideasSection(data) {
     if(!state.showDismissed&&saved?.status==='Dismissed')return false;
     if(state.ideaView==='saved'&&!saved)return false;
     if(state.ideaView==='high'&&x.priority!=='High')return false;
+    if(state.ideaView==='for-you'&&window.RadarIntelligence.votes()[x.id]==='not-relevant')return false;
     return true;
-  });
+  }).sort((a,b)=>state.ideaView==='for-you'?window.RadarIntelligence.score(b)-window.RadarIntelligence.score(a):0);
   return sectionTitle('Signals to original stories','CONTENT <span>OPPORTUNITIES</span>',
     'Connected sources, transparent momentum signals and distinct creative angles—not recycled video titles.')+
-    `<div class="opportunity-toolbar"><div class="toolbar-left">${btnSegment([{id:'all',text:'All topics'},{id:'high',text:'High opportunity'},{id:'saved',text:'Saved'}],state.ideaView,'idea-view')}
+    `<div class="opportunity-toolbar"><div class="toolbar-left">${btnSegment([{id:'all',text:'All topics'},{id:'for-you',text:'For You'},{id:'high',text:'High opportunity'},{id:'saved',text:'Saved'}],state.ideaView,'idea-view')}
     <span class="toolbar-note">${visible.length} of ${all.length} topics</span></div>
     <button class="small-action" data-idea-dismissed="1">${state.showDismissed?'Hide dismissed':'Show dismissed'}</button></div>`+
     `<div class="info-note"><strong>Automatic free-tier AI:</strong> Topic scoring and clustering remain code-based. Cloudflare Workers AI develops new creative titles and thumbnail ideas after scheduled scans and caches the results. ${data.contentCreation?.autoAIEnabled?`Enabled · ${fmt(data.contentCreation.aiUsedToday||0)} of ${fmt(data.contentCreation.aiDailyCap||6)} daily generation slots used`:'AI unavailable; code-generated angles remain visible'}. AI suggests angles from source headlines, not independently verified gameplay facts. No ChatGPT or paid OpenAI API is used.</div>`+
@@ -226,7 +228,8 @@ function settingsSection(data) {
   const cfg=data.discoverySettings||{},diag=data.diagnostics||{},queries=cfg.queries||['WoW Forever','World of Warcraft Forever','WoW Classic'];
   const auth=data.canManage===true;
   return sectionTitle('Workspace controls','RADAR <span>SETTINGS</span>','Free-tier source controls. YouTube API credentials stay in GitHub Secrets, never in this browser.')+
-    `<section class="panel" style="padding:23px;margin-bottom:18px"><h2>Connection status</h2><p class="story-summary">GitHub YouTube collection: ${esc(data.sources?.youtube||'unknown')} · Blizzard: ${esc(data.sources?.official||'pending')} · Reddit: Browse only (no API)</p><p class="story-summary">Last GitHub measurement: ${diag.lastGithubAt?age(diag.lastGithubAt):'Not yet available'} · Last Cloudflare sync: ${diag.lastSiteSyncAt?age(diag.lastSiteSyncAt):'Not yet available'}</p><div class="info-note">All source collectors use published APIs and free infrastructure. AI briefs and paid transcription are disabled. Only the original theme is active.</div></section>`+
+    window.RadarIntelligence.settings()+
+    `<section class="panel" style="padding:23px;margin-bottom:18px"><h2>Connection status</h2><p class="story-summary">GitHub YouTube collection: ${esc(data.sources?.youtube||'unknown')} · Blizzard: ${esc(data.sources?.official||'pending')} · Reddit: Browse only (no API)</p><p class="story-summary">Last GitHub measurement: ${diag.lastGithubAt?age(diag.lastGithubAt):'Not yet available'} · Last Cloudflare sync: ${diag.lastSiteSyncAt?age(diag.lastSiteSyncAt):'Not yet available'}</p><div class="info-note">All source collectors use published APIs and free infrastructure. Cloudflare AI research runs only after scheduled scans, within six total free-tier model calls per day. Paid OpenAI API and transcription are not used.</div></section>`+
     `<section class="panel" style="padding:23px;margin-bottom:18px"><h2>Discovery terms</h2><p class="story-summary">GitHub reads these search terms at its next scheduled discovery scan. One term per line, up to six.</p><textarea id="discovery-queries" rows="5" style="width:100%;padding:12px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px">${esc(queries.join('\n'))}</textarea><p>${auth?'<button class="subtle-btn" data-save-queries="1">Save search terms</button>':'Unlock administrator access to change settings.'}</p></section>`+
     `<section class="panel" style="padding:23px;margin-bottom:18px"><h2>Track a YouTube channel</h2><p class="story-summary">Add the channel's public UC ID (not the @handle). GitHub can monitor its uploads without an additional paid service.</p><input id="tracked-channel-id" placeholder="UCxxxxxxxxxxxxxxxxxxxxxx" style="width:100%;max-width:340px;padding:10px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px"><input id="tracked-channel-title" placeholder="Channel name" style="width:100%;max-width:230px;padding:10px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px">${auth?'<button class="subtle-btn" data-add-channel="1">Track channel</button>':'<p>Administrator access required.</p>'}<div>${(data.channels||[]).map(c=>`<p><b>${esc(c.title||c.id)}</b> <small>${esc(c.id)}</small> ${auth?`<button class="small-action" data-remove-channel="${esc(c.id)}">Remove</button>`:''}</p>`).join('')}</div></section>`+
     `<section class="panel" style="padding:23px"><h2>Account and Reddit</h2><p class="story-summary">${auth?'Administrator access is active for this browser tab.':'Private notes and settings are locked. Set ADMIN_TOKEN as a Cloudflare Worker secret and unlock using your administrator token.'}</p>${auth?'':'<button class="subtle-btn" data-unlock="1">Unlock administrator</button>'}<div class="info-note">Reddit browsing is available without API credentials. Top Today and Hot open on Reddit itself. Saved discussion links stay in this browser; no scraping, background collection or AI charges.</div></section>`;
@@ -265,7 +268,7 @@ function demoData() {
 function updateTheme() { document.body.dataset.theme='default'; }
 function updateNav() {
   document.querySelectorAll('[data-section]').forEach(el=>{ const selected=el.dataset.section===state.section; el.classList.toggle('active',selected); if(el.tagName==='BUTTON') el.setAttribute('aria-current',selected?'page':'false'); });
-  const names={popular:'Popular',hot:'HOT',stories:'Stories',ideas:'Content Creation',watchlist:'Watchlist',channels:'Channels',activity:'Scan Activity',settings:'Settings'};
+  const names={popular:'Popular',hot:'HOT',emerging:'Emerging',stories:'Stories',ideas:'Content Creation',brief:'Daily Brief',watchlist:'Watchlist',channels:'Channels',activity:'Scan Activity',settings:'Settings'};
   $('#crumb-section').textContent=names[state.section]; document.title=`${names[state.section]} · Azeroth Radar`;
 }
 function render() {
@@ -274,7 +277,7 @@ function render() {
   $('#demo-warning').classList.toggle('hidden',!state.demo);
   $('#demo-toggle').textContent=state.demo?'Live feed':'Demo';
   if(!data) {root.innerHTML='<div class="loading-shell" role="status" aria-label="Loading source data"><div class="loading-bar"></div><div class="loading-row"></div><div class="loading-row"></div><p>Loading the latest collected signals…</p></div>';return;}
-  const renderers={popular:()=>videoSection(data,'popular'),hot:()=>videoSection(data,'hot'),stories:()=>storiesSection(data),ideas:()=>ideasSection(data),watchlist:()=>watchlistSection(data),channels:()=>channelsSection(data),activity:()=>activitySection(data),settings:()=>settingsSection(data)};
+  const renderers={popular:()=>videoSection(data,'popular'),hot:()=>videoSection(data,'hot'),emerging:()=>sectionTitle('Signals before 5,000 views','EMERGING <span>VIDEOS</span>','Experimental early momentum for qualifying recent uploads.')+window.RadarIntelligence.emerging(data,state.kind),brief:()=>sectionTitle('Your creator news desk','DAILY <span>EDITORIAL BRIEF</span>','Source-linked research priorities, changes and emerging opportunities.')+window.RadarIntelligence.digest(data),stories:()=>storiesSection(data),ideas:()=>ideasSection(data),watchlist:()=>watchlistSection(data),channels:()=>channelsSection(data),activity:()=>activitySection(data),settings:()=>settingsSection(data)};
   root.innerHTML=renderers[state.section]();
 }
 let feedRequestInProgress=false;
@@ -344,6 +347,10 @@ document.addEventListener('click',async e=>{
     if(button.dataset.clearSearch){state.searchTerm='';return render();}
     if(button.dataset.researchFilter){state.researchStatus=button.dataset.researchFilter;return render();}
     if(button.dataset.ideaView){state.ideaView=button.dataset.ideaView;return render();}
+    if(button.dataset.ideaFeedback){const ok=window.RadarIntelligence.storeVote(button.dataset.ideaFeedback,button.dataset.value);
+      toast(ok?'Preference saved on this device':'Could not save preference');return render();}
+    if(button.dataset.saveProfile){const ok=window.RadarIntelligence.storeProfile();
+      toast(ok?'Creator interests saved on this device':'Could not save creator interests');return render();}
     if(button.dataset.ideaDismissed){state.showDismissed=!state.showDismissed;return render();}
     if(button.dataset.ideaSave){const id=button.dataset.ideaSave,idea=state.feed?.contentCreation?.items?.find(x=>x.id===id);
       if(!idea)return;await adminFetch('/api/save',{method:'POST',body:JSON.stringify({id,kind:'opportunity',title:idea.title,url:idea.sourceUrl})});toast('Opportunity saved');return fetchFeed({manual:true});}
@@ -399,8 +406,8 @@ document.addEventListener('submit',function onRedditSubmit(e) {
   toast("Reddit discussion saved on this device.");
   render();
 });
-window.addEventListener('hashchange',()=>{const page=location.hash.replace('#','');if(['popular','hot','stories','ideas','watchlist','channels','activity','settings'].includes(page)&&state.section!==page){state.section=page;render();}});
-if(location.hash) {const page=location.hash.slice(1);if(['popular','hot','stories','ideas','watchlist','channels','activity','settings'].includes(page))state.section=page;}
+window.addEventListener('hashchange',()=>{const page=location.hash.replace('#','');if(['popular','hot','emerging','stories','ideas','brief','watchlist','channels','activity','settings'].includes(page)&&state.section!==page){state.section=page;render();}});
+if(location.hash) {const page=location.hash.slice(1);if(['popular','hot','emerging','stories','ideas','brief','watchlist','channels','activity','settings'].includes(page))state.section=page;}
 document.addEventListener('keydown',event=>{
   if(event.target?.id==='video-filter'){
     if(event.key==='Enter'){
