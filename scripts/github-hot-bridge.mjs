@@ -16,7 +16,7 @@ export function selectCandidates(feed, now = Date.now(), maxVideos = MAX_VIDEOS)
   if (!Number.isInteger(maxVideos) || maxVideos < 1 || maxVideos > MAX_VIDEOS)
     throw Error('Invalid HOT candidate cap (1-500)');
   return (Array.isArray(feed?.videos) ? feed.videos : [])
-    .filter(v => v && VIDEO_ID.test(v.id || '') && Number.isFinite(v.publishedAt) &&
+    .filter(v => v && typeof v.id==='string' && v.id.length>0 && Number.isFinite(v.publishedAt) &&
       v.publishedAt <= now && now - v.publishedAt < DAY_MS &&
       !v.excluded && !v.blocked && !v.isVod && !v.isLivestream)
     .sort((a,b) => {
