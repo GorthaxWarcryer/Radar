@@ -38,7 +38,8 @@ jobs:
           BASE = 'https://azeroth-radar-petro.gorthax.chatgpt.site'
           
           def request(operation):
-              audience = BASE + '/api/refresh'
+              # Site verifier may still pin the original OIDC audience after host rename.
+              audience = 'https://azeroth-radar-petro.honestrhino21.chatgpt.site/api/refresh'
               token_url = os.environ['ACTIONS_ID_TOKEN_REQUEST_URL'] + '&audience=' + urllib.parse.quote(audience, safe='')
               auth = urllib.request.Request(token_url, headers={'Authorization': 'Bearer ' + os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']})
               with urllib.request.urlopen(auth, timeout=20) as response:
@@ -122,7 +123,8 @@ jobs:
           BASE = 'https://azeroth-radar-petro.gorthax.chatgpt.site'
           
           def request(operation):
-              audience = BASE + '/api/refresh'
+              # Site verifier may still pin the original OIDC audience after host rename.
+              audience = 'https://azeroth-radar-petro.honestrhino21.chatgpt.site/api/refresh'
               token_url = os.environ['ACTIONS_ID_TOKEN_REQUEST_URL'] + '&audience=' + urllib.parse.quote(audience, safe='')
               auth = urllib.request.Request(token_url, headers={'Authorization': 'Bearer ' + os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']})
               with urllib.request.urlopen(auth, timeout=20) as response:
