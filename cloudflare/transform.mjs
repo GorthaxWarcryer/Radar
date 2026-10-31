@@ -1,4 +1,5 @@
 import { makeContentIdeas } from '../src/core.mjs';
+import { earlySignals, editorialDigest, opportunityGaps } from '../src/intelligence.mjs';
 import { hotVelocity, HOUR_MS } from '../site-integration/hot-hourly.mjs';
 import { isOfficialYouTubeChannel } from '../src/official-youtube.mjs';
 
@@ -34,6 +35,9 @@ export function fromGithubVideo(v,now=Date.now()) {
   }:null;
   return {
     id:v.id,kind,title:String(v.title||'Untitled').slice(0,400),
+    description:String(v.description||'').slice(0,750),
+    tags:Array.isArray(v.tags)?v.tags.slice(0,12).map(x=>String(x).slice(0,40)):[],
+    likes:Number.isFinite(v.likes)?v.likes:null,comments:Number.isFinite(v.comments)?v.comments:null,
     channelId:String(v.channelId||''),
     officialSource:isOfficialYouTubeChannel(v.channelId),
     channelName:String(v.channel||v.channelName||'').slice(0,160),
@@ -69,11 +73,13 @@ export function buildFeed({videos=[],reddit=[],official=[],officialSources=[],sa
     shorts:hotSort(eligible.filter(v=>v.kind==='shorts'&&isHot(v)))};
   const stories=[...reddit,...official].filter(s=>isRecent(s.publishedAt,48*HOUR_MS,now))
     .sort((a,b)=>b.publishedAt-a.publishedAt);
-  const ideas=makeContentIdeas({videos:eligible,stories},now);
+  const ideas=makeContentIdeas({videos:eligible,stories},now).map(x=>({...x,contentGaps:opportunityGaps(x)}));
+  const emerging=earlySignals(videos,now);
   const lastScan=githubAt||scans[0]?.at||null;
   return {generatedAt:now,isDemo:false,summary:{
     eligibleVideos:eligible.length,freshStories:stories.length,ideas:ideas.length,lastScan
-  },hot,popular,stories,contentCreation:{items:ideas},
+  },hot,popular,emerging,stories,contentCreation:{items:ideas},
+    editorialDigest:editorialDigest({ideas,stories,early:emerging,now}),
     saved:privateSaved?saved:[],savedPrivate:!privateSaved,
     channels:[],officialSources,scans,sources:{youtube:'github-hourly',reddit:reddit.length?'imported':'unavailable',
       official:officialSources.some(s=>s.status==='complete')?'connected':officialSources.some(s=>s.status==='error')?'error':official.length?'imported':'pending'},
