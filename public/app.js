@@ -152,7 +152,10 @@ function ideaCard(item,i,data) {
     <div class="opportunity-angles"><span class="eyebrow">DISTINCT CREATOR ANGLES</span>${angleList}</div>
     ${brief?`<div class="ai-result"><strong>Automatically generated · Cloudflare AI</strong><p>Cached creative concepts based on source headlines—not verified gameplay claims.</p>
       <span class="eyebrow">TITLES</span><ol>${(brief.titles||[]).map(t=>`<li>${esc(t)}</li>`).join('')}</ol>
-      <span class="eyebrow">THUMBNAIL TEXT</span><ul>${(brief.thumbnails||[]).map(t=>`<li>${esc(t)}</li>`).join('')}</ul><p>${esc(brief.verification)}</p></div>`:''}
+      <span class="eyebrow">THUMBNAIL TEXT</span><ul>${(brief.thumbnails||[]).map(t=>`<li>${esc(t)}</li>`).join('')}</ul>
+      ${brief.hook?`<p><strong>Opening hook:</strong> ${esc(brief.hook)}</p>`:''}
+      ${brief.viewerPayoff?`<p><strong>Viewer payoff:</strong> ${esc(brief.viewerPayoff)}</p>`:''}
+      ${brief.researchGap?`<p><strong>Research question:</strong> ${esc(brief.researchGap)}</p>`:''}<p>${esc(brief.verification)}</p></div>`:''}
     <div class="idea-action-row">
       ${saved?`<span class="idea-saved">✓ Saved</span>
         <select class="idea-status-select" data-idea-status="${esc(item.id)}" aria-label="Research status">${(data.researchStatuses||['New','Seen','Investigating','Planned','Published','Dismissed']).map(x=>`<option value="${esc(x)}" ${x===status?'selected':''}>${esc(x)}</option>`).join('')}</select>
