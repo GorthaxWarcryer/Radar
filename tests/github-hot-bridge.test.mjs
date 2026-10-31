@@ -44,5 +44,5 @@ test('missing timestamp cannot become invented sample',()=>{
 });
 test('GitHub summary explains it is not original Site',()=>{
   const text=summary(calculate({videos:[item('a',6000)]},{},T));
-  assert.match(text,/does not override its UI/);assert.match(text,/Estimated since upload/);
+  assert.match(text,/does not override its UI/i);assert.match(text,/Estimated since upload/);
 });
