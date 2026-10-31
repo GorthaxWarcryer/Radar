@@ -8,6 +8,9 @@ on:
   push:
     paths:
       - '.github/workflows/github-hot-companion.yml'
+      - 'scripts/github-hot-bridge.mjs'
+      - 'tests/github-hot-bridge.test.mjs'
+      - 'site-integration/hot-hourly.mjs'
 permissions:
   contents: write
 concurrency:
