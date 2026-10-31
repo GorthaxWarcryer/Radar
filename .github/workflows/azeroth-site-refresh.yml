@@ -1,7 +1,9 @@
 name: Azeroth Site deterministic refresh
 on:
   schedule:
-    - cron: '0 5,8,11,14,17,20 * * *'
+    # Trigger seven minutes before each intended collection slot to avoid top-of-hour congestion.
+    # The scheduled-only wait step below ensures the Site is never called before its slot opens.
+    - cron: '53 4,7,10,13,16,19 * * *'
       timezone: Europe/Kyiv
   workflow_dispatch:
     inputs:
@@ -21,10 +23,33 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     env:
       MAX_SLICES: ${{ inputs.max_slices || '100' }}
     steps:
+      - name: Wait for intended scan slot if the scheduler fires early
+        if: ${{ github.event_name == 'schedule' }}
+        shell: python {0}
+        run: |
+          # GitHub scheduled runners may start before or after the nominal collection hour.
+          # Never invoke the Site before its daytime slot opens, even if GitHub is punctual.
+          from datetime import datetime, timedelta
+          from zoneinfo import ZoneInfo
+          import time
+          tz = ZoneInfo('Europe/Kyiv')
+          now = datetime.now(tz)
+          slots = (5, 8, 11, 14, 17, 20)
+          upcoming = [
+              now.replace(hour=h, minute=0, second=0, microsecond=0)
+              for h in slots
+          ]
+          early = [slot for slot in upcoming if timedelta(0) < slot - now <= timedelta(minutes=10)]
+          if early:
+              seconds = max(0, (early[0] - now).total_seconds())
+              print(f'GitHub started early; waiting {seconds:.0f}s for the {early[0]:%H:%M} Kyiv collection slot.', flush=True)
+              time.sleep(seconds)
+          else:
+              print('Collection slot already open or GitHub started late; proceeding now.', flush=True)
       - name: Collect and verify persisted data
         shell: python {0}
         run: |
