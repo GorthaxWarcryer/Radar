@@ -2,7 +2,7 @@
 const root = document.getElementById('main-view');
 const $ = s => document.querySelector(s);
 const preferences = { theme: 'azeroth-radar-theme' };
-const state = { section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new',
+const state = { section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new', searchTerm:'', viewWindow:'48', sortVideos:'views', researchStatus:'all',
   theme: 'default', demo: location.protocol === 'file:' || document.documentElement.dataset.preview === 'true', feed: null, expanded: new Set(), adminToken: '' };
 function esc(value = '') { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
 function safeURL(x) { try { const url = new URL(String(x || '')); return url.protocol === 'https:' ? url.href : ''; } catch { return ''; } }
@@ -39,15 +39,21 @@ function videoBoard(title,sub,items,data) {
   return `<section class="panel"><div class="board-title"><h2>${esc(title)}<small>${esc(sub)}</small></h2><span class="count">${items.length}</span></div>${items.length?`<div class="${state.layout==='preview'?'card-grid':'video-list'}" style="${state.layout==='preview'?'padding:12px':''}">${items.map(v=>renderVideo(v,data)).join('')}</div>`:empty(state.section==='hot'?'No HOT videos yet':'No qualifying videos yet',state.section==='hot'?'New uploads enter HOT using average views/hour since publication; later real observations update that rate.':'Connect YouTube sources or import a verified feed. Qualifying videos need at least 5,000 views.')}</section>`;
 }
 function videoSection(data,mode) {
-  const isHot=mode==='hot'; const pool=data[mode]?.[state.kind]||[];
+  const isHot=mode==='hot'; const source=data[mode]?.[state.kind]||[];
+  let pool=source.filter(v=>!state.searchTerm||(String(v.title||'')+' '+String(v.channelName||v.channel||'')).toLowerCase().includes(state.searchTerm.toLowerCase()));
+  if(!isHot&&state.viewWindow==='24')pool=pool.filter(v=>Date.now()-Number(v.publishedAt)<24*3600000);
+  if(state.sortVideos==='newest')pool=[...pool].sort((a,b)=>b.publishedAt-a.publishedAt);
+  else if(state.sortVideos==='velocity')pool=[...pool].sort((a,b)=>(b.growth?.perHour||0)-(a.growth?.perHour||0));
+  else if(!isHot)pool=[...pool].sort((a,b)=>b.views-a.views);
   const fresh=pool.filter(v=>Date.now()-Number(v.publishedAt)<24*3600000);
   const tracked=pool.filter(v=>Date.now()-Number(v.publishedAt)>=24*3600000);
   const desc=isHot?'New videos start with estimated views per hour since upload; later scans replace estimates with measured growth.':'Most-watched qualifying videos ranked by lifetime TOTAL views, not views gained. Minimum 5,000 views; archived livestreams are excluded.';
   return sectionTitle('YouTube Intelligence',isHot?'<span>HOT</span> RIGHT NOW':'WHAT’S <span>POPULAR</span>',desc,
     '<i class="status-dot"></i> LAST 48 HOURS')+
     statCards(data)+`<div class="toolbar"><div class="toolbar-left">${btnSegment([{id:'long',text:'Long Form'},{id:'shorts',text:'Shorts'}],state.kind,'kind')}<span class="toolbar-note">${pool.length} qualifying videos</span></div><div class="toolbar-right">${btnSegment([{id:'list',text:'☷ List'},{id:'preview',text:'▦ Preview'}],state.layout,'layout')}</div></div>`+
-    (isHot?'<div class="info-note"><strong>HOT growth:</strong> Initial average since publication is labeled estimated; later snapshots produce measured views per hour. Last observation time matters.</div>':'')+
-    `<div class="section-split">${videoBoard('New uploads','Published within the last 24 hours',fresh,data)}${videoBoard('Tracked · 48 Hours','Published 24–48 hours ago',tracked,data)}</div>`;
+    `<div class="toolbar" style="flex-wrap:wrap"><div class="toolbar-left"><input id="video-filter" aria-label="Search video titles and channels" placeholder="Search videos or channels" value="${esc(state.searchTerm)}" style="max-width:250px;background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px"><button class="subtle-btn" data-apply-search="1">Search</button><button class="subtle-btn" data-clear-search="1">Clear</button></div><div class="toolbar-right">${!isHot?btnSegment([{id:'24',text:'24h'},{id:'48',text:'48h'}],state.viewWindow,'window'):''}${btnSegment([{id:'views',text:'Views'},{id:'newest',text:'Newest'},{id:'velocity',text:'Growth'}],state.sortVideos,'video-sort')}</div></div>`+
+        (isHot?'<div class="info-note"><strong>HOT growth:</strong> Initial average since publication is labeled estimated; later snapshots produce measured views per hour. Last observation time matters.</div>':'')+
+    `<div class="section-split">${videoBoard('New uploads','Published within the last 24 hours',fresh,data)}${(!isHot&&state.viewWindow==='48'?videoBoard('Tracked · 48 Hours','Published 24–48 hours ago',tracked,data):'')}</div>`;
 }
 function renderStory(s,data) {
   const official = s.source==='Official';
@@ -174,6 +180,11 @@ document.addEventListener('click',async e=>{
   try {
     if(button.dataset.section) return moveSection(button.dataset.section);
     if(button.dataset.kind) {state.kind=button.dataset.kind;return render();}
+    if(button.dataset.window){state.viewWindow=button.dataset.window;return render();}
+    if(button.dataset.videoSort){state.sortVideos=button.dataset.videoSort;return render();}
+    if(button.dataset.applySearch){state.searchTerm=document.getElementById('video-filter')?.value.trim().slice(0,140)||'';return render();}
+    if(button.dataset.clearSearch){state.searchTerm='';return render();}
+    if(button.dataset.researchFilter){state.researchStatus=button.dataset.researchFilter;return render();}
     if(button.dataset.layout) {state.layout=button.dataset.layout;return render();}
     if(button.dataset.storyType) {state.storyType=button.dataset.storyType;return render();}
     if(button.dataset.storySort) {state.storySort=button.dataset.storySort;return render();}
