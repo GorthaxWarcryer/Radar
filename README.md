@@ -1,4 +1,13 @@
-# Azeroth Radar — Editable Rebuild
+# Azeroth Radar — GitHub + Cloudflare migration
+
+**Status (October 31, 2026):** GitHub's independently scheduled YouTube discovery and hourly HOT view-count scanner are working. The Cloudflare Worker + D1 implementation is committed, passes tests and Wrangler dry-run, but **has not been deployed** because this conversation does not have an authenticated Cloudflare connection.
+
+For the free Cloudflare deployment, follow [cloudflare/README.md](cloudflare/README.md) and run [cloudflare-deploy.yml](.github/workflows/cloudflare-deploy.yml) after adding the scoped Cloudflare account credentials to GitHub Secrets. This is a standalone rebuild of the front-end/backend, **not an export of the original ChatGPT Site**, so source parity, original user accounts and private data have not been migrated.
+
+The intended chain is: **YouTube Data API → GitHub independent discovery + hourly HOT snapshots → GitHub public JSON → Cloudflare Worker (static frontend + D1) → web browser**. The GitHub collector no longer requires ChatGPT Sites for its discovery to function. Blizzard/Reddit source integrations still need separate approved data collection, and the new D1 database begins empty.
+
+---
+
 
 A **standalone, deployment-ready, editable source-code rebuild** of the original ChatGPT Sites Azeroth Radar project. Designed around the decisions made in the previous development conversations.
 
