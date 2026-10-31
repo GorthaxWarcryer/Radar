@@ -79,11 +79,16 @@ function ideasSection(data) {
     `<div class="info-note"><strong>Creator workflow:</strong> Prioritize rising or popular sources, avoid recycled recaps, and develop a test, comparison, counterargument, or useful player decision. Suggestions are starting points—not verified gameplay conclusions.</div>`+
     (ideas.length?`<div class="ideas-grid">${ideas.map((x,i)=>ideaCard(x,i,data)).join('')}</div>`:empty('No eligible content briefs yet','Ideas are built from recent eligible YouTube videos and fresh Reddit/official stories. Connect or import feeds to populate this section.'));
 }
+function researchStatusPicker(item) {
+  const statuses=state.feed?.researchStatuses||['New','Seen','Investigating','Planned','Published','Dismissed'];
+  return `<select aria-label="Research status" data-research-pick="${esc(item.id)}">${statuses.map(x=>`<option value="${esc(x)}" ${item.status===x?'selected':''}>${esc(x)}</option>`).join('')}</select> <button class="small-action" data-status-save="${esc(item.id)}">Set</button>`;
+}
 function watchlistSection(data) {
-  const saved=data.saved||[];
+  const saved=(data.saved||[]).filter(x=>state.researchStatus==='all'||(x.status||'New')===state.researchStatus);
   if(data.savedPrivate) return sectionTitle('Your workspace','SAVED <span>WATCHLIST</span>','Private bookmarks and notes require the dashboard administrator token.')+`<section class="panel">${empty('Private watchlist locked','Unlock your saved notes with the rebuild’s administrator token.',false)}<div style="text-align:center;padding-bottom:27px"><button class="subtle-btn" data-unlock="1">Unlock watchlist</button></div></section>`;
   return sectionTitle('Your workspace','SAVED <span>WATCHLIST</span>','Keep references and editorial notes in the rebuild’s local SQLite database. Original Sites bookmarks have not been transferred.') +
-    (saved.length?`<section class="panel"><table class="saved-table"><thead><tr><th>Saved source</th><th>Note</th><th>Actions</th></tr></thead><tbody>${saved.map(s=>`<tr><td>${titleLink(s.title,s.url,'')}<div class="video-time">${esc(s.kind)} · ${time(s.savedAt)}</div></td><td><textarea aria-label="Note for ${esc(s.title)}" id="note-${esc(s.id)}" data-note="${esc(s.id)}">${esc(s.note||'')}</textarea></td><td><button class="small-action" data-note-save="${esc(s.id)}">Save note</button> <button class="small-action" data-remove="${esc(s.id)}">Remove</button></td></tr>`).join('')}</tbody></table></section>`:empty('No saved sources','Save a qualifying video, Reddit discussion, or official post to build your research watchlist.'));
+    `<div class="toolbar" style="flex-wrap:wrap;gap:9px"><div class="toolbar-left">${btnSegment([{id:'all',text:'All'},{id:'New',text:'New'},{id:'Seen',text:'Seen'},{id:'Investigating',text:'Investigating'},{id:'Planned',text:'Planned'},{id:'Published',text:'Published'},{id:'Dismissed',text:'Dismissed'}],state.researchStatus,'research-filter')}</div><button class="subtle-btn" data-export-csv="1">Export CSV</button></div>`+
+    (saved.length?`<section class="panel"><table class="saved-table"><thead><tr><th>Saved source</th><th>Status</th><th>Note</th><th>Actions</th></tr></thead><tbody>${saved.map(s=>`<tr><td>${titleLink(s.title,s.url,'')}<div class="video-time">${esc(s.kind)} · ${time(s.savedAt)}</div></td><td>${researchStatusPicker(s)}</td><td><textarea aria-label="Note for ${esc(s.title)}" id="note-${esc(s.id)}" data-note="${esc(s.id)}">${esc(s.note||'')}</textarea></td><td><button class="small-action" data-note-save="${esc(s.id)}">Save note</button> <button class="small-action" data-remove="${esc(s.id)}">Remove</button></td></tr>`).join('')}</tbody></table></section>`:empty('No saved sources','Save a qualifying video, Reddit discussion, or official post to build your research watchlist.'));
 }
 function channelsSection(data) {
   const ch=data.channels||[], status=data.sources||{}, official=data.officialSources||[];
@@ -185,6 +190,11 @@ document.addEventListener('click',async e=>{
     if(button.dataset.applySearch){state.searchTerm=document.getElementById('video-filter')?.value.trim().slice(0,140)||'';return render();}
     if(button.dataset.clearSearch){state.searchTerm='';return render();}
     if(button.dataset.researchFilter){state.researchStatus=button.dataset.researchFilter;return render();}
+    if(button.dataset.statusSave){const id=button.dataset.statusSave;
+      const status=[...document.querySelectorAll('[data-research-pick]')].find(x=>x.dataset.researchPick===id)?.value;
+      await adminFetch('/api/research/status',{method:'POST',body:JSON.stringify({id,status})});toast('Research status saved');return fetchFeed();}
+    if(button.dataset.exportCsv){const r=await fetch('/api/research/csv',{headers:state.adminToken?{'X-Admin-Token':state.adminToken}:{}});
+      if(!r.ok)throw Error('Admin unlock required');const blob=await r.blob(),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='azeroth-radar-research.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);return;}
     if(button.dataset.layout) {state.layout=button.dataset.layout;return render();}
     if(button.dataset.storyType) {state.storyType=button.dataset.storyType;return render();}
     if(button.dataset.storySort) {state.storySort=button.dataset.storySort;return render();}
