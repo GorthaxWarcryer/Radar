@@ -8,6 +8,7 @@ function esc(value = '') { return String(value ?? '').replace(/[&<>"']/g, c => (
 function safeURL(x) { try { const url = new URL(String(x || '')); return url.protocol === 'https:' ? url.href : ''; } catch { return ''; } }
 function fmt(n) { return Number.isFinite(Number(n)) ? Number(n).toLocaleString('en-US') : '—'; }
 function age(t) { const dt = Date.now() - Number(t); if (!Number.isFinite(dt) || dt < 0) return 'Recently'; const m = Math.floor(dt/60000); if(m<60) return `${Math.max(1,m)}m ago`; const h = Math.floor(m/60); return h<48 ? `${h}h ago` : `${Math.floor(h/24)}d ago`; }
+function storyAge(t) { const dt = Date.now() - Number(t); if (Number.isFinite(dt) && dt >= 86400000) { const days=Math.floor(dt/86400000); return `${days} day${days===1?'':'s'} ago`; } return age(t); }
 function time(t) { return Number(t) ? new Date(Number(t)).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Not yet'; }
 function titleLink(t,url,cl) { const u=safeURL(url); return u ? `<a class="${cl}" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t)}</a>` : `<span class="${cl}">${esc(t)}</span>`; }
 function toast(message) { const t=$('#toast'); t.textContent=message; t.classList.add('visible'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>t.classList.remove('visible'),3200); }
@@ -51,7 +52,7 @@ function videoSection(data,mode) {
 function renderStory(s,data) {
   const official = s.source==='Official';
   const metrics=official?'':`<span>▲ ${s.score === null || s.score === undefined ? '—' : fmt(s.score)}</span><span>◷ ${s.comments === null || s.comments === undefined ? '—' : fmt(s.comments)} comments</span>`;
-  return `<article class="story-card"><div class="story-top"><span class="source-chip ${official?'official':''}">${official?'Official Source':esc('r/'+(s.subreddit||'wow'))}</span><span class="story-time">${age(s.publishedAt)}</span></div>${titleLink(s.title,s.url,'story-title')}<p class="story-summary">${esc(s.summary || (official?'Official update or blue post':'Reddit discussion currently qualifying for Top/Today or Hot.'))}</p><div class="story-bottom">${metrics}${official?`<span>${esc(s.sourceId==='blue'?((s.author?s.author+' · ':'')+'Blizzard forum · via independent tracker'):(s.sourceName||'Blizzard / official update'))}</span>`:''}${saveButton(s,'story',data)}</div></article>`;
+  return `<article class="story-card"><div class="story-top"><span class="source-chip ${official?'official':''}">${official?'Official Source':esc('r/'+(s.subreddit||'wow'))}</span><span class="story-time">${storyAge(s.publishedAt)}</span></div>${titleLink(s.title,s.url,'story-title')}<p class="story-summary">${esc(s.summary || (official?'Official update or blue post':'Reddit discussion currently qualifying for Top/Today or Hot.'))}</p><div class="story-bottom">${metrics}${official?`<span>${esc(s.sourceId==='blue'?((s.author?s.author+' · ':'')+'Blizzard forum · via independent tracker'):(s.sourceName||'Blizzard / official update'))}</span>`:''}${saveButton(s,'story',data)}</div></article>`;
 }
 function storiesSection(data) {
   let stories=(data.stories||[]).filter(s=>state.storyType==='all'||(state.storyType==='official'?s.source==='Official':s.source!=='Official'));
