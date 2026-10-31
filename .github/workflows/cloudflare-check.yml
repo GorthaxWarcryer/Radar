@@ -21,6 +21,6 @@ jobs:
         run: |
           node --check cloudflare/worker.mjs
           node --check cloudflare/transform.mjs
-          node -e "const x=require('./wrangler.jsonc'); if (!x.d1_databases || x.assets.directory!=='./public') throw Error('Invalid Cloudflare config')"
+          node -e "const fs=require('node:fs'); const x=JSON.parse(fs.readFileSync('wrangler.jsonc','utf8')); if (!x.d1_databases || x.assets.directory!=='./public') throw Error('Invalid Cloudflare config')"
       - name: Test Cloudflare API, saved-data privacy and HOT growth
         run: node --test cloudflare/tests/*.test.mjs site-integration/tests/hot-hourly.test.mjs
