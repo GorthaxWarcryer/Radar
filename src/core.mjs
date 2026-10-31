@@ -114,9 +114,16 @@ function topicWords(title) {
 }
 function classifyOpportunity(title) {
   const world=sourceWorld(title);
+  // Distinguish named class specs without splitting generic class headlines.
+  // We only infer the spec when it is explicitly present in the headline.
+  const specificSpec=/\b(holy|retribution|ret|protection|prot|elemental|enhancement|restoration|fire|frost|arcane|arms|fury|discipline|shadow|balance|feral|guardian|assassination|subtlety|destruction|affliction|demonology)\b/i.exec(title);
   const specific=TOPIC_RULES.find(([,re])=>re.test(title));
   if(specific) {
     const [key,,subject,category]=specific;
+    if(specificSpec&&['paladin','warrior','shaman','mage','priest','druid','rogue','warlock','hunter'].includes(key)) {
+      const spec=specificSpec[1].toLowerCase(),normalized=spec==='ret'?'Retribution':spec==='prot'?'Protection':spec[0].toUpperCase()+spec.slice(1);
+      return {key:world+':'+key+':'+normalized.toLowerCase(),subject:normalized+' '+subject,category,world};
+    }
     return {key:world+':'+key,subject,category,world};
   }
   const words=topicWords(title);
@@ -127,7 +134,8 @@ function classifyOpportunity(title) {
 function safeSource(s) {
   const sourceType=s.sourceType;
   return {id:String(s.id),title:String(s.title||''),url:String(s.url||''),
-    sourceType,channelName:String(s.channelName||s.subreddit||''),
+    sourceType,description:String(s.description||s.summary||'').slice(0,600),
+    channelName:String(s.channelName||s.subreddit||''),
     publishedAt:Number(s.publishedAt)||0,
     views:sourceType==='YouTube'?Number(s.views)||0:null,
     growthPerHour:sourceType==='YouTube'&&Number.isFinite(s.growth?.perHour)?s.growth.perHour:null,

@@ -5,6 +5,10 @@ on:
       - 'cloudflare/**'
       - 'public/**'
       - 'src/core.mjs'
+      - 'src/intelligence.mjs'
+      - 'tests/creator-intelligence.test.mjs'
+      - 'scripts/github-hot-discover.mjs'
+      - 'scripts/github-hot-bridge.mjs'
       - 'tests/content-opportunities.test.mjs'
       - 'tests/ux-dashboard.test.mjs'
       - 'wrangler.jsonc'
@@ -26,10 +30,12 @@ jobs:
           node --check cloudflare/worker.mjs
           node --check cloudflare/ai-ideas.mjs
           node --check public/app.js
+          node --check public/intelligence.js
+          node --check src/intelligence.mjs
           node --check cloudflare/transform.mjs
           node -e "const fs=require('node:fs'); const x=JSON.parse(fs.readFileSync('wrangler.jsonc','utf8')); if (!x.d1_databases || x.assets.directory!=='./public') throw Error('Invalid Cloudflare config')"
       - name: Test Cloudflare API, saved-data privacy and HOT growth
-        run: node --test cloudflare/tests/*.test.mjs site-integration/tests/hot-hourly.test.mjs tests/reddit-directory.test.mjs tests/ux-dashboard.test.mjs tests/content-opportunities.test.mjs
+        run: node --test cloudflare/tests/*.test.mjs site-integration/tests/hot-hourly.test.mjs tests/reddit-directory.test.mjs tests/ux-dashboard.test.mjs tests/content-opportunities.test.mjs tests/creator-intelligence.test.mjs
       - name: Probe live WoW Forever blue-post RSS (diagnostic only)
         continue-on-error: true
         run: |

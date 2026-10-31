@@ -22,7 +22,7 @@ The site uses Cloudflare's built-in AI binding, not a ChatGPT personal conversat
 
 - Model: @cf/meta/llama-3.2-3b-instruct, a free-tier-compatible small text model.
 - The model runs only from the scheduled Cloudflare Worker event, after existing daytime YouTube source syncing. Visitors and dashboard refreshes never trigger inference.
-- One new source-linked opportunity receives an automatic brief at each of six scheduled daytime slots: 05, 08, 11, 14, 17 and 20 Kyiv time (the Worker cron currently starts at minute 26).
+- One model inference may run per daytime slot: 05, 08, 11, 14, 17 and 20 Kyiv time (the Worker cron currently starts at minute 26). At 08 Kyiv, it generates the daily editorial digest instead of a topic brief.
 - Maximum six AI inference attempts per UTC day, enforced by atomic, durable D1 counters (including failed requests). This per-application limit avoids burst traffic, although it cannot account for other Cloudflare projects using the same account.
 - D1 caches AI output by topic and source signature for up to 48h, so identical topics don't request AI again on subsequent scans.
 - Each brief includes three titles, thumbnail text, creative angles and a verification note. It is shown inline on the Content Opportunities card.
@@ -41,3 +41,18 @@ The prompt only contains bounded metadata and original source headlines, not scr
 - API credentials stay server-side.
 - Linked sources are research leads, not independently fact-checked gameplay claims.
 - Never invent Reddit vote counts, YouTube growth data, timestamps or community consensus.
+
+
+## Creator Intelligence v2 (October 31, 2026)
+
+- **Emerging:** Separate view of early 250–4,999-view uploads younger than 12 hours, ranked by time-adjusted velocity. This is experimental and does not alter the 5,000-view threshold for HOT or Popular. Initial rates are labeled estimated.
+- **Richer source metadata:** The independent YouTube scanner retains short public descriptions, tags, likes and comment counts through the GitHub bridge to Cloudflare. Existing fields continue to work if metadata is absent.
+- **More precise class topics:** Explicit spec terms (e.g. Holy Paladin versus generic Paladin changes) are separated by deterministic classification. Classification remains metadata-based, not full transcript semantics.
+- **Thirty-day topic history:** D1 records daily aggregate opportunity scores. Cards compare a current score with the prior day when a prior observation exists, labeling rising / steady / cooling / new. No private user data is included.
+- **Content-gap research prompts:** Each opportunity has candidate questions to investigate. These are NOT claims that any competitor video omitted material; no automatic video transcript analysis or Reddit comment scraping is performed.
+- **Daily Editorial Brief:** A new navigation section summarizes live priority topics, official news snippets with source links and early signals. At the 08:26 Kyiv morning research slot, one Cloudflare AI call can generate headline and editorial priorities if data is available.
+- **On-device creator preferences:** Choose WoW version and topics under Settings. The Content Opportunities "For You" view ranks relevant topics first. "Useful" and "Not relevant" feedback is stored in localStorage in the same browser, without analytics or server account creation.
+- **Richer creative briefs:** The existing AI generation returns three title angles and two thumbnail concepts; when provided, it now also includes an opening hook, viewer payoff and a research question grounded in source metadata.
+- **AI budget:** Morning daily digest and other creative briefs share the same atomic D1 six-attempt UTC-day quota, with one inference at each of the six scheduled Kyiv-time slots. Only scheduled jobs run inference. No OpenAI API, ChatGPT credits, or model calls on page visits. AI failures revert to source-linked deterministic content.
+
+All AI outputs are research aids, not verified facts. The source titles and descriptions are untrusted data, never privileged instructions. Full competitor video understanding, multiuser account support, YouTube Analytics OAuth, and transcript-based coverage comparison are not implemented: those require consent, permission and substantial additional source integration.

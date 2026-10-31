@@ -43,3 +43,15 @@ CREATE TABLE IF NOT EXISTS ai_daily_usage (
  day TEXT PRIMARY KEY,
  used INTEGER NOT NULL CHECK (used>=0 AND used<=6)
 );
+
+
+-- Thirty-day, aggregated topic momentum history; does not store personal user data.
+CREATE TABLE IF NOT EXISTS topic_history (
+ topic_id TEXT NOT NULL,
+ day TEXT NOT NULL,
+ score INTEGER NOT NULL,
+ source_count INTEGER NOT NULL,
+ updated_at INTEGER NOT NULL,
+ PRIMARY KEY(topic_id,day)
+);
+CREATE INDEX IF NOT EXISTS idx_topic_history_recent ON topic_history(updated_at);
