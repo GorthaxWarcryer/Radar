@@ -55,7 +55,7 @@ export function normalizeIncomingStory(x,source,now=Date.now()) {
   return {...x,title:String(x.title).slice(0,400),summary:String(x.summary||'').slice(0,800),
     url:allowedUrl(x.url),source, publishedAt:Number(x.publishedAt)};
 }
-export function buildFeed({videos=[],reddit=[],official=[],saved=[],scans=[],now=Date.now(),githubAt=null,privateSaved=false}={}) {
+export function buildFeed({videos=[],reddit=[],official=[],officialSources=[],saved=[],scans=[],now=Date.now(),githubAt=null,privateSaved=false}={}) {
   const eligible=videos.filter(x=>x&&!x.isVod&&Number(x.views)>=5000&&isRecent(x.publishedAt,48*HOUR_MS,now));
   const sortViews=(items)=>items.sort((a,b)=>b.views-a.views);
   const popular={long:sortViews(eligible.filter(v=>v.kind!=='shorts')),
@@ -72,7 +72,7 @@ export function buildFeed({videos=[],reddit=[],official=[],saved=[],scans=[],now
     eligibleVideos:eligible.length,freshStories:stories.length,ideas:ideas.length,lastScan
   },hot,popular,stories,contentCreation:{items:ideas},
     saved:privateSaved?saved:[],savedPrivate:!privateSaved,
-    channels:[],scans,sources:{youtube:'github-hourly',reddit:reddit.length?'imported':'unavailable',
-      official:official.length?'imported':'unavailable'},
+    channels:[],officialSources,scans,sources:{youtube:'github-hourly',reddit:reddit.length?'imported':'unavailable',
+      official:officialSources.some(s=>s.status==='complete')?'connected':officialSources.some(s=>s.status==='error')?'error':official.length?'imported':'pending'},
     note:'Independent Cloudflare D1 deployment. Original Site private database was not transferred.'};
 }
