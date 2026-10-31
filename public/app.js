@@ -3,7 +3,7 @@ const root = document.getElementById('main-view');
 const $ = s => document.querySelector(s);
 const preferences = { theme: 'azeroth-radar-theme' };
 const state = { section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new', searchTerm:'', viewWindow:'48', hotSort:'velocity', popularSort:'views', researchStatus:'all',
-  theme: 'default', demo: location.protocol === 'file:' || document.documentElement.dataset.preview === 'true', feed: null, expanded: new Set(), adminToken: '' };
+  theme: 'default', demo: location.protocol === 'file:' || document.documentElement.dataset.preview === 'true', feed: null, expanded: new Set(), adminToken: '', ideaView:'all', showDismissed:false, aiBriefs:{} };
 function esc(value = '') { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
 function safeURL(x) { try { const url = new URL(String(x || '')); return url.protocol === 'https:' ? url.href : ''; } catch { return ''; } }
 function fmt(n) { return Number.isFinite(Number(n)) ? Number(n).toLocaleString('en-US') : '—'; }
@@ -126,15 +126,69 @@ function storiesSection(data) {
     (previous.length?`<section class="reddit-previous"><h2>Previously imported Reddit discussions</h2><div class="stories-grid">${previous.map(s=>renderStory(s,data)).join("")}</div></section>`:"")+
     (showOfficial?`<section class="reddit-official"><h2>OFFICIAL <span>UPDATES</span></h2>${official.length?`<div class="stories-grid">${official.map(s=>renderStory(s,data)).join("")}</div>`:empty("No recent official updates","Blizzard news and blue posts appear here when the official source collector finds qualifying posts.",false)}</section>`:"");
 }
+
 function ideaCard(item,i,data) {
-  const open=state.expanded.has(item.id);
-  return `<article class="idea-card"><div class="idea-top"><span class="idea-index">${String(i+1).padStart(2,'0')}</span><span class="idea-format">${esc(item.format||'Analysis')}</span><span class="priority ${item.priority==='High'?'':'watch'}">${esc(item.priority||'Watch')}</span></div><h2 class="idea-title">${esc(item.title)}</h2><p class="idea-summary">${esc(item.summary||'')}</p><div class="idea-proposed"><span class="eyebrow">PROPOSED VIDEO TITLE</span><p>${esc(item.proposedTitle||item.title)}</p></div><div class="expand"><button data-expand="${esc(item.id)}">${open?'− Hide outline':'+ View content outline'}</button>${safeURL(item.sourceUrl)?`<a class="small-link" href="${esc(safeURL(item.sourceUrl))}" target="_blank" rel="noopener noreferrer">SOURCE ↗</a>`:''}</div>${open?`<div class="idea-details"><strong>Angle</strong><div>${esc(item.angle||'')}</div><strong>Why now</strong><div>${esc(item.whyNow||item.summary||'')}</div><strong>Viewer payoff</strong><div>${esc(item.viewerPayoff||'Explain the practical impact')}</div><strong>Outline</strong><ol>${(item.outline||[]).map(o=>`<li>${esc(o)}</li>`).join('')}</ol><strong>Recording plan</strong><ol>${(item.recordingPlan||[]).map(o=>`<li>${esc(o)}</li>`).join('')}</ol><strong>Source coverage</strong><div>${esc(item.coverage?.note||'Single source, verify before publication')}</div><strong>Source: </strong>${esc(item.sourceType||'')} · ${age(item.publishedAt)}</div>`:''}</article>`;
+  const expanded=state.expanded.has(item.id);
+  const saved=(data.saved||[]).find(s=>s.id===item.id);
+  const status=saved?.status||'New';
+  const sources=(item.sources||[]).slice(0,8);
+  const angles=item.angles?.length?item.angles:[{type:item.format||'Analysis',title:item.proposedTitle||item.title,approach:item.angle||''}];
+  const brief=state.aiBriefs[item.id];
+  const score=Number.isFinite(item.opportunityScore)?item.opportunityScore:null;
+  const sourceList=sources.map(s=>`<li><span class="source-kind">${esc(s.sourceType)}</span>
+    ${titleLink(s.title,s.url,'idea-source-title')}
+    <small>${esc(s.channelName||'')} · ${age(s.publishedAt)}${Number.isFinite(s.views)?' · '+fmt(s.views)+' views':''}${Number.isFinite(s.growthPerHour)?' · '+fmt(s.growthPerHour)+' views/hour':''}</small></li>`).join('');
+  const angleList=angles.map((a,j)=>`<div class="idea-angle"><span class="idea-angle-number">${j+1}</span>
+    <div><span class="idea-angle-type">${esc(a.type||'Creator angle')}</span><strong>${esc(a.title)}</strong><p>${esc(a.approach||'')}</p></div></div>`).join('');
+  return `<article class="idea-card opportunity-card">
+    <div class="idea-top"><span class="idea-index">${String(i+1).padStart(2,'0')}</span>
+    <span class="idea-format">${esc(item.category||item.format||'Discussion')}</span>
+    <span class="priority ${item.priority==='High'?'':'watch'}">${esc(item.priority||'Watch')}</span></div>
+    <div class="opportunity-heading"><h2 class="idea-title">${esc(item.title)}</h2>
+    ${score!==null?`<div class="opportunity-score" title="Discovery opportunity, not fact-check confidence"><strong>${score}</strong><small>/100 · Opportunity</small></div>`:''}</div>
+    <p class="idea-summary">${esc(item.summary||'Recent source, not yet verified.')}</p>
+    <div class="opportunity-metadata"><span>${age(item.publishedAt)}</span><span>${fmt(item.sourceCount||sources.length||1)} linked sources</span>
+    ${saved?`<span class="status-pill">${esc(status)}</span>`:''}</div>
+    <div class="opportunity-angles"><span class="eyebrow">DISTINCT CREATOR ANGLES</span>${angleList}</div>
+    ${brief?`<div class="ai-result"><strong>Optional AI creative brief</strong><p>Generated concepts—not verified gameplay claims.</p>
+      <span class="eyebrow">TITLES</span><ol>${(brief.titles||[]).map(t=>`<li>${esc(t)}</li>`).join('')}</ol>
+      <span class="eyebrow">THUMBNAIL TEXT</span><ul>${(brief.thumbnails||[]).map(t=>`<li>${esc(t)}</li>`).join('')}</ul><p>${esc(brief.verification)}</p></div>`:''}
+    <div class="idea-action-row">
+      ${saved?`<span class="idea-saved">✓ Saved</span>
+        <select class="idea-status-select" data-idea-status="${esc(item.id)}" aria-label="Research status">${(data.researchStatuses||['New','Seen','Investigating','Planned','Published','Dismissed']).map(x=>`<option value="${esc(x)}" ${x===status?'selected':''}>${esc(x)}</option>`).join('')}</select>
+        <button class="small-action" data-idea-status-save="${esc(item.id)}">Update</button>`:
+        `<button class="small-action idea-primary" data-idea-save="${esc(item.id)}">Save opportunity</button>`}
+      ${status!=='Dismissed'?`<button class="small-action" data-idea-dismiss="${esc(item.id)}">Dismiss</button>`:''}
+      ${data.contentCreation?.aiAvailable?`<button class="small-action" data-idea-develop="${esc(item.id)}">✦ Develop with AI</button>`:''}
+    </div>
+    <div class="expand"><button data-expand="${esc(item.id)}">${expanded?'− Hide evidence':'+ Evidence, scoring & recording plan'}</button>
+      ${safeURL(item.sourceUrl)?`<a class="small-link" href="${esc(safeURL(item.sourceUrl))}" target="_blank" rel="noopener noreferrer">PRIMARY SOURCE ↗</a>`:''}</div>
+    ${expanded?`<div class="idea-details"><strong>Why now</strong><p>${esc(item.whyNow||'')}</p>
+      ${score!==null?`<strong>Discovery score breakdown (not factual certainty)</strong><p>${Object.entries(item.scoreBreakdown||{}).map(([k,v])=>esc(k.replace(/([A-Z])/g,' $1'))+': '+fmt(v)).join(' · ')}</p>`:''}
+      <strong>Original source links</strong><ul class="idea-sources">${sourceList||`<li>${titleLink(item.sourceTitle||item.title,item.sourceUrl,'idea-source-title')}</li>`}</ul>
+      <strong>Viewer payoff</strong><p>${esc(item.viewerPayoff||'')}</p>
+      <strong>Research outline</strong><ol>${(item.outline||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+      <strong>Recording plan</strong><ol>${(item.recordingPlan||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+      <p class="opportunity-disclaimer">${esc(item.coverage?.note||'Verify every claim from primary sources before publication.')}</p></div>`:''}
+  </article>`;
 }
 function ideasSection(data) {
-  const ideas=data.contentCreation?.items||[];
-  return sectionTitle('Research to production','CONTENT <span>CREATION</span>', 'Evidence-linked topics and potential video angles. Verify original sources before making factual claims.') +
-    `<div class="info-note"><strong>Creator workflow:</strong> Prioritize rising or popular sources, avoid recycled recaps, and develop a test, comparison, counterargument, or useful player decision. Suggestions are starting points—not verified gameplay conclusions.</div>`+
-    (ideas.length?`<div class="ideas-grid">${ideas.map((x,i)=>ideaCard(x,i,data)).join('')}</div>`:empty('No eligible content briefs yet','Ideas are built from recent eligible YouTube videos and fresh Reddit/official stories. Connect or import feeds to populate this section.'));
+  const all=data.contentCreation?.items||[];
+  const visible=all.filter(x=>{
+    const saved=(data.saved||[]).find(s=>s.id===x.id);
+    if(!state.showDismissed&&saved?.status==='Dismissed')return false;
+    if(state.ideaView==='saved'&&!saved)return false;
+    if(state.ideaView==='high'&&x.priority!=='High')return false;
+    return true;
+  });
+  return sectionTitle('Signals to original stories','CONTENT <span>OPPORTUNITIES</span>',
+    'Connected sources, transparent momentum signals and distinct creative angles—not recycled video titles.')+
+    `<div class="opportunity-toolbar"><div class="toolbar-left">${btnSegment([{id:'all',text:'All topics'},{id:'high',text:'High opportunity'},{id:'saved',text:'Saved'}],state.ideaView,'idea-view')}
+    <span class="toolbar-note">${visible.length} of ${all.length} topics</span></div>
+    <button class="small-action" data-idea-dismissed="1">${state.showDismissed?'Hide dismissed':'Show dismissed'}</button></div>`+
+    `<div class="info-note"><strong>Evidence first:</strong> Topic grouping and scoring use recent source records, growth, independent coverage and official-source indicators. Scores estimate discovery opportunity, not factual confidence. Three angles require no paid AI. ${data.contentCreation?.aiAvailable?'Optional AI runs only when you click Develop with AI.':'Optional paid AI remains disabled.'}</div>`+
+    (visible.length?`<div class="ideas-grid">${visible.map((x,i)=>ideaCard(x,i,data)).join('')}</div>`:
+      empty('No matching opportunities','Try All topics or check back after the next source scan.',false));
 }
 function researchStatusPicker(item) {
   const statuses=state.feed?.researchStatuses||['New','Seen','Investigating','Planned','Published','Dismissed'];
@@ -289,6 +343,25 @@ document.addEventListener('click',async e=>{
     if(button.dataset.applySearch){state.searchTerm=document.getElementById('video-filter')?.value.trim().slice(0,140)||'';return render();}
     if(button.dataset.clearSearch){state.searchTerm='';return render();}
     if(button.dataset.researchFilter){state.researchStatus=button.dataset.researchFilter;return render();}
+    if(button.dataset.ideaView){state.ideaView=button.dataset.ideaView;return render();}
+    if(button.dataset.ideaDismissed){state.showDismissed=!state.showDismissed;return render();}
+    if(button.dataset.ideaSave){const id=button.dataset.ideaSave,idea=state.feed?.contentCreation?.items?.find(x=>x.id===id);
+      if(!idea)return;await adminFetch('/api/save',{method:'POST',body:JSON.stringify({id,kind:'opportunity',title:idea.title,url:idea.sourceUrl})});toast('Opportunity saved');return fetchFeed({manual:true});}
+    if(button.dataset.ideaDismiss){const id=button.dataset.ideaDismiss,idea=state.feed?.contentCreation?.items?.find(x=>x.id===id);
+      if(!idea)return;
+      if(!(state.feed.saved||[]).some(s=>s.id===id))await adminFetch('/api/save',{method:'POST',body:JSON.stringify({id,kind:'opportunity',title:idea.title,url:idea.sourceUrl})});
+      await adminFetch('/api/research/status',{method:'POST',body:JSON.stringify({id,status:'Dismissed'})});
+      toast('Opportunity dismissed');return fetchFeed({manual:true});}
+    if(button.dataset.ideaStatusSave){const id=button.dataset.ideaStatusSave;
+      const status=[...document.querySelectorAll('[data-idea-status]')].find(x=>x.dataset.ideaStatus===id)?.value;
+      if(!status)return toast('Choose a research status');
+      await adminFetch('/api/research/status',{method:'POST',body:JSON.stringify({id,status})});
+      toast('Research status updated');return fetchFeed({manual:true});}
+    if(button.dataset.ideaDevelop){const id=button.dataset.ideaDevelop;
+      button.disabled=true;button.textContent='Developing…';
+      try {state.aiBriefs[id]=await adminFetch('/api/content/develop',{method:'POST',body:JSON.stringify({id})});
+        toast(state.aiBriefs[id].cached?'Cached brief loaded':'Creative brief generated');return render();}
+      finally {button.disabled=false;button.textContent='✦ Develop with AI';}}
     if(button.dataset.statusSave){const id=button.dataset.statusSave;
       const status=[...document.querySelectorAll('[data-research-pick]')].find(x=>x.dataset.researchPick===id)?.value;
       await adminFetch('/api/research/status',{method:'POST',body:JSON.stringify({id,status})});toast('Research status saved');return fetchFeed();}
