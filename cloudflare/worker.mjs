@@ -47,23 +47,40 @@ export async function synchronize(env,fetcher=fetch,now=Date.now()) {
     if(/^[a-zA-Z0-9_-]{11}$/.test(v.id||'')&&Number.isFinite(s?.capturedAt)&&
       Number.isSafeInteger(s?.views)&&s.views>=0&&s.capturedAt<=now&&now-s.capturedAt<72*3600000)
       samples.set(v.id+':'+s.capturedAt,{id:v.id,at:s.capturedAt,views:s.views,source:s.source||'github'});
+  // D1 Free allows 50 database queries per invocation. Use bulk multi-row inserts.
+  // Keep the newest genuine timestamp per video for this sync; previous hours persist in D1.
+  const latest=new Map();
+  for(const sample of samples.values()) {
+    const previous=latest.get(sample.id);
+    if(!previous||sample.at>previous.at)latest.set(sample.id,sample);
+  }
+  const keepVideos=videos.slice(0,500);
+  const videoRows=keepVideos.map(v=>[v.id,JSON.stringify(v),v.observedAt||d.generatedAt]);
+  const sampleRows=[...latest.values()].slice(0,500).map(x=>[x.id,x.at,x.views,String(x.source).slice(0,40)]);
   const stmts=[];
-  for(const v of videos) stmts.push(env.DB.prepare(
-    'INSERT INTO videos(id,payload,last_seen) VALUES(?,?,?) ON CONFLICT(id) DO UPDATE SET payload=excluded.payload,last_seen=excluded.last_seen'
-  ).bind(v.id,JSON.stringify(v),v.observedAt||d.generatedAt));
-  for(const s of samples.values())stmts.push(env.DB.prepare(
-    'INSERT OR IGNORE INTO video_samples(id,at,views,source) VALUES(?,?,?,?)'
-  ).bind(s.id,s.at,s.views,String(s.source).slice(0,40)));
-  let writes=0;
-  for(let i=0;i<stmts.length;i+=80) {await env.DB.batch(stmts.slice(i,i+80));writes+=Math.min(80,stmts.length-i);}
-  await env.DB.batch([
+  function insertMany(prefix,rows,width,suffix='') {
+    const chunkSize=Math.min(25,Math.floor(100/width)); // D1: max 100 bound parameters
+    for(let i=0;i<rows.length;i+=chunkSize){
+      const block=rows.slice(i,i+chunkSize);
+      const placeholders='('+Array(width).fill('?').join(',')+')';
+      const sql=prefix+Array(block.length).fill(placeholders).join(',')+suffix;
+      stmts.push(env.DB.prepare(sql).bind(...block.flat()));
+    }
+  }
+  insertMany('INSERT INTO videos(id,payload,last_seen) VALUES ',videoRows,3,
+    ' ON CONFLICT(id) DO UPDATE SET payload=excluded.payload,last_seen=excluded.last_seen');
+  insertMany('INSERT OR IGNORE INTO video_samples(id,at,views,source) VALUES ',sampleRows,4);
+  stmts.push(
     env.DB.prepare('INSERT INTO meta(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').bind('githubLastGeneratedAt',String(d.generatedAt)),
     env.DB.prepare('INSERT INTO meta(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').bind('lastCloudflareSyncAt',String(now)),
-    env.DB.prepare('INSERT INTO scans(at,provider,status,count,error) VALUES(?,?,?,?,?)').bind(now,'github','complete',videos.length,''),
+    env.DB.prepare('INSERT INTO scans(at,provider,status,count,error) VALUES(?,?,?,?,?)').bind(now,'github','complete',keepVideos.length,''),
     env.DB.prepare('DELETE FROM video_samples WHERE at < ?').bind(now-72*3600000),
     env.DB.prepare('DELETE FROM videos WHERE last_seen < ?').bind(now-72*3600000)
-  ]);
-  return {status:'complete',videos:videos.length,samples:samples.size,writes,
+  );
+  if(stmts.length>50)throw new Error('D1 free-tier per-invocation query cap exceeded');
+  await env.DB.batch(stmts);
+  return {status:'complete',videos:keepVideos.length,samples:sampleRows.length,
+    writes:videoRows.length+sampleRows.length,queries:stmts.length,
     sourceGeneratedAt:d.generatedAt,syncedAt:now};
 }
 
