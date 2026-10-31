@@ -26,14 +26,13 @@ export function normalizeDiscovery(entry,observedAt,followedIds=new Set()) {
   const lang=s.defaultAudioLanguage||s.defaultLanguage||'';
   const duration=durationSeconds(entry.contentDetails?.duration);
   const live=!!entry.liveStreamingDetails||(s.liveBroadcastContent&&s.liveBroadcastContent!=='none');
-  if(!title||(!TOPICAL.test(title)&&!isOfficialYouTubeChannel(s.channelId))||NON_ENGLISH_SCRIPT.test(title)||
+  if(!title||(!relevant&&!isOfficialYouTubeChannel(s.channelId))||NON_ENGLISH_SCRIPT.test(title)||
     (lang&&!/^en(?:-|$)/i.test(lang))||!Number.isFinite(publishedAt)||
     publishedAt>observedAt||observedAt-publishedAt>PERIOD||
     !Number.isSafeInteger(views)||views<0||live)return null;
   const short=duration!==null&&duration<=180&&(duration<=90||/#shorts?\b/i.test(title));
   return {
-    id:entry.id,title:title.slice(0,300),channelTitle:channelTitle.slice(0,140),channelId,
-    channelId:String(s.channelId||'').slice(0,64),
+    id:entry.id,title:title.slice(0,300),channelTitle:channelTitle.slice(0,140),channelId:channelId.slice(0,64),
     publishedAt,views,hotMeasuredAt:observedAt,hotLatestViews:views,
     lastSeen:observedAt,observedAt,videoDurationSeconds:duration,
     isShort:short,isLivestream:false,isVod:false,source:'github-youtube-discovery'
@@ -67,13 +66,24 @@ export async function discover(key,{fetcher=fetch,now=Date.now(),queries=QUERIES
   // is the uploads playlist for its immutable UC channel ID; playlistItems costs
   // one quota unit per page, rather than another 100-unit search request.
   for(const source of OFFICIAL_YOUTUBE_CHANNELS) {
-    const playlist=await youtube('playlistItems',{part:'contentDetails',
-      playlistId:'UU'+source.id.slice(2),maxResults:50},key,fetcher);
-    officialPlaylistCalls++;
-    for(const item of playlist.items)if(ID.test(item.contentDetails?.videoId||''))ids.add(item.contentDetails.videoId);
+    try {
+      const playlist=await youtube('playlistItems',{part:'contentDetails',
+        playlistId:'UU'+source.id.slice(2),maxResults:50},key,fetcher);
+      officialPlaylistCalls++;
+      for(const item of playlist.items)if(ID.test(item.contentDetails?.videoId||''))ids.add(item.contentDetails.videoId);
+    }catch{console.warn('Official channel upload listing unavailable');}
+  }
+  const followed=new Set(channels.filter(c=>/^UC[a-zA-Z0-9_-]{22}$/.test(c?.id||'')).slice(0,20).map(c=>c.id));
+  for(const source of [...followed].filter(id=>!isOfficialYouTubeChannel(id))){
+    try {
+      const playlist=await youtube('playlistItems',{part:'contentDetails',
+        playlistId:'UU'+source.slice(2),maxResults:50},key,fetcher);
+      detailCalls++;
+      for(const row of playlist.items)if(ID.test(row.contentDetails?.videoId||''))ids.add(row.contentDetails.videoId);
+    } catch {console.warn('Tracked channel upload listing unavailable: '+source);}
   }
   const videos=[];
-  const list=[...ids].slice(0,200);
+  const list=[...ids].slice(0,250);
   for(let i=0;i<list.length;i+=50) {
     const d=await youtube('videos',{part:'snippet,statistics,contentDetails,liveStreamingDetails',
       id:list.slice(i,i+50).join(',')},key,fetcher);
