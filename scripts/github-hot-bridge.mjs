@@ -20,7 +20,7 @@ export function combineSources(site={},independent={},now=Date.now()) {
   const map=new Map();
   for(const source of [site,independent])for(const video of source.videos||[]) {
     if(!VIDEO_ID.test(video?.id||'')||!Number.isFinite(video.publishedAt)||
-       video.publishedAt>now||now-video.publishedAt>=DAY_MS)continue;
+       video.publishedAt>now||now-video.publishedAt>=48*HOUR_MS)continue;
     const earlier=map.get(video.id);
     if(!earlier){map.set(video.id,video);continue;}
     const previousAt=earlier.hotMeasuredAt||earlier.lastSeen||earlier.observedAt||0;
@@ -48,6 +48,16 @@ export function selectCandidates(feed, now = Date.now(), maxVideos = MAX_VIDEOS)
       const aOver = (a.views||0)>=5000, bOver=(b.views||0)>=5000;
       return Number(bOver)-Number(aOver) || b.publishedAt-a.publishedAt;
     })
+    .slice(0,maxVideos);
+}
+
+export function selectPopularCandidates(feed,now=Date.now(),maxVideos=MAX_VIDEOS) {
+  if(!Number.isInteger(maxVideos)||maxVideos<1||maxVideos>MAX_VIDEOS)throw Error('Invalid Popular cap');
+  return (Array.isArray(feed?.videos)?feed.videos:[])
+    .filter(v=>v && VIDEO_ID.test(v.id||'') && Number.isFinite(v.publishedAt) &&
+      v.publishedAt<=now && now-v.publishedAt<48*HOUR_MS &&
+      !v.excluded&&!v.blocked&&!v.isVod&&!v.isLivestream)
+    .sort((a,b)=>(b.views||0)-(a.views||0)||b.publishedAt-a.publishedAt)
     .slice(0,maxVideos);
 }
 
@@ -99,7 +109,7 @@ export async function pollYoutubeViews(videos,apiKey,{
 }
 
 export function calculate(feed,previous={},now=Date.now(),apiRead={status:'missing-key',observations:[],requests:0}) {
-  const before=Object.fromEntries((previous.videos||[]).filter(v=>v?.id).map(v=>[v.id,v]));
+  const before=Object.fromEntries([...(previous.catalog||[]),...(previous.videos||[])].filter(v=>v?.id).map(v=>[v.id,v]));
   const candidates=selectCandidates(feed,now);
   const raw=Array.isArray(feed.videos)?feed.videos:[];
   const apiById=new Map();
@@ -109,6 +119,29 @@ export function calculate(feed,previous={},now=Date.now(),apiRead={status:'missi
   }
   const watchSamples={};
   const out=[];
+  const catalog=[];
+  const catalogCandidates=selectPopularCandidates(feed,now);
+  for(const v of catalogCandidates){
+    const observations=(apiById.get(v.id)||[]).filter(x=>valid(x,v.publishedAt,now));
+    const apiLatest=observations.at(-1);
+    const siteAt=v.hotMeasuredAt||v.lastSeen||v.observedAt||null;
+    const sourceViews=Number.isSafeInteger(Number(v.hotLatestViews))?Number(v.hotLatestViews):Number(v.views);
+    const prior=before[v.id];
+    const priorAt=prior?.latestObservedAt||prior?.hotMeasuredAt||null;
+    const records=[{views:sourceViews,at:siteAt},
+      ...(prior&&Number.isSafeInteger(prior.views)?[{views:prior.views,at:priorAt}]:[]),
+      ...(apiLatest?[{views:apiLatest.views,at:apiLatest.capturedAt}]:[])].filter(x=>
+      Number.isSafeInteger(x.views)&&x.views>=0&&Number.isFinite(x.at)&&x.at>=v.publishedAt&&x.at<=now)
+      .sort((a,b)=>b.at-a.at);
+    const latest=records[0];
+    if(!latest)continue;
+    catalog.push({id:v.id,publishedAt:v.publishedAt,views:latest.views,
+      hotLatestViews:latest.views,hotMeasuredAt:latest.at,latestObservedAt:latest.at,
+      title:v.title||'Untitled',channel:v.channelTitle||v.channel||'',
+      isShort:Number.isFinite(v.width)&&Number.isFinite(v.height)?v.height>v.width:v.isShort===true,
+      videoDurationSeconds:v.videoDurationSeconds??null,
+      source:'github-youtube-api',samples:[{capturedAt:latest.at,views:latest.views,source:'youtube-data-api'}]});
+  }
   for (const v of candidates) {
     const samples=new Map();
     const inherited=previous.watchSamples?.[v.id]||before[v.id]?.samples||[];
@@ -154,9 +187,10 @@ export function calculate(feed,previous={},now=Date.now(),apiRead={status:'missi
       eligible:out.length,estimated:out.filter(v=>v.estimate).length,
       measured:out.filter(v=>!v.estimate).length,
       shorts:out.filter(v=>v.isShort).length,longForm:out.filter(v=>!v.isShort).length},
+    popular48h:{total:catalog.length,tracked24to48:catalog.filter(v=>now-v.publishedAt>=DAY_MS).length},
     rankings:{hot:out.filter(v=>!v.isShort).map(v=>v.id),
       shortsHot:out.filter(v=>v.isShort).map(v=>v.id)},
-    watchSamples,videos:out};
+    watchSamples,videos:out,catalog};
 }
 
 const date=x=>x?new Date(x).toISOString().replace('T',' ').slice(0,16)+' UTC':'unknown';
@@ -216,11 +250,15 @@ async function main() {
     }
   } catch { /* Independent GitHub discovery must continue if original Site is offline. */ }
   const feed=combineSources(originalSiteAvailable?site:{},discovered.data,Date.now());
+  const ids=new Set(feed.videos.map(v=>v.id));
+  for(const older of previous.data.catalog||[]) if(!ids.has(older.id)&&
+    Number.isFinite(older.publishedAt)&&Date.now()-older.publishedAt<48*HOUR_MS&&
+    Date.now()>=older.publishedAt){feed.videos.push(older);ids.add(older.id);}
   if(!feed.videos.length&&!originalSiteAvailable)
     throw Error('No original Site feed and independent GitHub discovery is empty');
   if(!originalSiteAvailable)
     console.log('::warning::Original Site feed unavailable; using independent GitHub discovery');
-  const selected=selectCandidates(feed,Date.now());
+  const selected=selectPopularCandidates(feed,Date.now());
   const apiRead=await pollYoutubeViews(selected,apiKey);
   const data=calculate(feed,previous.data,Date.now(),apiRead);
   console.log(JSON.stringify({outcome:'ranked-public-feed',youtubeApi:data.youtubeApi,
