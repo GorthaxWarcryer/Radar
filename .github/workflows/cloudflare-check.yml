@@ -1,0 +1,26 @@
+name: Cloudflare migration regression checks
+on:
+  push:
+    paths:
+      - 'cloudflare/**'
+      - 'wrangler.jsonc'
+      - '.github/workflows/cloudflare-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate runtime and config syntax
+        run: |
+          node --check cloudflare/worker.mjs
+          node --check cloudflare/transform.mjs
+          node -e "const x=require('./wrangler.jsonc'); if (!x.d1_databases || x.assets.directory!=='./public') throw Error('Invalid Cloudflare config')"
+      - name: Test Cloudflare API, saved-data privacy and HOT growth
+        run: node --test cloudflare/tests/*.test.mjs site-integration/tests/hot-hourly.test.mjs
