@@ -2,7 +2,7 @@
 // Work/Codex credits, subscription credentials or client-side LLM calls.
 export const FREE_MODEL='@cf/meta/llama-3.2-3b-instruct';
 export const MAX_AI_PER_DAY=6;
-export const MAX_AI_PER_SCAN=2;
+export const MAX_AI_PER_SCAN=1;
 export const CACHE_HOURS=48;
 const HOUR=3600000;
 const clean=(x,max)=>typeof x==='string'?x.trim().slice(0,max):'';
