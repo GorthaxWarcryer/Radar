@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Azeroth Radar — GitHub HOT</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1018;--panel:#172234;--line:#2a394d;--fg:#eff3fa;--muted:#98a8bd;--gold:#f3c66d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top right,#263651,var(--bg) 52%);color:var(--fg);font:15px/1.5 system-ui,Arial,sans-serif}
+main{max-width:1200px;margin:auto;padding:36px 20px 70px}
+small{color:#78d2e6;text-transform:uppercase;font-weight:800;letter-spacing:.17em}
+h1{font-size:clamp(30px,5vw,50px);margin:8px 0 10px;line-height:1.05}
+p{color:var(--muted)}
+.notice{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--panel);margin:22px 0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:22px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:17px}
+.stat span{display:block;color:var(--muted);font-size:12px}
+.stat strong{font-size:25px;display:block;margin-top:4px}
+button{border:1px solid var(--line);background:var(--panel);padding:12px 18px;border-radius:9px;color:var(--fg);font-weight:800;cursor:pointer}
+button[aria-pressed=true]{color:var(--gold);border-color:var(--gold)}
+.controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:28px 0 16px;flex-wrap:wrap}
+#updated{font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.video{display:grid;grid-template-columns:155px minmax(0,1fr);gap:14px;padding:11px;border:1px solid var(--line);border-radius:13px;background:var(--panel);text-decoration:none;color:var(--fg)}
+.video:hover{border-color:var(--gold)}
+.video img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px}
+.title{font-weight:800;line-height:1.27}
+.rate{font-size:21px;color:var(--gold);font-weight:900;margin-top:9px}
+.meta{color:var(--muted);font-size:12px;margin-top:5px}
+footer{font-size:12px;color:var(--muted);margin-top:35px}
+a{color:#78d2e6}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}@media(max-width:500px){.stats{grid-template-columns:repeat(2,1fr)}.video{grid-template-columns:112px 1fr;gap:9px}main{padding:18px 12px 36px}}
+</style>
+</head>
+<body><main>
+<small>Azeroth Radar · GitHub companion</small>
+<h1>HOT Warcraft Videos</h1>
+<p>A new video first appears using its average views per hour since upload. Later observations replace the estimate with actual measured growth.</p>
+<div class="notice"><b>Important:</b> This is a separate GitHub-powered feed, not an override of the original ChatGPT Site. GitHub recalculates rankings every hour but does not independently collect current YouTube view counts. Check the observation timestamp.</div>
+<div class="stats">
+<div class="stat"><span>HOT candidates</span><strong id="total">—</strong></div>
+<div class="stat"><span>Estimated since upload</span><strong id="estimated">—</strong></div>
+<div class="stat"><span>Measured growth</span><strong id="measured">—</strong></div>
+<div class="stat"><span>Last source scan, Kyiv</span><strong id="lastScan" style="font-size:17px">—</strong></div>
+</div>
+<div class="controls"><div><button id="long" aria-pressed="true">Long videos</button> <button id="short" aria-pressed="false">Shorts</button></div><span id="updated">Loading…</span></div>
+<section class="grid" id="results" aria-live="polite"></section>
+<footer>HOT eligibility: uploaded in the last 24 hours, at least 5,000 measured views. The original Site's data and policies remain authoritative for source selection. <a href="https://azeroth-radar-petro.gorthax.chatgpt.site/">Original Azeroth Radar</a></footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);let feed=null,mode='long';
+const n=new Intl.NumberFormat('en-US');
+const date=ms=>ms?new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Kyiv',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(ms)):'Unknown';
+function el(type,cls,label){const x=document.createElement(type);if(cls)x.className=cls;if(label!==undefined)x.textContent=label;return x}
+function card(v,index){
+  const a=el('a','video');a.href=v.url;a.rel='noopener noreferrer';a.target='_blank';
+  const img=el('img');img.src=v.thumbnail;img.alt='YouTube thumbnail';img.loading='lazy';
+  const d=el('div');d.append(el('div','meta','#'+(index+1)+(v.isShort?' · SHORT':' · LONG-FORM')));
+  d.append(el('div','title',v.title));
+  d.append(el('div','rate',n.format(v.vph)+' views/hour'));
+  d.append(el('div','meta',n.format(v.views)+' total views · '+(v.estimate?'Estimated since upload':'Measured over '+v.intervalMinutes+' minutes')));
+  d.append(el('div','meta','Last measurement: '+date(v.latestObservedAt)));
+  a.append(img,d);return a
+}
+function render(){
+  if(!feed)return;
+  const list=feed.videos.filter(v=>mode==='short'?v.isShort:!v.isShort).slice(0,40);
+  $('results').replaceChildren(...(list.length?list.map(card):[el('p','','No qualified videos with genuine observations are available.')]));
+  $('long').setAttribute('aria-pressed',String(mode==='long'));$('short').setAttribute('aria-pressed',String(mode==='short'));
+}
+$('long').onclick=()=>{mode='long';render()};$('short').onclick=()=>{mode='short';render()};
+(async()=>{
+  try{
+    const r=await fetch('./latest.json?nocache='+Date.now(),{cache:'no-store'});
+    if(!r.ok)throw Error('HTTP '+r.status);
+    feed=await r.json();$('total').textContent=feed.counts.eligible;
+    $('estimated').textContent=feed.counts.estimated;$('measured').textContent=feed.counts.measured;
+    $('lastScan').textContent=date(feed.sourceLastScan);$('updated').textContent='GitHub updated '+date(feed.generatedAt);render();
+  }catch(e){$('updated').textContent='Unable to load GitHub HOT data';$('results').textContent='Read the latest GitHub Actions run for current rankings.'}
+})();
+</script>
+</body></html>
