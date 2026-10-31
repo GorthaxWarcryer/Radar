@@ -1,0 +1,30 @@
+name: GitHub HOT companion (hourly re-ranking)
+on:
+  schedule:
+    # No YouTube/API scans. Re-rank Site's public snapshots each daytime hour.
+    - cron: '17 5-20 * * *'
+      timezone: Europe/Kyiv
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/github-hot-companion.yml'
+permissions:
+  contents: write
+concurrency:
+  group: github-hot-companion
+  cancel-in-progress: false
+jobs:
+  recalculate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify estimated and measured growth calculations
+        run: node --test site-integration/tests/hot-hourly.test.mjs tests/github-hot-bridge.test.mjs
+      - name: Read original Site feed and publish ranked GitHub companion
+        env:
+          GH_BRIDGE_TOKEN: \${{ github.token }}
+        run: node scripts/github-hot-bridge.mjs
