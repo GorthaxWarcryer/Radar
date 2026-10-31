@@ -1,0 +1,49 @@
+name: Publish Azeroth Radar to Cloudflare (opt-in)
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cloudflare/**'
+      - 'wrangler.jsonc'
+      - 'public/**'
+      - '.github/workflows/cloudflare-deploy.yml'
+permissions:
+  contents: read
+concurrency:
+  group: azeroth-cloudflare-deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    # Do not deploy without explicit manual run or opt-in repository variable.
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.CLOUDFLARE_AUTO_DEPLOY == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: cloudflare-production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run migration tests
+        run: |
+          node --check cloudflare/worker.mjs
+          node --test cloudflare/tests/*.test.mjs
+      - name: Verify Cloudflare credentials
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo 'Missing CLOUDFLARE_ACCOUNT_ID GitHub Actions secret'; exit 1; }
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo 'Missing CLOUDFLARE_API_TOKEN GitHub Actions secret'; exit 1; }
+      - name: Deploy Worker, assets and provision D1
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx --yes wrangler@4 deploy --config wrangler.jsonc
+      - name: Initialize or upgrade remote D1 schema
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx --yes wrangler@4 d1 execute azeroth-radar-db --remote --file=./cloudflare/schema.sql --config wrangler.jsonc
+      - name: Deployment confirmation
+        run: echo 'Cloudflare deployment and D1 schema completed. Verify the Worker URL in the deployment output and GET /api/health.'
