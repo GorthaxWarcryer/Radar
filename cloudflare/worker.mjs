@@ -372,13 +372,15 @@ export default {
     let sourceSyncError=null;
     try{const result=await synchronize(env,fetch,now);console.log('Cloudflare scheduled sync:',JSON.stringify(result));}
     catch(e){sourceSyncError=e;console.error('Cloudflare scheduled sync failure:',fail(e));}
-    // Fully automatic AI runs ONLY on the cron, not for visitors or refreshes.
-    // Read the current evidence-based opportunities, then cache at most two
-    // creative briefs per scan and six requests in total per UTC day.
-    try {
-      const feed=await state(env,new Request('https://radar.internal/api/feed'),now);
-      console.log('Scheduled free AI:',JSON.stringify(await automaticallyGenerate(env,feed.contentCreation.items,now)));
-    } catch(e) {console.error('Scheduled free AI unavailable:',fail(e));}
+    // Fully automatic AI runs ONLY on cron at 05, 08, 11, 14, 17, 20 Kyiv.
+    // This spreads the daily free allowance across morning/evening trends.
+    // Browsing or refreshing the public site never triggers inference.
+    if((hour-5)%3===0) {
+      try {
+        const feed=await state(env,new Request('https://radar.internal/api/feed'),now);
+        console.log('Scheduled free AI:',JSON.stringify(await automaticallyGenerate(env,feed.contentCreation.items,now)));
+      } catch(e) {console.error('Scheduled free AI unavailable:',fail(e));}
+    }
     if(sourceSyncError)throw sourceSyncError; // Keep scanner failure visible to monitoring.
   }
 };
