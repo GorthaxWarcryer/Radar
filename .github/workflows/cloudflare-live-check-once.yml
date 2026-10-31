@@ -1,0 +1,32 @@
+name: One-time Cloudflare live website verification
+on:
+  push:
+    paths:
+      - '.github/workflows/cloudflare-live-check-once.yml'
+permissions:
+  contents: none
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Verify public website, health and dashboard feed
+        shell: python {0}
+        run: |
+          import json,urllib.request
+          base='https://azeroth-radar.azeroth-radar-gorthax.workers.dev'
+          def read(path):
+            req=urllib.request.Request(base+path,headers={'User-Agent':'AzerothRadar-Live-Verify/1.0'})
+            with urllib.request.urlopen(req,timeout=40) as resp:
+              return resp.status,resp.read()
+          code,html=read('/')
+          print('Homepage HTTP:',code,'bytes:',len(html))
+          assert code==200 and b'Azeroth Radar' in html
+          code,b=read('/api/health')
+          h=json.loads(b)
+          print('Health HTTP:',code,'ready:',h.get('ok'),'platform:',h.get('platform'),'database:',h.get('database'))
+          assert code==200 and h.get('ok') and h.get('database')=='d1'
+          code,b=read('/api/feed')
+          data=json.loads(b)
+          print('Feed HTTP:',code,'popular-long:',len(data.get('popular',{}).get('long',[])),'hot-long:',len(data.get('hot',{}).get('long',[])),'hot-shorts:',len(data.get('hot',{}).get('shorts',[])),'stories:',len(data.get('stories',[])))
+          assert code==200 and isinstance(data.get('popular',{}).get('long'),list) and isinstance(data.get('hot',{}).get('long'),list)
