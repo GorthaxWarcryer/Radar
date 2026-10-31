@@ -1,9 +1,16 @@
 {
-  "schemaVersion": 1,
-  "generatedAt": 1793431009673,
+  "schemaVersion": 2,
+  "generatedAt": 1793431213862,
   "sourceLastScan": 1793427408479,
   "sourceFeed": "https://azeroth-radar-petro.gorthax.chatgpt.site/api/feed?view=dashboard",
-  "disclaimer": "Github re-ranks source snapshots; no new YouTube view counts are collected here.",
+  "youtubeApi": {
+    "status": "missing-key",
+    "requests": 0,
+    "observations": 0,
+    "attempted": 0,
+    "lastCheckedAt": null
+  },
+  "disclaimer": "YouTube Data API is not connected; GitHub only re-ranks the original Site view snapshots.",
   "counts": {
     "tracked": 417,
     "within24h": 113,
@@ -43,6 +50,799 @@
       "o6dDhrwCAL0"
     ]
   },
+  "watchSamples": {
+    "B9IoL1xyym0": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 5781,
+        "source": "original-site"
+      }
+    ],
+    "XtJskkJZTXw": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 12308,
+        "source": "original-site"
+      }
+    ],
+    "l9GwCosk91o": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 7358,
+        "source": "original-site"
+      }
+    ],
+    "1JhKzviW1h8": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 21907,
+        "source": "original-site"
+      }
+    ],
+    "1GEmk7Fci2E": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 90585,
+        "source": "original-site"
+      }
+    ],
+    "GZRZemt6owc": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 12176,
+        "source": "original-site"
+      }
+    ],
+    "KqkbtdEpEFw": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 11201,
+        "source": "original-site"
+      }
+    ],
+    "vUVmyAiqSnQ": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 33905,
+        "source": "original-site"
+      }
+    ],
+    "kiu2BtQWfrc": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 7403,
+        "source": "original-site"
+      }
+    ],
+    "TYsXxYB-PKM": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 12197,
+        "source": "original-site"
+      }
+    ],
+    "RFohAIFM6z4": [
+      {
+        "capturedAt": 1793427398707,
+        "views": 52113,
+        "source": "original-site"
+      }
+    ],
+    "97b2MbM8lYU": [
+      {
+        "capturedAt": 1793427398707,
+        "views": 21565,
+        "source": "original-site"
+      }
+    ],
+    "bny3G9X9OBA": [
+      {
+        "capturedAt": 1793427398707,
+        "views": 14095,
+        "source": "original-site"
+      }
+    ],
+    "YAgGcYEFtok": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 5238,
+        "source": "original-site"
+      }
+    ],
+    "MQGdDd10u-g": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 7315,
+        "source": "original-site"
+      }
+    ],
+    "MdhZBttk3Bw": [
+      {
+        "capturedAt": 1793427398707,
+        "views": 50632,
+        "source": "original-site"
+      }
+    ],
+    "LiMslP8HfWY": [
+      {
+        "capturedAt": 1793427398707,
+        "views": 209307,
+        "source": "original-site"
+      }
+    ],
+    "gq72Jg297IY": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 5881,
+        "source": "original-site"
+      }
+    ],
+    "WJapDjuEdfA": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 51881,
+        "source": "original-site"
+      }
+    ],
+    "NNHRQWoJoYo": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 18658,
+        "source": "original-site"
+      }
+    ],
+    "OiSlEJ8x7T8": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 38128,
+        "source": "original-site"
+      }
+    ],
+    "o6dDhrwCAL0": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 5332,
+        "source": "original-site"
+      }
+    ],
+    "wZX2_WZ9xCw": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 6215,
+        "source": "original-site"
+      }
+    ],
+    "5Guc0FIZ8yA": [
+      {
+        "capturedAt": 1793427392408,
+        "views": 76930,
+        "source": "original-site"
+      }
+    ],
+    "H_rlr1JQ07c": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 38,
+        "source": "original-site"
+      }
+    ],
+    "EncsznAZcgE": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 568,
+        "source": "original-site"
+      }
+    ],
+    "95zlPZ3Jdtc": [
+      {
+        "capturedAt": 1793427402767,
+        "views": 26,
+        "source": "original-site"
+      }
+    ],
+    "zjSnrF2Hneg": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 1,
+        "source": "original-site"
+      }
+    ],
+    "sF-mGAIJfVQ": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 494,
+        "source": "original-site"
+      }
+    ],
+    "tyblNAMWiBg": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 4,
+        "source": "original-site"
+      }
+    ],
+    "nQlEsgmsvnI": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 1598,
+        "source": "original-site"
+      }
+    ],
+    "V7WyqbWcfVc": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 524,
+        "source": "original-site"
+      }
+    ],
+    "xpwAL6uXok4": [
+      {
+        "capturedAt": 1793427402767,
+        "views": 1,
+        "source": "original-site"
+      }
+    ],
+    "9Id4acG-YV4": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 1060,
+        "source": "original-site"
+      }
+    ],
+    "w38NeIwTVSc": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 286,
+        "source": "original-site"
+      }
+    ],
+    "rR8RgyqRdQw": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 2329,
+        "source": "original-site"
+      }
+    ],
+    "qM_bcoq7eGg": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 911,
+        "source": "original-site"
+      }
+    ],
+    "O6IfqvA3Kik": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 3,
+        "source": "original-site"
+      }
+    ],
+    "nBaVElSyIYg": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 847,
+        "source": "original-site"
+      }
+    ],
+    "8b7WTZZ1yL0": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 0,
+        "source": "original-site"
+      }
+    ],
+    "qwI6BmcOAxQ": [
+      {
+        "capturedAt": 1793427402767,
+        "views": 9,
+        "source": "original-site"
+      }
+    ],
+    "D6Uvop7IGeY": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 729,
+        "source": "original-site"
+      }
+    ],
+    "0iyAgdSpAnc": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 1640,
+        "source": "original-site"
+      }
+    ],
+    "82SRyIN0Vxg": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 712,
+        "source": "original-site"
+      }
+    ],
+    "TJFzhpBeLzA": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 1143,
+        "source": "original-site"
+      }
+    ],
+    "BfP0NbAz2ho": [
+      {
+        "capturedAt": 1793427405829,
+        "views": 7,
+        "source": "original-site"
+      }
+    ],
+    "1DIpgFlHl_8": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 753,
+        "source": "original-site"
+      }
+    ],
+    "pMzjX-ga2kY": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 0,
+        "source": "original-site"
+      }
+    ],
+    "C39O51kA9PM": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 560,
+        "source": "original-site"
+      }
+    ],
+    "EzpNMIwQZAk": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 962,
+        "source": "original-site"
+      }
+    ],
+    "PPTU4SjyRW4": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 2027,
+        "source": "original-site"
+      }
+    ],
+    "LsqQO0-hDH4": [
+      {
+        "capturedAt": 1793427402767,
+        "views": 40,
+        "source": "original-site"
+      }
+    ],
+    "WFX3y_ksaLc": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 886,
+        "source": "original-site"
+      }
+    ],
+    "6Ie3symBfu4": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 776,
+        "source": "original-site"
+      }
+    ],
+    "qkT5LrBP1uA": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 642,
+        "source": "original-site"
+      }
+    ],
+    "E3zKDTo3jKg": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 3455,
+        "source": "original-site"
+      }
+    ],
+    "Sp9aAYwVk24": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 1332,
+        "source": "original-site"
+      }
+    ],
+    "OJxjqzv5O7Y": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 9,
+        "source": "original-site"
+      }
+    ],
+    "XmbNKGGu2fQ": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 68,
+        "source": "original-site"
+      }
+    ],
+    "FCkZqn93Xig": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 3934,
+        "source": "original-site"
+      }
+    ],
+    "FJMz-vkOzlU": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 2,
+        "source": "original-site"
+      }
+    ],
+    "WKOO4xLw3zg": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 251,
+        "source": "original-site"
+      }
+    ],
+    "JXZ3UZyWKpU": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 104,
+        "source": "original-site"
+      }
+    ],
+    "sZisazZHz-A": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 1154,
+        "source": "original-site"
+      }
+    ],
+    "FOf2TD2P7Wo": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 1306,
+        "source": "original-site"
+      }
+    ],
+    "J3vkUsnzGXc": [
+      {
+        "capturedAt": 1793427405368,
+        "views": 1166,
+        "source": "original-site"
+      }
+    ],
+    "bmTcxKo7FQQ": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 4,
+        "source": "original-site"
+      }
+    ],
+    "LLskUiOYgio": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 1149,
+        "source": "original-site"
+      }
+    ],
+    "Vp2G0_x0aw4": [
+      {
+        "capturedAt": 1793427398291,
+        "views": 1037,
+        "source": "original-site"
+      }
+    ],
+    "uSHr3viLO3I": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 35,
+        "source": "original-site"
+      }
+    ],
+    "I8XxVmt7LSA": [
+      {
+        "capturedAt": 1793427398707,
+        "views": 2,
+        "source": "original-site"
+      }
+    ],
+    "DrGf1tWTAto": [
+      {
+        "capturedAt": 1793427398707,
+        "views": 3564,
+        "source": "original-site"
+      }
+    ],
+    "kNLpfDHmwuI": [
+      {
+        "capturedAt": 1793427398707,
+        "views": 1171,
+        "source": "original-site"
+      }
+    ],
+    "0Ho3zKP_FxU": [
+      {
+        "capturedAt": 1793427401474,
+        "views": 3902,
+        "source": "original-site"
+      }
+    ],
+    "7QJgSW89LFs": [
+      {
+        "capturedAt": 1793427398707,
+        "views": 9,
+        "source": "original-site"
+      }
+    ],
+    "v0Bcp5qMdT0": [
+      {
+        "capturedAt": 1793427398707,
+        "views": 4,
+        "source": "original-site"
+      }
+    ],
+    "4uYP4BYXJ7Y": [
+      {
+        "capturedAt": 1793427398707,
+        "views": 1013,
+        "source": "original-site"
+      }
+    ],
+    "71F1DPm7w_A": [
+      {
+        "capturedAt": 1793427405368,
+        "views": 230,
+        "source": "original-site"
+      }
+    ],
+    "2mr3SW9VZt8": [
+      {
+        "capturedAt": 1793427405829,
+        "views": 505,
+        "source": "original-site"
+      }
+    ],
+    "BTMuq80ieX0": [
+      {
+        "capturedAt": 1793427405368,
+        "views": 2313,
+        "source": "original-site"
+      }
+    ],
+    "Xf0JQuzLjO8": [
+      {
+        "capturedAt": 1793427402767,
+        "views": 5,
+        "source": "original-site"
+      }
+    ],
+    "ITxs7TUZLg0": [
+      {
+        "capturedAt": 1793427405368,
+        "views": 224,
+        "source": "original-site"
+      }
+    ],
+    "8pxSsU4aqqE": [
+      {
+        "capturedAt": 1793427402767,
+        "views": 44,
+        "source": "original-site"
+      }
+    ],
+    "yxLYjnJYIAM": [
+      {
+        "capturedAt": 1793427402767,
+        "views": 66,
+        "source": "original-site"
+      }
+    ],
+    "EtiKEsOCyZE": [
+      {
+        "capturedAt": 1793427405829,
+        "views": 1415,
+        "source": "original-site"
+      }
+    ],
+    "Nl734IGUSEs": [
+      {
+        "capturedAt": 1793427405368,
+        "views": 1373,
+        "source": "original-site"
+      }
+    ],
+    "-khK6LyOMM8": [
+      {
+        "capturedAt": 1793375076495,
+        "views": 1,
+        "source": "original-site"
+      }
+    ],
+    "Yh8b-eSeFgw": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 1344,
+        "source": "original-site"
+      }
+    ],
+    "zV3CBMNikJI": [
+      {
+        "capturedAt": 1793427405829,
+        "views": 1235,
+        "source": "original-site"
+      }
+    ],
+    "9pSAKWD1WJM": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 0,
+        "source": "original-site"
+      }
+    ],
+    "HlbSECxFmss": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 45,
+        "source": "original-site"
+      }
+    ],
+    "Hb5rCKG1B-o": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 1593,
+        "source": "original-site"
+      }
+    ],
+    "ngJKl7pJeXE": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 119,
+        "source": "original-site"
+      }
+    ],
+    "Q5FdnLXsbVw": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 31,
+        "source": "original-site"
+      }
+    ],
+    "MHNwmnroqgY": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 1368,
+        "source": "original-site"
+      }
+    ],
+    "OYfhpmBCcbA": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 1242,
+        "source": "original-site"
+      }
+    ],
+    "0bNtHMiKYDY": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 129,
+        "source": "original-site"
+      }
+    ],
+    "6fZxeCrM-ys": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 2372,
+        "source": "original-site"
+      }
+    ],
+    "CrCHqWIkQI8": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 15,
+        "source": "original-site"
+      }
+    ],
+    "5o-Nqa2bUbs": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 1272,
+        "source": "original-site"
+      }
+    ],
+    "c17JXtU-H04": [
+      {
+        "capturedAt": 1793427402767,
+        "views": 68,
+        "source": "original-site"
+      }
+    ],
+    "YxjBVfvvv8Y": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 1204,
+        "source": "original-site"
+      }
+    ],
+    "FEZ6KyD8vAY": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 1262,
+        "source": "original-site"
+      }
+    ],
+    "T9toKcrmsdc": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 1315,
+        "source": "original-site"
+      }
+    ],
+    "MMdys0qdgug": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 2395,
+        "source": "original-site"
+      }
+    ],
+    "GjaiPNYUqsM": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 1266,
+        "source": "original-site"
+      }
+    ],
+    "mHWB_j0gxmo": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 487,
+        "source": "original-site"
+      }
+    ],
+    "BkFO3usnbRU": [
+      {
+        "capturedAt": 1793427395574,
+        "views": 1097,
+        "source": "original-site"
+      }
+    ],
+    "6jecavKviAY": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 248,
+        "source": "original-site"
+      }
+    ],
+    "woG_qXVb50Y": [
+      {
+        "capturedAt": 1793427395082,
+        "views": 1210,
+        "source": "original-site"
+      }
+    ],
+    "T2JTNLlSQaE": [
+      {
+        "capturedAt": 1793427392408,
+        "views": 2763,
+        "source": "original-site"
+      }
+    ],
+    "3IRW-WeNZz0": [
+      {
+        "capturedAt": 1793427392408,
+        "views": 395,
+        "source": "original-site"
+      }
+    ],
+    "y-eC2J_Tsgo": [
+      {
+        "capturedAt": 1793427392408,
+        "views": 216,
+        "source": "original-site"
+      }
+    ]
+  },
   "videos": [
     {
       "id": "LiMslP8HfWY",
@@ -61,7 +861,8 @@
       "samples": [
         {
           "capturedAt": 1793427398707,
-          "views": 209307
+          "views": 209307,
+          "source": "original-site"
         }
       ]
     },
@@ -82,7 +883,8 @@
       "samples": [
         {
           "capturedAt": 1793427398291,
-          "views": 90585
+          "views": 90585,
+          "source": "original-site"
         }
       ]
     },
@@ -103,7 +905,8 @@
       "samples": [
         {
           "capturedAt": 1793427398707,
-          "views": 52113
+          "views": 52113,
+          "source": "original-site"
         }
       ]
     },
@@ -124,7 +927,8 @@
       "samples": [
         {
           "capturedAt": 1793427398707,
-          "views": 50632
+          "views": 50632,
+          "source": "original-site"
         }
       ]
     },
@@ -145,7 +949,8 @@
       "samples": [
         {
           "capturedAt": 1793427398291,
-          "views": 33905
+          "views": 33905,
+          "source": "original-site"
         }
       ]
     },
@@ -166,7 +971,8 @@
       "samples": [
         {
           "capturedAt": 1793427398291,
-          "views": 21907
+          "views": 21907,
+          "source": "original-site"
         }
       ]
     },
@@ -187,7 +993,8 @@
       "samples": [
         {
           "capturedAt": 1793427392408,
-          "views": 76930
+          "views": 76930,
+          "source": "original-site"
         }
       ]
     },
@@ -208,7 +1015,8 @@
       "samples": [
         {
           "capturedAt": 1793427395082,
-          "views": 51881
+          "views": 51881,
+          "source": "original-site"
         }
       ]
     },
@@ -229,7 +1037,8 @@
       "samples": [
         {
           "capturedAt": 1793427398291,
-          "views": 12308
+          "views": 12308,
+          "source": "original-site"
         }
       ]
     },
@@ -250,7 +1059,8 @@
       "samples": [
         {
           "capturedAt": 1793427398707,
-          "views": 21565
+          "views": 21565,
+          "source": "original-site"
         }
       ]
     },
@@ -271,7 +1081,8 @@
       "samples": [
         {
           "capturedAt": 1793427395082,
-          "views": 38128
+          "views": 38128,
+          "source": "original-site"
         }
       ]
     },
@@ -292,7 +1103,8 @@
       "samples": [
         {
           "capturedAt": 1793427398291,
-          "views": 12176
+          "views": 12176,
+          "source": "original-site"
         }
       ]
     },
@@ -313,7 +1125,8 @@
       "samples": [
         {
           "capturedAt": 1793427398291,
-          "views": 11201
+          "views": 11201,
+          "source": "original-site"
         }
       ]
     },
@@ -334,7 +1147,8 @@
       "samples": [
         {
           "capturedAt": 1793427398707,
-          "views": 14095
+          "views": 14095,
+          "source": "original-site"
         }
       ]
     },
@@ -355,7 +1169,8 @@
       "samples": [
         {
           "capturedAt": 1793427398291,
-          "views": 12197
+          "views": 12197,
+          "source": "original-site"
         }
       ]
     },
@@ -376,7 +1191,8 @@
       "samples": [
         {
           "capturedAt": 1793427401474,
-          "views": 5781
+          "views": 5781,
+          "source": "original-site"
         }
       ]
     },
@@ -397,7 +1213,8 @@
       "samples": [
         {
           "capturedAt": 1793427401474,
-          "views": 7358
+          "views": 7358,
+          "source": "original-site"
         }
       ]
     },
@@ -418,7 +1235,8 @@
       "samples": [
         {
           "capturedAt": 1793427395082,
-          "views": 18658
+          "views": 18658,
+          "source": "original-site"
         }
       ]
     },
@@ -439,7 +1257,8 @@
       "samples": [
         {
           "capturedAt": 1793427398291,
-          "views": 7403
+          "views": 7403,
+          "source": "original-site"
         }
       ]
     },
@@ -460,7 +1279,8 @@
       "samples": [
         {
           "capturedAt": 1793427401474,
-          "views": 7315
+          "views": 7315,
+          "source": "original-site"
         }
       ]
     },
@@ -481,7 +1301,8 @@
       "samples": [
         {
           "capturedAt": 1793427401474,
-          "views": 5238
+          "views": 5238,
+          "source": "original-site"
         }
       ]
     },
@@ -502,7 +1323,8 @@
       "samples": [
         {
           "capturedAt": 1793427395574,
-          "views": 5881
+          "views": 5881,
+          "source": "original-site"
         }
       ]
     },
@@ -523,7 +1345,8 @@
       "samples": [
         {
           "capturedAt": 1793427395574,
-          "views": 6215
+          "views": 6215,
+          "source": "original-site"
         }
       ]
     },
@@ -544,7 +1367,8 @@
       "samples": [
         {
           "capturedAt": 1793427395082,
-          "views": 5332
+          "views": 5332,
+          "source": "original-site"
         }
       ]
     }
