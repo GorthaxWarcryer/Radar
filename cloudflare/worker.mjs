@@ -1,7 +1,7 @@
 import { buildFeed, fromGithubVideo, normalizeIncomingStory, safeUrl } from './transform.mjs';
 import { synchronizeOfficial, officialSourceStatus } from './official.mjs';
 import { synchronizeBluePosts } from './blue-posts.mjs';
-import { aiEnabled, developOpportunity } from './ai-ideas.mjs';
+import { autoAIEnabled, automaticallyGenerate, sourceSignature, MAX_AI_PER_DAY } from './ai-ideas.mjs';
 import { OFFICIAL_YOUTUBE_CHANNELS, isOfficialYouTubeChannel } from '../src/official-youtube.mjs';
 
 const GITHUB_HOT='https://raw.githubusercontent.com/GorthaxWarcryer/Radar/main/docs/hot/latest.json';
@@ -97,7 +97,7 @@ async function readRows(db,sql,params=[]) {
 }
 async function state(env,req,now=Date.now(),fetcher=fetch) {
   const isAdmin=await verifyAdmin(req,env);
-  const [videoRows,redditRows,officialRows,savedRows,scans,meta,channels,settings,hiddenRows]=await Promise.all([
+  const [videoRows,redditRows,officialRows,savedRows,scans,meta,channels,settings,hiddenRows,aiRows,aiUsage]=await Promise.all([
     readRows(env.DB,'SELECT payload FROM videos WHERE last_seen>=? ORDER BY last_seen DESC LIMIT 1500',[now-7*86400000]),
     readRows(env.DB,'SELECT payload FROM reddit WHERE last_seen>=? ORDER BY last_seen DESC LIMIT 400',[now-2*3600000]),
     readRows(env.DB,'SELECT payload FROM official ORDER BY last_seen DESC LIMIT 150'),
@@ -106,7 +106,9 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
     readRows(env.DB,"SELECT key,value FROM meta WHERE key IN ('githubLastGeneratedAt','lastCloudflareSyncAt')"),
     readRows(env.DB,'SELECT id,title,official,blocked,updated_at AS updatedAt FROM managed_channels ORDER BY updated_at DESC LIMIT 100'),
     readRows(env.DB,'SELECT key,value,updated_at AS updatedAt FROM discovery_settings LIMIT 30'),
-    readRows(env.DB,'SELECT id FROM hidden_videos LIMIT 1000')
+    readRows(env.DB,'SELECT id FROM hidden_videos LIMIT 1000'),
+    readRows(env.DB,'SELECT id,signature,payload,generated_at FROM ai_briefs WHERE generated_at>=? LIMIT 100',[now-48*3600000]),
+    readRows(env.DB,'SELECT used FROM ai_daily_usage WHERE day=? LIMIT 1',[new Date(now).toISOString().slice(0,10)])
   ]);
   const metaObj=Object.fromEntries(meta.map(x=>[x.key,x.value]));
   let videos=parsePayload(videoRows);
@@ -139,7 +141,16 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
     .map(c=>({...c,official:true,platform:'youtube',trackedBy:'github-discovery'}));
   const managed=channels.filter(c=>!c.blocked&&!OFFICIAL_YOUTUBE_CHANNELS.some(x=>x.id===c.id))
     .map(c=>({id:c.id,title:c.title,official:false,handle:''}));
-  return {...base,contentCreation:{...base.contentCreation,aiAvailable:aiEnabled(env)},channels:[...builtin,...managed],
+  const cachedBriefs=new Map(aiRows.map(r=>[r.id,r]));
+  const ideas=base.contentCreation.items.map(idea=>{
+    const cached=cachedBriefs.get(idea.id);
+    if(!cached||cached.signature!==sourceSignature(idea))return idea;
+    try {return {...idea,autoBrief:JSON.parse(cached.payload)};}
+    catch{return idea;}
+  });
+  return {...base,contentCreation:{items:ideas,autoAIEnabled:autoAIEnabled(env),
+    aiDailyCap:MAX_AI_PER_DAY,aiUsedToday:Number(aiUsage[0]?.used||0),
+    aiAvailable:false},channels:[...builtin,...managed],
     discoverySettings:{queries:config.queries||['WoW Forever','World of Warcraft Forever','WoW Classic'],
       englishOnly:true,excludeRussian:true,channelCount:channels.filter(c=>!c.blocked).length},
     researchStatuses:['New','Seen','Investigating','Planned','Published','Dismissed'],
@@ -261,26 +272,6 @@ export default {
           .map(r=>({id:r.id,official:!!r.official})),blockedChannels:rows.filter(r=>r.blocked).map(r=>r.id),
           hiddenVideos:hidden.map(r=>r.id),englishOnly:true,excludeRussian:true,updatedAt:now});
       }
-      if(req.method==='POST'&&path==='/api/content/develop') {
-        // Owner-only, on demand, budget-capped model call. Normal scans and page loads never invoke AI.
-        const denied=await adminRequired(req,env);if(denied)return denied;
-        if(!aiEnabled(env))return error('Optional AI is disabled; set AI_IDEAS_ENABLED and OPENAI_API_KEY to opt in',409);
-        const d=await bodyJson(req);
-        if(typeof d.id!=='string'||!/^opportunity:[a-z0-9:-]{4,140}$/.test(d.id))
-          return error('Valid opportunity id required',400);
-        const current=await state(env,req,now);
-        const idea=current.contentCreation?.items?.find(x=>x.id===d.id);
-        if(!idea)return error('Opportunity is no longer in the current feed',404);
-        const key='ai-brief:'+d.id;
-        const cached=await readRows(env.DB,'SELECT value,updated_at FROM discovery_settings WHERE key=? LIMIT 1',[key]);
-        if(cached.length&&now-Number(cached[0].updated_at)<24*3600000) {
-          try {return reply({...JSON.parse(cached[0].value),cached:true});}catch{}
-        }
-        const result=await developOpportunity(idea,env);
-        await env.DB.prepare('INSERT INTO discovery_settings(key,value,updated_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at')
-          .bind(key,JSON.stringify(result),now).run();
-        return reply({...result,cached:false});
-      }
       if(req.method==='POST'&&path==='/api/research/status'){
         const denied=await adminRequired(req,env);if(denied)return denied;
         const d=await bodyJson(req);
@@ -379,6 +370,13 @@ export default {
     const hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Kyiv',hour:'2-digit',hourCycle:'h23'}).format(new Date(event.scheduledTime)));
     if(hour<5||hour>20)return;
     try{const result=await synchronize(env,fetch,now);console.log('Cloudflare scheduled sync:',JSON.stringify(result));}
-    catch(e){console.error('Cloudflare scheduled sync failure:',fail(e));throw e;}
+    catch(e){console.error('Cloudflare scheduled sync failure:',fail(e));}
+    // Fully automatic AI runs ONLY on the cron, not for visitors or refreshes.
+    // Read the current evidence-based opportunities, then cache at most two
+    // creative briefs per scan and six requests in total per UTC day.
+    try {
+      const feed=await state(env,new Request('https://radar.internal/api/feed'),now);
+      console.log('Scheduled free AI:',JSON.stringify(await automaticallyGenerate(env,feed.contentCreation.items,now)));
+    } catch(e) {console.error('Scheduled free AI unavailable:',fail(e));}
   }
 };
