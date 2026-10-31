@@ -1,0 +1,552 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": 1793431009673,
+  "sourceLastScan": 1793427408479,
+  "sourceFeed": "https://azeroth-radar-petro.gorthax.chatgpt.site/api/feed?view=dashboard",
+  "disclaimer": "Github re-ranks source snapshots; no new YouTube view counts are collected here.",
+  "counts": {
+    "tracked": 417,
+    "within24h": 113,
+    "eligible": 24,
+    "estimated": 24,
+    "measured": 0,
+    "shorts": 9,
+    "longForm": 15
+  },
+  "rankings": {
+    "hot": [
+      "LiMslP8HfWY",
+      "1GEmk7Fci2E",
+      "RFohAIFM6z4",
+      "MdhZBttk3Bw",
+      "vUVmyAiqSnQ",
+      "5Guc0FIZ8yA",
+      "XtJskkJZTXw",
+      "97b2MbM8lYU",
+      "OiSlEJ8x7T8",
+      "GZRZemt6owc",
+      "KqkbtdEpEFw",
+      "TYsXxYB-PKM",
+      "NNHRQWoJoYo",
+      "kiu2BtQWfrc",
+      "MQGdDd10u-g"
+    ],
+    "shortsHot": [
+      "1JhKzviW1h8",
+      "WJapDjuEdfA",
+      "bny3G9X9OBA",
+      "B9IoL1xyym0",
+      "l9GwCosk91o",
+      "YAgGcYEFtok",
+      "gq72Jg297IY",
+      "wZX2_WZ9xCw",
+      "o6dDhrwCAL0"
+    ]
+  },
+  "videos": [
+    {
+      "id": "LiMslP8HfWY",
+      "title": "World of Warcraft: Forever | Planet Azeroth EP. 2 (ft. Bill Bailey)",
+      "channel": "IGN",
+      "publishedAt": 1793376006000,
+      "views": 209307,
+      "url": "https://www.youtube.com/watch?v=LiMslP8HfWY",
+      "thumbnail": "https://i.ytimg.com/vi/LiMslP8HfWY/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 14662,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398707,
+      "samples": [
+        {
+          "capturedAt": 1793427398707,
+          "views": 209307
+        }
+      ]
+    },
+    {
+      "id": "1GEmk7Fci2E",
+      "title": "You Only Need a Few Addons for WoW Forever",
+      "channel": "Bellular Warcraft",
+      "publishedAt": 1793403896000,
+      "views": 90585,
+      "url": "https://www.youtube.com/watch?v=1GEmk7Fci2E",
+      "thumbnail": "https://i.ytimg.com/vi/1GEmk7Fci2E/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 13875,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398291,
+      "samples": [
+        {
+          "capturedAt": 1793427398291,
+          "views": 90585
+        }
+      ]
+    },
+    {
+      "id": "RFohAIFM6z4",
+      "title": "Troll Warrior Is 100% BROKEN in WoW Forever... I'm Rerolling",
+      "channel": "Kargoz",
+      "publishedAt": 1793393132000,
+      "views": 52113,
+      "url": "https://www.youtube.com/watch?v=RFohAIFM6z4",
+      "thumbnail": "https://i.ytimg.com/vi/RFohAIFM6z4/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 5475,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398707,
+      "samples": [
+        {
+          "capturedAt": 1793427398707,
+          "views": 52113
+        }
+      ]
+    },
+    {
+      "id": "MdhZBttk3Bw",
+      "title": "This Profession BREAKS WoW Forever",
+      "channel": "NOHITJEROME",
+      "publishedAt": 1793388349000,
+      "views": 50632,
+      "url": "https://www.youtube.com/watch?v=MdhZBttk3Bw",
+      "thumbnail": "https://i.ytimg.com/vi/MdhZBttk3Bw/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 4668,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398707,
+      "samples": [
+        {
+          "capturedAt": 1793427398707,
+          "views": 50632
+        }
+      ]
+    },
+    {
+      "id": "vUVmyAiqSnQ",
+      "title": "More Changes For Mage & Druid In WoW Forever Were Just Datamined",
+      "channel": "Venruki",
+      "publishedAt": 1793398140000,
+      "views": 33905,
+      "url": "https://www.youtube.com/watch?v=vUVmyAiqSnQ",
+      "thumbnail": "https://i.ytimg.com/vi/vUVmyAiqSnQ/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 4172,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398291,
+      "samples": [
+        {
+          "capturedAt": 1793427398291,
+          "views": 33905
+        }
+      ]
+    },
+    {
+      "id": "1JhKzviW1h8",
+      "title": "Which One Do You Like More?!...🤔| WoW Forever",
+      "channel": "Esfand",
+      "publishedAt": 1793404242000,
+      "views": 21907,
+      "url": "https://www.youtube.com/watch?v=1JhKzviW1h8",
+      "thumbnail": "https://i.ytimg.com/vi/1JhKzviW1h8/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "estimated-since-upload",
+      "vph": 3406,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398291,
+      "samples": [
+        {
+          "capturedAt": 1793427398291,
+          "views": 21907
+        }
+      ]
+    },
+    {
+      "id": "5Guc0FIZ8yA",
+      "title": "PRIEST: EVERYTHING You NEED To Know In WoW Forever | WOW FOREVER",
+      "channel": "WillE",
+      "publishedAt": 1793345811000,
+      "views": 76930,
+      "url": "https://www.youtube.com/watch?v=5Guc0FIZ8yA",
+      "thumbnail": "https://i.ytimg.com/vi/5Guc0FIZ8yA/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 3395,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427392408,
+      "samples": [
+        {
+          "capturedAt": 1793427392408,
+          "views": 76930
+        }
+      ]
+    },
+    {
+      "id": "WJapDjuEdfA",
+      "title": "World of Warcraft Forever Taurens Getting The VIP Treatment?! #wowforever #memes #lythp",
+      "channel": "Lythp",
+      "publishedAt": 1793368944000,
+      "views": 51881,
+      "url": "https://www.youtube.com/watch?v=WJapDjuEdfA",
+      "thumbnail": "https://i.ytimg.com/vi/WJapDjuEdfA/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "estimated-since-upload",
+      "vph": 3195,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427395082,
+      "samples": [
+        {
+          "capturedAt": 1793427395082,
+          "views": 51881
+        }
+      ]
+    },
+    {
+      "id": "XtJskkJZTXw",
+      "title": "Major Class Changes Last Minute WoW Forever",
+      "channel": "Supatease",
+      "publishedAt": 1793408543000,
+      "views": 12308,
+      "url": "https://www.youtube.com/watch?v=XtJskkJZTXw",
+      "thumbnail": "https://i.ytimg.com/vi/XtJskkJZTXw/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 2350,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398291,
+      "samples": [
+        {
+          "capturedAt": 1793427398291,
+          "views": 12308
+        }
+      ]
+    },
+    {
+      "id": "97b2MbM8lYU",
+      "title": "WoW Forever: Best Pet for Every Single Family",
+      "channel": "Gladius Gaming",
+      "publishedAt": 1793392005000,
+      "views": 21565,
+      "url": "https://www.youtube.com/watch?v=97b2MbM8lYU",
+      "thumbnail": "https://i.ytimg.com/vi/97b2MbM8lYU/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 2193,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398707,
+      "samples": [
+        {
+          "capturedAt": 1793427398707,
+          "views": 21565
+        }
+      ]
+    },
+    {
+      "id": "OiSlEJ8x7T8",
+      "title": "I Tried WoW Forever as a New Player — Is It Worth It?",
+      "channel": "Zilla",
+      "publishedAt": 1793361638000,
+      "views": 38128,
+      "url": "https://www.youtube.com/watch?v=OiSlEJ8x7T8",
+      "thumbnail": "https://i.ytimg.com/vi/OiSlEJ8x7T8/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 2087,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427395082,
+      "samples": [
+        {
+          "capturedAt": 1793427395082,
+          "views": 38128
+        }
+      ]
+    },
+    {
+      "id": "GZRZemt6owc",
+      "title": "Don't Pick a Profession in WoW Forever Until You Watch This",
+      "channel": "Mobalytics",
+      "publishedAt": 1793402255000,
+      "views": 12176,
+      "url": "https://www.youtube.com/watch?v=GZRZemt6owc",
+      "thumbnail": "https://i.ytimg.com/vi/GZRZemt6owc/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 1743,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398291,
+      "samples": [
+        {
+          "capturedAt": 1793427398291,
+          "views": 12176
+        }
+      ]
+    },
+    {
+      "id": "KqkbtdEpEFw",
+      "title": "What's Going On With WoW Forever's Racials?",
+      "channel": "wowcrendor",
+      "publishedAt": 1793400693000,
+      "views": 11201,
+      "url": "https://www.youtube.com/watch?v=KqkbtdEpEFw",
+      "thumbnail": "https://i.ytimg.com/vi/KqkbtdEpEFw/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 1510,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398291,
+      "samples": [
+        {
+          "capturedAt": 1793427398291,
+          "views": 11201
+        }
+      ]
+    },
+    {
+      "id": "bny3G9X9OBA",
+      "title": "trying to sell my cooking profession in wow forever #wow #worldofwarcraft #warcraft",
+      "channel": "Shax",
+      "publishedAt": 1793391828000,
+      "views": 14095,
+      "url": "https://www.youtube.com/watch?v=bny3G9X9OBA",
+      "thumbnail": "https://i.ytimg.com/vi/bny3G9X9OBA/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "estimated-since-upload",
+      "vph": 1427,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398707,
+      "samples": [
+        {
+          "capturedAt": 1793427398707,
+          "views": 14095
+        }
+      ]
+    },
+    {
+      "id": "TYsXxYB-PKM",
+      "title": "You Might Want to RETHINK Your WoW Forever Main...",
+      "channel": "PILAV TV",
+      "publishedAt": 1793394004000,
+      "views": 12197,
+      "url": "https://www.youtube.com/watch?v=TYsXxYB-PKM",
+      "thumbnail": "https://i.ytimg.com/vi/TYsXxYB-PKM/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 1315,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398291,
+      "samples": [
+        {
+          "capturedAt": 1793427398291,
+          "views": 12197
+        }
+      ]
+    },
+    {
+      "id": "B9IoL1xyym0",
+      "title": "Hey @VivaLaDirtLeague! Why does this feel so familiar…?",
+      "channel": "World of Warcraft",
+      "publishedAt": 1793411341000,
+      "views": 5781,
+      "url": "https://www.youtube.com/watch?v=B9IoL1xyym0",
+      "thumbnail": "https://i.ytimg.com/vi/B9IoL1xyym0/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "estimated-since-upload",
+      "vph": 1296,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427401474,
+      "samples": [
+        {
+          "capturedAt": 1793427401474,
+          "views": 5781
+        }
+      ]
+    },
+    {
+      "id": "l9GwCosk91o",
+      "title": "Love learning about the tech that powers games?",
+      "channel": "World of Warcraft",
+      "publishedAt": 1793404952000,
+      "views": 7358,
+      "url": "https://www.youtube.com/watch?v=l9GwCosk91o",
+      "thumbnail": "https://i.ytimg.com/vi/l9GwCosk91o/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "estimated-since-upload",
+      "vph": 1180,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427401474,
+      "samples": [
+        {
+          "capturedAt": 1793427401474,
+          "views": 7358
+        }
+      ]
+    },
+    {
+      "id": "NNHRQWoJoYo",
+      "title": "Helpful Druid Macros in WoW Forever",
+      "channel": "Psybear_tv",
+      "publishedAt": 1793367783000,
+      "views": 18658,
+      "url": "https://www.youtube.com/watch?v=NNHRQWoJoYo",
+      "thumbnail": "https://i.ytimg.com/vi/NNHRQWoJoYo/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 1127,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427395082,
+      "samples": [
+        {
+          "capturedAt": 1793427395082,
+          "views": 18658
+        }
+      ]
+    },
+    {
+      "id": "kiu2BtQWfrc",
+      "title": "Blizzard Just Revealed So Much NEW Content For WoW:Forever",
+      "channel": "Doronsmovies",
+      "publishedAt": 1793397377000,
+      "views": 7403,
+      "url": "https://www.youtube.com/watch?v=kiu2BtQWfrc",
+      "thumbnail": "https://i.ytimg.com/vi/kiu2BtQWfrc/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 888,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427398291,
+      "samples": [
+        {
+          "capturedAt": 1793427398291,
+          "views": 7403
+        }
+      ]
+    },
+    {
+      "id": "MQGdDd10u-g",
+      "title": "Warcraft: Talebound Rewards MYTHIC GEAR And Tons of Cosmetics! Live Reactions",
+      "channel": "SoulSoBreezy",
+      "publishedAt": 1793389629000,
+      "views": 7315,
+      "url": "https://www.youtube.com/watch?v=MQGdDd10u-g",
+      "thumbnail": "https://i.ytimg.com/vi/MQGdDd10u-g/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "estimated-since-upload",
+      "vph": 697,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427401474,
+      "samples": [
+        {
+          "capturedAt": 1793427401474,
+          "views": 7315
+        }
+      ]
+    },
+    {
+      "id": "YAgGcYEFtok",
+      "title": "blizzard on November 4th #wow #worldofwarcraft #warcraft",
+      "channel": "Shax",
+      "publishedAt": 1793391695000,
+      "views": 5238,
+      "url": "https://www.youtube.com/watch?v=YAgGcYEFtok",
+      "thumbnail": "https://i.ytimg.com/vi/YAgGcYEFtok/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "estimated-since-upload",
+      "vph": 528,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427401474,
+      "samples": [
+        {
+          "capturedAt": 1793427401474,
+          "views": 5238
+        }
+      ]
+    },
+    {
+      "id": "gq72Jg297IY",
+      "title": "WOW MEME REWIND 7 #worldofwarcraft #warcraft #wowclassic #wowforever #wowmemes  #gamingmemes",
+      "channel": "Eternian77",
+      "publishedAt": 1793373046000,
+      "views": 5881,
+      "url": "https://www.youtube.com/watch?v=gq72Jg297IY",
+      "thumbnail": "https://i.ytimg.com/vi/gq72Jg297IY/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "estimated-since-upload",
+      "vph": 390,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427395574,
+      "samples": [
+        {
+          "capturedAt": 1793427395574,
+          "views": 5881
+        }
+      ]
+    },
+    {
+      "id": "wZX2_WZ9xCw",
+      "title": "It’s always the hunters fault in World Of Warcraft Forever #worldofwarcraft #wowforever",
+      "channel": "The Dirty Casual",
+      "publishedAt": 1793358021000,
+      "views": 6215,
+      "url": "https://www.youtube.com/watch?v=wZX2_WZ9xCw",
+      "thumbnail": "https://i.ytimg.com/vi/wZX2_WZ9xCw/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "estimated-since-upload",
+      "vph": 323,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427395574,
+      "samples": [
+        {
+          "capturedAt": 1793427395574,
+          "views": 6215
+        }
+      ]
+    },
+    {
+      "id": "o6dDhrwCAL0",
+      "title": "Tanking in World Of Warcraft Forever Be Like #worldofwarcraft #wowforever",
+      "channel": "The Dirty Casual",
+      "publishedAt": 1793361632000,
+      "views": 5332,
+      "url": "https://www.youtube.com/watch?v=o6dDhrwCAL0",
+      "thumbnail": "https://i.ytimg.com/vi/o6dDhrwCAL0/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "estimated-since-upload",
+      "vph": 292,
+      "estimate": true,
+      "intervalMinutes": null,
+      "latestObservedAt": 1793427395082,
+      "samples": [
+        {
+          "capturedAt": 1793427395082,
+          "views": 5332
+        }
+      ]
+    }
+  ]
+}
