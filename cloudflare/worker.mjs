@@ -1,5 +1,6 @@
 import { buildFeed, fromGithubVideo, normalizeIncomingStory, safeUrl } from './transform.mjs';
 import { synchronizeOfficial, officialSourceStatus } from './official.mjs';
+import { synchronizeBluePosts } from './blue-posts.mjs';
 
 const GITHUB_HOT='https://raw.githubusercontent.com/GorthaxWarcryer/Radar/main/docs/hot/latest.json';
 const headers={'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'};
@@ -108,8 +109,17 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
   }
   const official=parsePayload(officialRows);
   const recentOfficial=official.filter(p=>Number(p.publishedAt)<=now&&now-Number(p.publishedAt)<48*3600000);
+  const blueScan=scans.find(s=>s.provider==='blizzard-blue');
+  const blueEntries=recentOfficial.filter(p=>p.sourceId==='blue');
+  const blueStatus={id:'blue',title:'WoW Forever Blue Posts',
+    description:'Blizzard staff posts on US/EU WoW Forever forums, discovered through an independent RSS tracker',
+    url:'https://theforeverera.com/en/blue',provider:'blizzard-blue',
+    status:blueScan?.status||'pending',lastChecked:blueScan?.at||null,
+    error:blueScan?.status==='error'?String(blueScan.error||'Tracker unavailable'):'',
+    posts48h:blueEntries.length,
+    latestPostAt:blueEntries.length?Math.max(...blueEntries.map(p=>p.publishedAt)):null};
   return buildFeed({videos,reddit:parsePayload(redditRows),official,
-    officialSources:officialSourceStatus(scans,recentOfficial),
+    officialSources:[...officialSourceStatus(scans,recentOfficial),blueStatus],
     saved:savedRows,scans,privateSaved:isAdmin,
     now,githubAt:Number(metaObj.githubLastGeneratedAt)||null});
 }
@@ -210,7 +220,8 @@ export default {
       if(req.method==='POST'&&path==='/api/scan'){
         const denied=await adminRequired(req,env);if(denied)return denied;
         const official=await synchronizeOfficial(env,fetch,now);
-        return reply({...await synchronize(env,fetch,now),official},200);
+        const blue=await synchronizeBluePosts(env,fetch,now);
+        return reply({...await synchronize(env,fetch,now),official,blue},200);
       }
       if(req.method==='POST'&&path==='/api/save') {
         const denied=await adminRequired(req,env);if(denied)return denied;
@@ -245,6 +256,8 @@ export default {
     // Official Blizzard news continues through the night; YouTube remains on the agreed daytime schedule.
     try {console.log('Official Blizzard source sync:',JSON.stringify(await synchronizeOfficial(env,fetch,now)));}
     catch(e) {console.error('Official source sync failure:',fail(e));}
+    try {console.log('Blue posts sync:',JSON.stringify(await synchronizeBluePosts(env,fetch,Date.now())));}
+    catch(e) {console.error('Blue post sync failure:',fail(e));}
     const hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Kyiv',hour:'2-digit',hourCycle:'h23'}).format(new Date(event.scheduledTime)));
     if(hour<5||hour>20)return;
     try{const result=await synchronize(env,fetch,now);console.log('Cloudflare scheduled sync:',JSON.stringify(result));}
