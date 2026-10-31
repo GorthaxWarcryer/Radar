@@ -1,5 +1,6 @@
 import { hotVelocity, HOUR_MS, DAY_MS } from '../site-integration/hot-hourly.mjs';
 import { writeFile } from 'node:fs/promises';
+import { isOfficialYouTubeChannel } from '../src/official-youtube.mjs';
 
 // Independent GitHub HOT companion. The native ChatGPT Site remains read-only.
 const SOURCE = 'https://azeroth-radar-petro.gorthax.chatgpt.site/api/feed?view=dashboard';
@@ -28,9 +29,10 @@ export function combineSources(site={},independent={},now=Date.now()) {
     const dimensions=Number.isFinite(earlier.width)&&Number.isFinite(earlier.height)?
       {width:earlier.width,height:earlier.height}:Number.isFinite(video.width)&&Number.isFinite(video.height)?
         {width:video.width,height:video.height}:{};
+    const channelId=video.channelId||earlier.channelId||null;
     map.set(video.id,currentAt>=previousAt?
-      {...earlier,...video,...dimensions}:
-      {...video,...earlier,...dimensions});
+      {...earlier,...video,...dimensions,channelId}:
+      {...video,...earlier,...dimensions,channelId});
   }
   return {videos:[...map.values()],lastScan:site.lastScan||null,
     independentDiscoveryAt:independent.generatedAt||null,
@@ -62,6 +64,8 @@ export function selectPopularCandidates(feed,now=Date.now(),maxVideos=MAX_VIDEOS
 }
 
 /** 1 quota unit per batch (up to 50 video IDs) with statistics only.
+ * Fetch snippet.channelId in the SAME 1-unit video details request as statistics,
+ * so Official Source is assigned from YouTube's verified owner ID.
  * Never log the API URL, API key, or raw credential-dependent error body.
  */
 export async function pollYoutubeViews(videos,apiKey,{
@@ -74,7 +78,7 @@ export async function pollYoutubeViews(videos,apiKey,{
   for (let start=0;start<ids.length;start+=PER_REQUEST) {
     const batch=ids.slice(start,start+PER_REQUEST);
     const url=new URL('https://www.googleapis.com/youtube/v3/videos');
-    url.searchParams.set('part','statistics');
+    url.searchParams.set('part','statistics,snippet');
     url.searchParams.set('id',batch.join(','));
     url.searchParams.set('key',apiKey);
     let response;
@@ -101,7 +105,9 @@ export async function pollYoutubeViews(videos,apiKey,{
         typeof count!=='string' || !/^\d+$/.test(count)) continue;
       const views=Number(count);
       if (Number.isSafeInteger(views))
-        observations.push({id:item.id,capturedAt,views,source:'youtube-data-api'});
+        observations.push({id:item.id,capturedAt,views,source:'youtube-data-api',
+          channelId:String(item.snippet?.channelId||''),
+          channelTitle:String(item.snippet?.channelTitle||'')});
     }
   }
   return {status:ids.length?'connected':'no-eligible-ids', observations, requests,
@@ -135,9 +141,11 @@ export function calculate(feed,previous={},now=Date.now(),apiRead={status:'missi
       .sort((a,b)=>b.at-a.at);
     const latest=records[0];
     if(!latest)continue;
-    catalog.push({id:v.id,publishedAt:v.publishedAt,views:latest.views,
+    const channelId=apiLatest?.channelId||v.channelId||prior?.channelId||null;
+    catalog.push({id:v.id,channelId,officialSource:isOfficialYouTubeChannel(channelId),
+      publishedAt:v.publishedAt,views:latest.views,
       hotLatestViews:latest.views,hotMeasuredAt:latest.at,latestObservedAt:latest.at,
-      title:v.title||'Untitled',channel:v.channelTitle||v.channel||'',
+      title:v.title||'Untitled',channel:v.channelTitle||v.channel||apiLatest?.channelTitle||'',
       isShort:Number.isFinite(v.width)&&Number.isFinite(v.height)?v.height>v.width:v.isShort===true,
       videoDurationSeconds:v.videoDurationSeconds??null,
       source:'github-youtube-api',samples:[{capturedAt:latest.at,views:latest.views,source:'youtube-data-api'}]});
@@ -164,8 +172,10 @@ export function calculate(feed,previous={},now=Date.now(),apiRead={status:'missi
     if (!h.eligible) continue;
     const short=(Number.isFinite(v.width)&&Number.isFinite(v.height))?
       v.height>v.width:v.isShort===true;
+    const channelId=(apiById.get(v.id)||[]).find(s=>s.channelId)?.channelId||v.channelId||before[v.id]?.channelId||null;
     out.push({
-      id:v.id,title:v.title||'Untitled',channel:v.channelTitle||v.channel||'',
+      id:v.id,channelId,officialSource:isOfficialYouTubeChannel(channelId),
+      title:v.title||'Untitled',channel:v.channelTitle||v.channel||'',
       publishedAt:v.publishedAt,views:h.latestViews,
       url:'https://www.youtube.com/watch?v='+encodeURIComponent(v.id),
       thumbnail:'https://i.ytimg.com/vi/'+encodeURIComponent(v.id)+'/mqdefault.jpg',
