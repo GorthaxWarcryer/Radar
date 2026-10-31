@@ -111,6 +111,15 @@ function activitySection(data) {
     `<div class="info-note"><strong>Incremental scanning:</strong> Official Blizzard feeds are checked hourly even overnight. YouTube's separate Cloudflare sync runs from 05:00–20:00 Kyiv time; a normal progress state is not a scan failure. ${data.scanProgress?`YouTube: ${fmt(data.scanProgress.queuedVideos||0)} queued videos; channel ${fmt((data.scanProgress.nextChannel||0)+1)} of ${fmt(data.scanProgress.totalChannels||0)}.`:''}</div>`+
     (scans.length?`<section class="panel"><table class="saved-table"><thead><tr><th>Provider</th><th>Result</th><th>Time / details</th></tr></thead><tbody>${scans.map(s=>`<tr><td><strong>${esc(s.provider)}</strong></td><td><span class="status-pill ${s.status==='error'?'error':s.status==='not_configured'?'off':''}">${esc(s.status)} · ${fmt(s.count)} items</span></td><td>${time(s.at)}${s.error?`<div class="video-time" title="${esc(s.error)}">${esc(s.error)}</div>`:''}</td></tr>`).join('')}</tbody></table></section>`:empty('No scans recorded yet',"Blizzard's official news is checked hourly, including overnight; YouTube discovery uses its separate GitHub schedule."));
 }
+function settingsSection(data) {
+  const cfg=data.discoverySettings||{},diag=data.diagnostics||{},queries=cfg.queries||['WoW Forever','World of Warcraft Forever','WoW Classic'];
+  const auth=data.canManage===true;
+  return sectionTitle('Workspace controls','RADAR <span>SETTINGS</span>','Free-tier source controls. YouTube API credentials stay in GitHub Secrets, never in this browser.')+
+    `<section class="panel" style="padding:23px;margin-bottom:18px"><h2>Connection status</h2><p class="story-summary">GitHub YouTube collection: ${esc(data.sources?.youtube||'unknown')} · Blizzard: ${esc(data.sources?.official||'pending')} · Reddit: ${esc(data.sources?.reddit||'awaiting authorized API access')}</p><p class="story-summary">Last GitHub measurement: ${diag.lastGithubAt?age(diag.lastGithubAt):'Not yet available'} · Last Cloudflare sync: ${diag.lastSiteSyncAt?age(diag.lastSiteSyncAt):'Not yet available'}</p><div class="info-note">All source collectors use published APIs and free infrastructure. AI briefs and paid transcription are disabled. Only the original theme is active.</div></section>`+
+    `<section class="panel" style="padding:23px;margin-bottom:18px"><h2>Discovery terms</h2><p class="story-summary">GitHub reads these search terms at its next scheduled discovery scan. One term per line, up to six.</p><textarea id="discovery-queries" rows="5" style="width:100%;padding:12px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px">${esc(queries.join('\n'))}</textarea><p>${auth?'<button class="subtle-btn" data-save-queries="1">Save search terms</button>':'Unlock administrator access to change settings.'}</p></section>`+
+    `<section class="panel" style="padding:23px;margin-bottom:18px"><h2>Track a YouTube channel</h2><p class="story-summary">Add the channel's public UC ID (not the @handle). GitHub can monitor its uploads without an additional paid service.</p><input id="tracked-channel-id" placeholder="UCxxxxxxxxxxxxxxxxxxxxxx" style="width:100%;max-width:340px;padding:10px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px"><input id="tracked-channel-title" placeholder="Channel name" style="width:100%;max-width:230px;padding:10px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px">${auth?'<button class="subtle-btn" data-add-channel="1">Track channel</button>':'<p>Administrator access required.</p>'}<div>${(data.channels||[]).map(c=>`<p><b>${esc(c.title||c.id)}</b> <small>${esc(c.id)}</small> ${auth?`<button class="small-action" data-remove-channel="${esc(c.id)}">Remove</button>`:''}</p>`).join('')}</div></section>`+
+    `<section class="panel" style="padding:23px"><h2>Account and Reddit</h2><p class="story-summary">${auth?'Administrator access is active for this browser tab.':'Private notes and settings are locked. Set ADMIN_TOKEN as a Cloudflare Worker secret and unlock using your administrator token.'}</p>${auth?'':'<button class="subtle-btn" data-unlock="1">Unlock administrator</button>'}<div class="info-note">Reddit data collection remains disabled until Reddit approves external API access. It will not scrape or fabricate top/hot stories.</div></section>`;
+}
 const DEMO_AGE=Date.now();
 function demoData() {
   const t=DEMO_AGE; const video = (id,title,channel,views,hours,kind,gain) => ({ id:`demo-${id}`,title,channelName:channel,views,publishedAt:t-hours*3600000,kind,thumbnail:'',url:'',growth:gain?{perHour:gain,sampleHours:4}:null });
@@ -145,7 +154,7 @@ function demoData() {
 function updateTheme() { document.body.dataset.theme='default'; }
 function updateNav() {
   document.querySelectorAll('[data-section]').forEach(el=>{ const selected=el.dataset.section===state.section; el.classList.toggle('active',selected); if(el.tagName==='BUTTON') el.setAttribute('aria-current',selected?'page':'false'); });
-  const names={popular:'Popular',hot:'HOT',stories:'Stories',ideas:'Content Creation',watchlist:'Watchlist',channels:'Channels',activity:'Scan Activity'};
+  const names={popular:'Popular',hot:'HOT',stories:'Stories',ideas:'Content Creation',watchlist:'Watchlist',channels:'Channels',activity:'Scan Activity',settings:'Settings'};
   $('#crumb-section').textContent=names[state.section]; document.title=`${names[state.section]} · Azeroth Radar`;
 }
 function render() {
@@ -154,7 +163,7 @@ function render() {
   $('#demo-warning').classList.toggle('hidden',!state.demo);
   $('#demo-toggle').textContent=state.demo?'Live feed':'Preview demo';
   if(!data) {root.innerHTML=empty('Loading Azeroth Radar','Reading the local API and its saved sources...',false);return;}
-  const renderers={popular:()=>videoSection(data,'popular'),hot:()=>videoSection(data,'hot'),stories:()=>storiesSection(data),ideas:()=>ideasSection(data),watchlist:()=>watchlistSection(data),channels:()=>channelsSection(data),activity:()=>activitySection(data)};
+  const renderers={popular:()=>videoSection(data,'popular'),hot:()=>videoSection(data,'hot'),stories:()=>storiesSection(data),ideas:()=>ideasSection(data),watchlist:()=>watchlistSection(data),channels:()=>channelsSection(data),activity:()=>activitySection(data),settings:()=>settingsSection(data)};
   root.innerHTML=renderers[state.section]();
 }
 async function fetchFeed() {
@@ -203,11 +212,19 @@ document.addEventListener('click',async e=>{
     if(button.dataset.unlock) {const token=window.prompt('Enter the rebuild ADMIN_TOKEN:'); if(token){state.adminToken=token;await fetchFeed();} return;}
     if(button.dataset.save) {await adminFetch('/api/save',{method:'POST',body:JSON.stringify({id:button.dataset.save,kind:button.dataset.kind,title:button.dataset.title,url:button.dataset.url})});toast('Saved to watchlist');return fetchFeed();}
     if(button.dataset.remove) {await adminFetch('/api/save/'+encodeURIComponent(button.dataset.remove),{method:'DELETE'});toast('Removed from watchlist');return fetchFeed();}
+    if(button.dataset.saveQueries){const text=document.getElementById('discovery-queries')?.value||'';
+      const queries=text.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,6);
+      await adminFetch('/api/discovery/settings',{method:'POST',body:JSON.stringify({queries})});toast('Queries saved');return fetchFeed();}
+    if(button.dataset.addChannel){const id=document.getElementById('tracked-channel-id')?.value.trim()||'';
+      const title=document.getElementById('tracked-channel-title')?.value.trim()||'';
+      await adminFetch('/api/channels',{method:'POST',body:JSON.stringify({id,title})});toast('Channel added');return fetchFeed();}
+    if(button.dataset.removeChannel){await adminFetch('/api/channels/'+encodeURIComponent(button.dataset.removeChannel),{method:'DELETE'});toast('Channel removed');return fetchFeed();}
+    if(button.dataset.hideVideo){await adminFetch('/api/hide-video',{method:'POST',body:JSON.stringify({id:button.dataset.hideVideo,hidden:true})});toast('Video hidden');return fetchFeed();}
     if(button.dataset.noteSave) { const id=button.dataset.noteSave;const note=[...document.querySelectorAll('[data-note]')].find(el=>el.dataset.note===id)?.value||'';
       const item=(state.feed?.saved||[]).find(s=>s.id===id); if(!item)return;await adminFetch('/api/save',{method:'POST',body:JSON.stringify({id,kind:item.kind,title:item.title,url:item.url,note})});toast('Note saved');return fetchFeed(); }
     if(button.dataset.scanNow){button.disabled=true;button.textContent='Scanning…'; const resp=await adminFetch('/api/scan',{method:'POST'});toast(resp.status==='busy'?'Scan already running':resp.status==='running'?'Scan started in background; open Scan Activity for progress.':'Scan result: '+resp.status);return fetchFeed();}
   } catch(error) {toast(error.message);} finally {if(button?.dataset.scanNow){button.disabled=false;button.textContent='↻ Scan now';}}
 });
-window.addEventListener('hashchange',()=>{const page=location.hash.replace('#','');if(['popular','hot','stories','ideas','watchlist','channels','activity'].includes(page)){state.section=page;render();}});
+window.addEventListener('hashchange',()=>{const page=location.hash.replace('#','');if(['popular','hot','stories','ideas','watchlist','channels','activity','settings'].includes(page)){state.section=page;render();}});
 if(location.hash) {const page=location.hash.slice(1);if(['popular','hot','stories','ideas','watchlist','channels','activity'].includes(page))state.section=page;}
 render();fetchFeed();setInterval(fetchFeed,60000);
