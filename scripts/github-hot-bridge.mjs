@@ -4,6 +4,7 @@ import { writeFile } from 'node:fs/promises';
 // Independent GitHub HOT companion. The native ChatGPT Site remains read-only.
 const SOURCE = 'https://azeroth-radar-petro.gorthax.chatgpt.site/api/feed?view=dashboard';
 const PATH = 'docs/hot/latest.json';
+const DISCOVERY_PATH = 'docs/hot/discovered.json';
 const MAX_VIDEOS = 500;
 const PER_REQUEST = 50;
 const HISTORY_LIMIT = 24;
@@ -11,6 +12,30 @@ const VIDEO_ID = /^[a-zA-Z0-9_-]{11}$/;
 
 const valid = (s,p,now) => s && Number.isFinite(s.capturedAt) &&
   Number.isSafeInteger(s.views) && s.views >= 0 && s.capturedAt >= p && s.capturedAt <= now;
+
+/** Merge two separately observed discovery sources, preserving the latest genuine
+ * view-count timestamp and aspect information. Either source may be unavailable.
+ */
+export function combineSources(site={},independent={},now=Date.now()) {
+  const map=new Map();
+  for(const source of [site,independent])for(const video of source.videos||[]) {
+    if(!VIDEO_ID.test(video?.id||'')||!Number.isFinite(video.publishedAt)||
+       video.publishedAt>now||now-video.publishedAt>=DAY_MS)continue;
+    const earlier=map.get(video.id);
+    if(!earlier){map.set(video.id,video);continue;}
+    const previousAt=earlier.hotMeasuredAt||earlier.lastSeen||earlier.observedAt||0;
+    const currentAt=video.hotMeasuredAt||video.lastSeen||video.observedAt||0;
+    const dimensions=Number.isFinite(earlier.width)&&Number.isFinite(earlier.height)?
+      {width:earlier.width,height:earlier.height}:Number.isFinite(video.width)&&Number.isFinite(video.height)?
+        {width:video.width,height:video.height}:{};
+    map.set(video.id,currentAt>=previousAt?
+      {...earlier,...video,...dimensions}:
+      {...video,...earlier,...dimensions});
+  }
+  return {videos:[...map.values()],lastScan:site.lastScan||null,
+    independentDiscoveryAt:independent.generatedAt||null,
+    originalSiteAvailable:Array.isArray(site.videos)};
+}
 
 export function selectCandidates(feed, now = Date.now(), maxVideos = MAX_VIDEOS) {
   if (!Number.isInteger(maxVideos) || maxVideos < 1 || maxVideos > MAX_VIDEOS)
@@ -104,7 +129,8 @@ export function calculate(feed,previous={},now=Date.now(),apiRead={status:'missi
     if (sequence.length) watchSamples[v.id]=sequence;
     const h=hotVelocity({publishedAt:v.publishedAt,samples:sequence,now});
     if (!h.eligible) continue;
-    const short=Number.isFinite(v.width)&&Number.isFinite(v.height)&&v.height>v.width;
+    const short=(Number.isFinite(v.width)&&Number.isFinite(v.height))?
+      v.height>v.width:v.isShort===true;
     out.push({
       id:v.id,title:v.title||'Untitled',channel:v.channelTitle||v.channel||'',
       publishedAt:v.publishedAt,views:h.latestViews,
@@ -116,11 +142,12 @@ export function calculate(feed,previous={},now=Date.now(),apiRead={status:'missi
   }
   out.sort((a,b)=>b.vph-a.vph || b.views-a.views || b.publishedAt-a.publishedAt);
   const status=apiRead.status||'missing-key';
-  return {schemaVersion:2,generatedAt:now,sourceLastScan:feed.lastScan||null,sourceFeed:SOURCE,
+  return {schemaVersion:2,generatedAt:now,sourceLastScan:feed.lastScan||null,sourceFeed:SOURCE,independentDiscoveryAt:feed.independentDiscoveryAt||null,
+    originalSiteAvailable:feed.originalSiteAvailable!==false,
     youtubeApi:{status,requests:apiRead.requests||0,observations:(apiRead.observations||[]).length,
       attempted:apiRead.attempted||0,lastCheckedAt:apiRead.observedAt||null},
     disclaimer:status==='connected'
-      ? 'GitHub polls YouTube Data API directly for hourly view counts of videos already discovered by the original Site. Discovery remains on the Site schedule.'
+      ? 'GitHub polls YouTube API hourly; discovery now also runs independently on GitHub, and can supplement the original Site.'
       : 'YouTube Data API is not connected; GitHub only re-ranks the original Site view snapshots.',
     counts:{tracked:raw.length,within24h:raw.filter(v=>Number.isFinite(v?.publishedAt)&&
       v.publishedAt<=now&&now-v.publishedAt<DAY_MS).length,
@@ -150,14 +177,14 @@ export function summary(data) {
     '**HOT eligible: '+data.counts.eligible+' ('+data.counts.estimated+
     ' estimated, '+data.counts.measured+' measured).**\n\n'+
     (api.status==='connected'
-      ? 'The GitHub workflow now collects genuine view-count snapshots; new video discovery still comes from the original Site.\n\n'
+      ? 'GitHub collects genuine view-count snapshots. Independent YouTube discovery is active when the discovery file is available.\n\n'
       : '**No new YouTube view-count measurements were collected.** Configure the YOUTUBE_API_KEY repository secret for real hourly polling.\n\n')+
     '## Long-form HOT\n\n'+listing(data.videos.filter(v=>!v.isShort))+
     '\n## Shorts HOT\n\n'+listing(data.videos.filter(v=>v.isShort));
 }
 
-async function github(token,repo,method,sha,data) {
-  const url='https://api.github.com/repos/'+repo+'/contents/'+PATH;
+async function github(token,repo,method,sha,data,path=PATH) {
+  const url='https://api.github.com/repos/'+repo+'/contents/'+path;
   const opts={method,headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json',
     'X-GitHub-Api-Version':'2022-11-28'}};
   if(method==='PUT') {
@@ -176,12 +203,23 @@ async function github(token,repo,method,sha,data) {
 async function main() {
   const token=process.env.GH_BRIDGE_TOKEN,repo=process.env.GITHUB_REPOSITORY;
   const apiKey=process.env.YOUTUBE_API_KEY||'';
-  const r=await fetch(SOURCE,{headers:{'User-Agent':'AzerothRadar-GitHubCompanion/2.0',
-    Accept:'application/json'},signal:AbortSignal.timeout(45000)});
-  if(!r.ok) throw Error('Original Site public feed HTTP '+r.status);
-  const feed=await r.json();
-  if(!Array.isArray(feed.videos)) throw Error('Original Site public feed missing videos');
   const previous=(token&&repo)?await github(token,repo,'GET'):{sha:null,data:{}};
+  const discovered=(token&&repo)?await github(token,repo,'GET',null,null,DISCOVERY_PATH):
+    {data:{videos:[]}};
+  let site={videos:[]},originalSiteAvailable=false;
+  try {
+    const r=await fetch(SOURCE,{headers:{'User-Agent':'AzerothRadar-GitHubCompanion/3.0',
+      Accept:'application/json'},signal:AbortSignal.timeout(16000)});
+    if(r.ok) {
+      const d=await r.json();
+      if(Array.isArray(d.videos)) {site=d;originalSiteAvailable=true;}
+    }
+  } catch { /* Independent GitHub discovery must continue if original Site is offline. */ }
+  const feed=combineSources(originalSiteAvailable?site:{},discovered.data,Date.now());
+  if(!feed.videos.length&&!originalSiteAvailable)
+    throw Error('No original Site feed and independent GitHub discovery is empty');
+  if(!originalSiteAvailable)
+    console.log('::warning::Original Site feed unavailable; using independent GitHub discovery');
   const selected=selectCandidates(feed,Date.now());
   const apiRead=await pollYoutubeViews(selected,apiKey);
   const data=calculate(feed,previous.data,Date.now(),apiRead);
