@@ -26,3 +26,21 @@ jobs:
         run: node --test cloudflare/tests/*.test.mjs site-integration/tests/hot-hourly.test.mjs
       - name: Confirm Cloudflare Worker bundles without deploying
         run: npx --yes wrangler@4 deploy --dry-run --outdir=.wrangler/ci-check
+      - name: Smoke-test actual local Worker and D1 API
+        shell: bash
+        run: |
+          npx --yes wrangler@4 d1 execute azeroth-radar-db --local --file=./cloudflare/schema.sql
+          npx --yes wrangler@4 dev --local --ip 127.0.0.1 --port 8787 >/tmp/azeroth-worker.log 2>&1 &
+          worker_pid=$!
+          trap 'kill $worker_pid 2>/dev/null || true' EXIT
+          ready=0
+          for i in $(seq 1 25); do
+            if curl -fsS http://127.0.0.1:8787/api/health >/tmp/azeroth-health.json; then ready=1; break; fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then cat /tmp/azeroth-worker.log; exit 1; fi
+          node -e "const fs=require('node:fs');const h=JSON.parse(fs.readFileSync('/tmp/azeroth-health.json','utf8'));if (!h.ok||h.database!=='d1') process.exit(1)"
+          curl -fsS http://127.0.0.1:8787/api/feed >/tmp/azeroth-feed.json
+          node -e "const fs=require('node:fs');const f=JSON.parse(fs.readFileSync('/tmp/azeroth-feed.json','utf8'));if(!f.hot||!f.popular||!Array.isArray(f.stories))process.exit(1)"
+          status=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{}' http://127.0.0.1:8787/api/import)
+          test "$status" = '503' || { echo "Unexpected anonymous import status $status"; exit 1; }
