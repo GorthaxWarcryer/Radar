@@ -35,7 +35,7 @@ jobs:
           import urllib.parse
           import urllib.request
           
-          BASE = 'https://azeroth-radar-petro.honestrhino21.chatgpt.site'
+          BASE = 'https://azeroth-radar-petro.gorthax.chatgpt.site'
           
           def request(operation):
               audience = BASE + '/api/refresh'
@@ -119,7 +119,7 @@ jobs:
           import urllib.parse
           import urllib.request
           
-          BASE = 'https://azeroth-radar-petro.honestrhino21.chatgpt.site'
+          BASE = 'https://azeroth-radar-petro.gorthax.chatgpt.site'
           
           def request(operation):
               audience = BASE + '/api/refresh'
