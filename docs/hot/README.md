@@ -1,29 +1,43 @@
-# Azeroth Radar — GitHub HOT companion
+# Azeroth Radar — hourly YouTube API for GitHub HOT
 
-This is a **working GitHub-powered HOT view** that does not modify or overwrite the native ChatGPT Site.
+The GitHub companion is **separate from the original ChatGPT Site**, uses the original Site's public discovery feed, and does **not** overwrite the original Site's code, database or HOT ranking.
 
-- Runs automatically every daytime hour (05:17–20:17 Europe/Kyiv) via `github-hot-companion.yml`, subject to normal GitHub Actions scheduling delays
-- Fetches only the original Site's **public** `/api/feed?view=dashboard` data
-- Gives new 5,000+ view videos an estimated growth rate (total views / hours since upload **at the last genuine observation**)
-- Uses measured view-count deltas and real intervals when the original feed publishes more than one genuine sample
-- Excludes uploads outside the last 24 hours; separates regular videos and Shorts; shows timestamps to avoid implying stale data is live
-- Stores rankings in [latest.json](latest.json), which is published by GitHub Actions; a ready-made dashboard lives in [index.html](index.html)
-- Makes **no new YouTube API calls**, no ChatGPT Work requests, and no paid AI calls
-- **Does not produce new real hourly view-count measurements:** the original Site's collector still refreshes the underlying data on its own schedule (currently every 3 hours)
+## Connect YouTube Data API v3 (one-time setup)
 
-## Use without enabling Pages
+1. Open [Google Cloud console](https://console.cloud.google.com/apis/library/youtube.googleapis.com), choose/create a project and enable **YouTube Data API v3**.
+2. Open [Google Cloud Credentials](https://console.cloud.google.com/apis/credentials), choose **Create credentials → API key**. Under **API restrictions**, restrict the key to **YouTube Data API v3**. GitHub-hosted runners do not have a fixed outbound IP, so a static IP restriction is generally unsuitable. Keep the key private.
+3. Open [this repository's Actions secrets](https://github.com/GorthaxWarcryer/Radar/settings/secrets/actions) → **New repository secret**. Set the name to **`YOUTUBE_API_KEY`** and enter the key value in GitHub's secret form. **Do not send the key in chat, issues, commits, or public code.**
+4. Open [GitHub HOT companion workflow](https://github.com/GorthaxWarcryer/Radar/actions/workflows/github-hot-companion.yml), choose **Run workflow**, and select the default branch `main`.
+5. Verify a green run in the Summary with `youtubeApi.status = connected`, positive `observations`, and a positive API request count. A green run with `missing-key` only means ranking succeeded using existing Site data; it **does not** mean the API is connected.
 
-Open [GitHub Actions](https://github.com/GorthaxWarcryer/Radar/actions/workflows/github-hot-companion.yml), select the latest successful **GitHub HOT companion** run and read its **Summary** tab. Long-form and Shorts HOT rankings are listed there with video links, velocity type, and last-observed time.
+## How it works
 
-## Optional graphical dashboard
+- Every day from **05:17 through 20:17 Europe/Kyiv**, GitHub requests updated statistics using the YouTube Data API `videos.list?part=statistics&id=...` endpoint. GitHub's cron timing can be delayed.
+- It polls videos already discovered by the original Site, published in the preceding 24 hours, including videos below 5,000 views so they can enter HOT after passing the threshold.
+- It batches **up to 50 video IDs per API request**, capped at **500 videos per hourly run** and 10 requests per run, with no new YouTube search requests.
+- It saves genuine timestamped view counts in [latest.json](latest.json) with a rolling observation history and re-ranks HOT. Newly observed videos can appear immediately using `views ÷ age since upload`, labeled *Estimated since upload*. Subsequent observations separated by at least 20 minutes use real differences, labeled *Measured*.
+- The native Site's full discovery and Popular scan continues on its previous 3-hour schedule. Therefore, GitHub cannot see entirely new videos **until the Site discovers them**.
+- GitHub's workflow only reads the Site's **public** feed. It does not need ChatGPT Site editing credits or the Site's private YouTube API key.
+- No paid AI models or new hosting services are required.
 
-GitHub Pages is currently **not enabled** in this repository. To enable it without using ChatGPT Sites or ChatGPT Work credits:
+## Verify and view
 
-1. Open the repository's **Settings → Pages**
-2. Under **Build and deployment**, choose **Deploy from a branch**
-3. Select `main` and `/docs` and save
-4. After Pages reports deployment, the dashboard should be at `https://gorthaxwarcryer.github.io/Radar/hot/`
+- [GitHub HOT workflow and run summaries](https://github.com/GorthaxWarcryer/Radar/actions/workflows/github-hot-companion.yml)
+- [Saved latest JSON HOT feed](latest.json)
+- [Static dashboard source](index.html)
 
-This companion URL is **not** the original `*.chatgpt.site` URL. GitHub cannot replace or redirect that ChatGPT-controlled URL from repository code alone.
+### Optional GitHub Pages dashboard
 
-For **real new YouTube view-count snapshots every hour**, the GitHub workflow would need an independent authorized YouTube API credential (configured in GitHub Actions secrets), or the original Site backend would need to support hourly sampling. Do not repeatedly call the existing authenticated Site endpoint outside its approved scan schedule.
+GitHub Pages is currently not enabled in the repository. To enable it, open GitHub repository **Settings → Pages**, choose **Deploy from a branch**, select `main` and `/docs`, then Save. When deployment completes, the companion should be available at:
+
+`https://gorthaxwarcryer.github.io/Radar/hot/`
+
+This is not the original ChatGPT Site address; GitHub cannot change the original Site's UI from a repository push.
+
+## Quota / security
+
+Google documents `videos.list` as **1 quota unit per request**. For 100–150 tracked videos, the hourly poll normally takes 2–3 calls, or approximately 32–48 units over 16 daytime hours, excluding other API usage. At the hard cap, 10 requests per hour means 160 units/day for this workflow. Quota availability and costs depend on the Google Cloud project. See [YouTube docs](https://developers.google.com/youtube/data/reference/rest/v3/videos/list).
+
+The key is passed only as a private GitHub Actions secret in the workflow environment. Requests are made directly from the GitHub runner to Google's API. Never put it in `docs/hot/latest.json` or in the dashboard.
+
+If the key is absent, GitHub emits `missing-key` and continues read-only ranking without claiming fresh API observations. If YouTube responds with an error or incomplete batch, the script fails safely and does not publish an apparently successful partial refresh.
