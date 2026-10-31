@@ -6,7 +6,7 @@ test('Reddit Stories provides direct browser links without a collector',()=>{
   for(const slug of ['wowforever','classicwow','wow','wowhardcore','worldofpvp'])
     assert.ok(app.includes('"slug":"'+slug+'"'));
   assert.match(app,/top\/\?t=day/);
-  assert.match(app,/search\/\?q=&restrict_sr=1&sort=comments&t=day/);
+  assert.doesNotMatch(app,/search\/\?q=&restrict_sr=1&sort=comments&t=day/);
   assert.match(app,/hot\//);
   assert.match(app,/NO REDDIT API/);
   assert.match(app,/reddit-add-form/);
