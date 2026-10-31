@@ -26,7 +26,6 @@ jobs:
     timeout-minutes: 25
     env:
       MAX_SLICES: ${{ inputs.max_slices || '100' }}
-      RUN_IMMEDIATE_TEST: 'true'
     steps:
       - name: Wait for intended scan slot if the scheduler fires early
         if: ${{ github.event_name == 'schedule' }}
@@ -80,7 +79,7 @@ jobs:
               identity = call('verify')
               if identity.get('status') != 'verified':
                   raise RuntimeError('Signed Site identity verification failed')
-              if os.environ.get('GITHUB_EVENT_NAME') == 'push' and os.environ.get('RUN_IMMEDIATE_TEST') != 'true':
+              if os.environ.get('GITHUB_EVENT_NAME') == 'push':
                   return {'outcome': 'identity-verified-only'}
               before = call('status')
               result = None
@@ -137,7 +136,7 @@ jobs:
                   with open(summary_file, 'a', encoding='utf-8') as f:
                       f.write('## Azeroth Radar refresh outcome\n```json\n' + text + '\n```\n')
       - name: Collect official Blizzard news independently
-        if: ${{ always() }}
+        if: ${{ always() && github.event_name != 'push' }}
         shell: python {0}
         run: |
           """Standard-library GitHub scheduler client. Never handles Site/API secrets."""
