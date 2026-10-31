@@ -60,7 +60,7 @@ test('hourly sync writes genuine GitHub timestamp and samples into D1',async()=>
  const result=await synchronize({DB},fetcher,T+10000);
  assert.equal(result.status,'complete');assert.equal(result.videos,1);
  assert.equal(result.samples,1);
- assert.ok(writes.some(x=>x.sql.startsWith('INSERT INTO video_samples')&&x.args[1]===T));
+ assert.ok(writes.some(x=>x.sql.startsWith('INSERT OR IGNORE INTO video_samples')&&x.args[1]===T));
  assert.ok(writes.some(x=>x.sql.startsWith('INSERT INTO meta')&&x.args[0]==='lastCloudflareSyncAt'));
 });
 test('unknown website paths do not expose an administrative API',async()=>{
