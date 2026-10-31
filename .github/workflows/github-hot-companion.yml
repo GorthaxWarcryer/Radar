@@ -1,7 +1,7 @@
-name: GitHub HOT companion (hourly re-ranking)
+name: GitHub HOT companion (hourly YouTube view sampling)
 on:
   schedule:
-    # No YouTube/API scans. Re-rank Site's public snapshots each daytime hour.
+    # Use batched YouTube videos.list to poll fresh views hourly when secret is configured.
     - cron: '17 5-20 * * *'
       timezone: Europe/Kyiv
   workflow_dispatch:
@@ -30,4 +30,6 @@ jobs:
       - name: Read original Site feed and publish ranked GitHub companion
         env:
           GH_BRIDGE_TOKEN: ${{ github.token }}
+          # Configure via repository Settings → Secrets and variables → Actions.
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: node scripts/github-hot-bridge.mjs
