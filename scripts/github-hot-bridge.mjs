@@ -227,7 +227,7 @@ export function summary(data) {
     '\n## Shorts HOT\n\n'+listing(data.videos.filter(v=>v.isShort));
 }
 
-async function github(token,repo,method,sha,data,path=PATH) {
+export async function github(token,repo,method,sha,data,path=PATH,fetcher=fetch) {
   const url='https://api.github.com/repos/'+repo+'/contents/'+path;
   const opts={method,headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json',
     'X-GitHub-Api-Version':'2022-11-28'}};
@@ -236,12 +236,28 @@ async function github(token,repo,method,sha,data,path=PATH) {
     opts.body=JSON.stringify({message:'Refresh GitHub HOT companion [skip ci]',
       content:Buffer.from(JSON.stringify(data,null,2)+'\n').toString('base64'),...(sha?{sha}:{})});
   }
-  const r=await fetch(url,opts);
+  const r=await fetcher(url,opts);
   if(r.status===404 && method==='GET') return {sha:null,data:{}};
   if(!r.ok) throw Error('GitHub Contents API '+method+' HTTP '+r.status);
   if(method==='PUT') return;
   const j=await r.json();
-  return {sha:j.sha,data:JSON.parse(Buffer.from(String(j.content).replace(/\s/g,''),'base64').toString())};
+  // GitHub Contents REST intentionally omits base64 content for files >1 MB.
+  // Read the same immutable blob SHA to preserve existing hourly observations.
+  let encoded=typeof j.content==='string'&&j.encoding==='base64'?j.content:null;
+  if(!encoded) {
+    if(!/^[a-f0-9]{40}$/.test(j.sha||''))throw Error('GitHub file SHA missing for large source');
+    const blob=await fetcher('https://api.github.com/repos/'+repo+'/git/blobs/'+j.sha,{
+      method:'GET',headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json',
+        'X-GitHub-Api-Version':'2022-11-28'}
+    });
+    if(!blob.ok)throw Error('GitHub Blob API HTTP '+blob.status);
+    const record=await blob.json();
+    if(record.encoding!=='base64'||typeof record.content!=='string')throw Error('Invalid GitHub blob encoding');
+    encoded=record.content;
+  }
+  try {
+    return {sha:j.sha,data:JSON.parse(Buffer.from(encoded.replace(/\s/g,''),'base64').toString('utf8'))};
+  }catch {throw Error('Invalid prior GitHub HOT JSON; history preserved until repaired');}
 }
 
 async function main() {
