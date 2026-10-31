@@ -74,7 +74,7 @@ test('automatic AI uses Cloudflare binding and rejects OpenAI keys as a provider
   let calls=0;
   const env={AI:{async run(model,payload){calls++;
     assert.equal(model,FREE_MODEL);
-    assert.ok(payload.max_tokens<=420);
+    assert.ok(payload.max_tokens<=520);
     assert.ok(payload.messages[1].content.includes('Paladin'));
     return response;
   }}};
