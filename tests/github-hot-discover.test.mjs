@@ -21,6 +21,7 @@ test('normalize qualified English Warcraft upload',()=>{
 test('never include archived streams, Russian or unrelated content',()=>{
  assert.equal(normalizeDiscovery({...good,liveStreamingDetails:{actualEndTime:'2026-10-31T00:00:00Z'}},T),null);
  assert.equal(normalizeDiscovery({...good,snippet:{...good.snippet,title:'Варкрафт обновления'}},T),null);
+ assert.equal(normalizeDiscovery({...good,snippet:{...good.snippet,title:'¿WoW apocalíptico?'}},T),null);
  assert.equal(normalizeDiscovery({...good,snippet:{...good.snippet,title:'New Coffee Review'}},T),null);
 });
 test('only videos with real valid publication timestamp and counts',()=>{
