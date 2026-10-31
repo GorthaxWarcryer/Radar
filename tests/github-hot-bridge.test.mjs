@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { calculate, summary, pollYoutubeViews, selectCandidates } from '../scripts/github-hot-bridge.mjs';
+import { calculate, summary, pollYoutubeViews, selectCandidates, combineSources } from '../scripts/github-hot-bridge.mjs';
 const H=3600000, T=Date.parse('2026-10-31T10:00:00Z');
 const item=(id,views,age=1,seen=T)=>({id,title:'Video '+id,
   publishedAt:T-age*H,views,hotLatestViews:views,hotMeasuredAt:seen,width:640,height:360});
@@ -118,4 +118,29 @@ test('published report makes API connection state explicit',()=>{
  const r=calculate({videos:[item(ID1,6000)]},{},T);
  assert.match(summary(r),/missing-key/);
  assert.match(summary(r),/No new YouTube view-count measurements/);
+});
+
+test('independent discovery works with no original ChatGPT Site feed',()=>{
+ const id='1GEmk7Fci2E';
+ const independently={generatedAt:T,videos:[{
+   id,title:'WoW Forever Guide',channelTitle:'Creator',
+   publishedAt:T-H,views:6000,hotMeasuredAt:T,hotLatestViews:6000,isShort:false
+ }]};
+ const merged=combineSources({},independently,T);
+ assert.equal(merged.originalSiteAvailable,false);
+ assert.equal(merged.videos.length,1);
+ const ranked=calculate(merged,{},T);
+ assert.equal(ranked.videos[0].vph,6000);
+ assert.equal(ranked.videos[0].estimate,true);
+});
+test('newer independent view count overrides older Site values without losing aspect ratio',()=>{
+ const id='1GEmk7Fci2E';
+ const site={videos:[{id,title:'WoW Forever Guide',publishedAt:T-H,views:6000,
+    hotMeasuredAt:T-H/2,hotLatestViews:6000,width:640,height:360}]};
+ const independent={generatedAt:T,videos:[{id,title:'WoW Forever Guide',publishedAt:T-H,views:10000,
+    hotMeasuredAt:T,hotLatestViews:10000,isShort:true}]};
+ const merged=combineSources(site,independent,T);
+ assert.equal(merged.videos[0].views,10000);
+ assert.equal(merged.videos[0].height,360);
+ assert.equal(merged.videos[0].width,640);
 });
