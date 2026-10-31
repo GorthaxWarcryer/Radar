@@ -1,4 +1,5 @@
 name: One-time Cloudflare deployment dispatcher
+# Retry after supporting an Account ID stored as a GitHub variable.
 on:
   push:
     paths:
