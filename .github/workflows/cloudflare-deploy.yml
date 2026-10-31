@@ -93,5 +93,29 @@ jobs:
         run: |
           npx --yes wrangler@4 d1 execute azeroth-radar-db --remote --command='SELECT COUNT(*) AS count FROM videos;' --config wrangler.jsonc --yes
           echo 'Cloudflare Worker deployed; inspect the Wrangler deploy output for its workers.dev URL.'
+      - name: Verify live design assets and feed after publish
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,urllib.request
+          base='https://azeroth-radar.azeroth-radar-gorthax.workers.dev'
+          def get(path):
+            request=urllib.request.Request(base+path,headers={'User-Agent':'AzerothRadar-LiveDesignSmoke/1.0'})
+            with urllib.request.urlopen(request,timeout=35) as response:
+              if response.status!=200:raise RuntimeError(path+' HTTP '+str(response.status))
+              return response.read().decode('utf-8')
+          html=get('/')
+          assert 'class="skip-link"' in html and 'id="refresh-feed"' in html, 'Accessible header missing'
+          js=get('/app.js')
+          assert "hotSort:'velocity', popularSort:'views'" in js, 'Mode-specific sorting missing'
+          assert "event.key==='/'" in js and 'function redditDirectory()' in js, 'Search/Reddit UI missing'
+          css=get('/style.css')
+          assert 'Azeroth Radar 2026 interface refinement' in css, 'Refreshed stylesheet not deployed'
+          assert 'prefers-reduced-motion:reduce' in css, 'Reduced motion support missing'
+          feed=json.loads(get('/api/feed'))
+          assert 'hot' in feed and 'popular' in feed and isinstance(feed.get('stories'),list), 'Public feed unavailable'
+          print('LIVE UX PASS: homepage, fonts/styles, accessible controls, HOT/Popular/Reddit UI, JSON feed')
+          print('Live source counts:',json.dumps({'hotLong':len(feed['hot'].get('long',[])),'hotShorts':len(feed['hot'].get('shorts',[])),'popularLong':len(feed['popular'].get('long',[])),'stories':len(feed['stories'])}))
+          PY
       - name: Deployment confirmation
         run: echo 'Cloudflare deployment and D1 schema completed. Verify the Worker URL in the deployment output and GET /api/health.'
