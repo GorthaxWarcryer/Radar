@@ -142,7 +142,7 @@ export function calculate(feed,previous={},now=Date.now(),apiRead={status:'missi
   }
   out.sort((a,b)=>b.vph-a.vph || b.views-a.views || b.publishedAt-a.publishedAt);
   const status=apiRead.status||'missing-key';
-  return {schemaVersion:2,generatedAt:now,sourceLastScan:feed.lastScan||null,sourceFeed:SOURCE,independentDiscoveryAt:feed.independentDiscoveryAt||null,
+  return {schemaVersion:2,generatedAt:now,sourceLastScan:feed.lastScan||feed.independentDiscoveryAt||null,sourceFeed:SOURCE,independentDiscoveryAt:feed.independentDiscoveryAt||null,
     originalSiteAvailable:feed.originalSiteAvailable!==false,
     youtubeApi:{status,requests:apiRead.requests||0,observations:(apiRead.observations||[]).length,
       attempted:apiRead.attempted||0,lastCheckedAt:apiRead.observedAt||null},
