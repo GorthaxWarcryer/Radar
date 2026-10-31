@@ -1,7 +1,8 @@
 import { buildFeed, fromGithubVideo, normalizeIncomingStory, safeUrl } from './transform.mjs';
 import { synchronizeOfficial, officialSourceStatus } from './official.mjs';
 import { synchronizeBluePosts } from './blue-posts.mjs';
-import { autoAIEnabled, automaticallyGenerate, sourceSignature, MAX_AI_PER_DAY } from './ai-ideas.mjs';
+import { autoAIEnabled, automaticallyGenerate, automaticallyGenerateDigest, sourceSignature, MAX_AI_PER_DAY } from './ai-ideas.mjs';
+import { trendHistory } from '../src/intelligence.mjs';
 import { OFFICIAL_YOUTUBE_CHANNELS, isOfficialYouTubeChannel } from '../src/official-youtube.mjs';
 
 const GITHUB_HOT='https://raw.githubusercontent.com/GorthaxWarcryer/Radar/main/docs/hot/latest.json';
@@ -95,9 +96,23 @@ async function readRows(db,sql,params=[]) {
   const q=db.prepare(sql).bind(...params);
   return (await q.all()).results||[];
 }
+async function saveHistory(env,ideas,now=Date.now()) {
+  const day=new Date(now).toISOString().slice(0,10);
+  const rows=(ideas||[]).slice(0,12).filter(x=>x.id?.startsWith('opportunity:'));
+  if(rows.length) {
+    const sql='INSERT INTO topic_history(topic_id,day,score,source_count,updated_at) VALUES '+
+      rows.map(()=>'(?,?,?,?,?)').join(',')+
+      ' ON CONFLICT(topic_id,day) DO UPDATE SET score=MAX(score,excluded.score),source_count=MAX(source_count,excluded.source_count),updated_at=excluded.updated_at';
+    await env.DB.prepare(sql).bind(...rows.flatMap(x=>[
+      x.id,day,Math.max(0,Math.min(100,Number(x.opportunityScore)||0)),
+      Math.max(0,Number(x.sourceCount)||0),now])).run();
+  }
+  await env.DB.prepare('DELETE FROM topic_history WHERE updated_at<?').bind(now-31*86400000).run();
+  return rows.length;
+}
 async function state(env,req,now=Date.now(),fetcher=fetch) {
   const isAdmin=await verifyAdmin(req,env);
-  const [videoRows,redditRows,officialRows,savedRows,scans,meta,channels,settings,hiddenRows,aiRows,aiUsage]=await Promise.all([
+  const [videoRows,redditRows,officialRows,savedRows,scans,meta,channels,settings,hiddenRows,aiRows,aiUsage,historyRows]=await Promise.all([
     readRows(env.DB,'SELECT payload FROM videos WHERE last_seen>=? ORDER BY last_seen DESC LIMIT 1500',[now-7*86400000]),
     readRows(env.DB,'SELECT payload FROM reddit WHERE last_seen>=? ORDER BY last_seen DESC LIMIT 400',[now-2*3600000]),
     readRows(env.DB,'SELECT payload FROM official ORDER BY last_seen DESC LIMIT 150'),
@@ -108,7 +123,8 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
     readRows(env.DB,'SELECT key,value,updated_at AS updatedAt FROM discovery_settings LIMIT 30'),
     readRows(env.DB,'SELECT id FROM hidden_videos LIMIT 1000'),
     readRows(env.DB,'SELECT id,signature,payload,generated_at FROM ai_briefs WHERE generated_at>=? LIMIT 100',[now-48*3600000]),
-    readRows(env.DB,'SELECT used FROM ai_daily_usage WHERE day=? LIMIT 1',[new Date(now).toISOString().slice(0,10)])
+    readRows(env.DB,'SELECT used FROM ai_daily_usage WHERE day=? LIMIT 1',[new Date(now).toISOString().slice(0,10)]),
+    readRows(env.DB,'SELECT topic_id,day,score,source_count,updated_at FROM topic_history WHERE updated_at>=? ORDER BY updated_at DESC LIMIT 700',[now-31*86400000])
   ]);
   const metaObj=Object.fromEntries(meta.map(x=>[x.key,x.value]));
   let videos=parsePayload(videoRows);
@@ -144,11 +160,16 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
   const cachedBriefs=new Map(aiRows.map(r=>[r.id,r]));
   const ideas=base.contentCreation.items.map(idea=>{
     const cached=cachedBriefs.get(idea.id);
-    if(!cached||cached.signature!==sourceSignature(idea))return idea;
-    try {return {...idea,autoBrief:JSON.parse(cached.payload)};}
-    catch{return idea;}
+    const trend=trendHistory(idea,historyRows,now);
+    if(!cached||cached.signature!==sourceSignature(idea))return {...idea,trend};
+    try {return {...idea,trend,autoBrief:JSON.parse(cached.payload)};}
+    catch{return {...idea,trend};}
   });
-  return {...base,contentCreation:{items:ideas,autoAIEnabled:autoAIEnabled(env),
+  const daily=aiRows.find(r=>r.id==='daily:'+new Date(now).toISOString().slice(0,10));
+  let aiDigest=null;
+  if(daily)try{aiDigest=JSON.parse(daily.payload);}catch{}
+  return {...base,editorialDigest:{...base.editorialDigest,aiDigest},
+    contentCreation:{items:ideas,autoAIEnabled:autoAIEnabled(env),
     aiDailyCap:MAX_AI_PER_DAY,aiUsedToday:Number(aiUsage[0]?.used||0),
     aiAvailable:false},channels:[...builtin,...managed],
     discoverySettings:{queries:config.queries||['WoW Forever','World of Warcraft Forever','WoW Classic'],
@@ -378,7 +399,11 @@ export default {
     if((hour-5)%3===0) {
       try {
         const feed=await state(env,new Request('https://radar.internal/api/feed'),now);
-        console.log('Scheduled free AI:',JSON.stringify(await automaticallyGenerate(env,feed.contentCreation.items,now)));
+        console.log('Topic history snapshots:',await saveHistory(env,feed.contentCreation.items,now));
+        const result=hour===8
+          ?await automaticallyGenerateDigest(env,feed,now)
+          :await automaticallyGenerate(env,feed.contentCreation.items,now);
+        console.log('Scheduled free AI:',JSON.stringify(result));
       } catch(e) {console.error('Scheduled free AI unavailable:',fail(e));}
     }
     if(sourceSyncError)throw sourceSyncError; // Keep scanner failure visible to monitoring.
