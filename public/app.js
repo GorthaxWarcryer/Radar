@@ -357,6 +357,9 @@ document.addEventListener('click',async e=>{
       if(!status)return toast('Choose a research status');
       await adminFetch('/api/research/status',{method:'POST',body:JSON.stringify({id,status})});
       toast('Research status updated');return fetchFeed({manual:true});}
+    if(button.dataset.statusSave){const id=button.dataset.statusSave;
+      const status=[...document.querySelectorAll('[data-research-pick]')].find(x=>x.dataset.researchPick===id)?.value;
+      await adminFetch('/api/research/status',{method:'POST',body:JSON.stringify({id,status})});toast('Research status saved');return fetchFeed();}
     if(button.dataset.exportCsv){const r=await fetch('/api/research/csv',{headers:state.adminToken?{'X-Admin-Token':state.adminToken}:{}});
       if(!r.ok)throw Error('Admin unlock required');const blob=await r.blob(),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='azeroth-radar-research.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);return;}
     if(button.dataset.layout) {state.layout=button.dataset.layout;return render();}
