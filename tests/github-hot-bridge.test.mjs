@@ -57,6 +57,27 @@ const createAPI=(views={})=>async uri=>{
   return {ok:true,status:200,json:async()=>({items:ids.filter(id=>views[id]!=null)
     .map(id=>({id,statistics:{viewCount:String(views[id])}}))})};
 };
+test('verified channel ID marks a video official in both HOT and Popular',async()=>{
+  const id='abcABC123_-';
+  const source={...item(id,7200),channel:'World of Warcraft',publishedAt:T-H};
+  const fetcher=async u=>{
+    const ids=new URL(u).searchParams.get('id').split(',');
+    return {ok:true,json:async()=>({items:ids.map(id=>({id,
+      snippet:{channelId:'UCbLj9QP9FAaHs_647QckGtg',channelTitle:'World of Warcraft'},
+      statistics:{viewCount:'7200'}}))})};
+  };
+  const read=await pollYoutubeViews([source],'fake-key',{fetcher,clock:()=>T});
+  const ranked=calculate({videos:[source]}, {},T,read);
+  assert.equal(ranked.videos[0].officialSource,true);
+  assert.equal(ranked.catalog[0].officialSource,true);
+  assert.equal(ranked.catalog[0].channelId,'UCbLj9QP9FAaHs_647QckGtg');
+});
+test('matching publisher name alone does not grant official status',()=>{
+  const spoof={...item('QWEasd123_-',7800),channel:'World of Warcraft',
+    channelId:'UCnotTheOfficialChannel12'};
+  const result=calculate({videos:[spoof]}, {},T);
+  assert.equal(result.videos[0].officialSource,false);
+});
 test('missing YouTube API key does not generate synthetic observations',async()=>{
   const r=await pollYoutubeViews([{id:ID1}],'');
   assert.equal(r.status,'missing-key'); assert.equal(r.requests,0);assert.deepEqual(r.observations,[]);
