@@ -113,32 +113,54 @@ async function adminRequired(req,env) {
 }
 async function upsertData(env,data,now=Date.now()) {
   if(!data||typeof data!=='object'||Array.isArray(data))throw Error('Invalid import');
-  const list=x=>Array.isArray(x)?x.slice(0,LIMIT):[];
+  // Each import request is bounded and uses bulk SQL for Cloudflare Free's per-invocation limits.
+  const list=x=>Array.isArray(x)?x:[];
+  const total=list(data.videos).length+list(data.reddit).length+
+    list(data.official).length+list(data.saved).length;
+  if(total>200)throw new Error('Import limit 200 records/request; split larger exports into batches');
   const vids=list(data.videos).filter(x=>x&&/^[a-zA-Z0-9_-]{11}$/.test(x.id||'')&&
     x.title&&Number.isFinite(Number(x.publishedAt))&&
     Number.isSafeInteger(Number(x.views))&&Number(x.views)>=0);
   const reddit=list(data.reddit).map(x=>normalizeIncomingStory(x,'Reddit',now)).filter(Boolean);
   const official=list(data.official).map(x=>normalizeIncomingStory(x,'Official',now)).filter(Boolean);
   const saved=list(data.saved).filter(x=>x?.id&&x.title);
+  const videoRows=vids.map(v=>{
+    const observedAt=Number.isFinite(Number(v.observedAt))&&Number(v.observedAt)>0?
+      Number(v.observedAt):null;
+    const item={...v,id:v.id,title:String(v.title).slice(0,400),
+      observedAt,views:Number(v.views),kind:v.kind==='shorts'?'shorts':'long',isVod:!!v.isVod};
+    return [item.id,JSON.stringify(item),observedAt||now];
+  });
+  // Import dates are NOT observations. Only save an explicit source measurement timestamp.
+  const sampleRows=vids.flatMap(v=>
+    Number.isFinite(Number(v.observedAt))&&Number(v.observedAt)>=Number(v.publishedAt)&&
+    Number(v.observedAt)<=now&&Number.isSafeInteger(Number(v.views))?
+      [[v.id,Number(v.observedAt),Number(v.views),'admin-import']]:[]);
   const stmts=[];
-  for(const v of vids) {
-    const item={...v,id:v.id,title:String(v.title).slice(0,400),observedAt:now,
-      views:Number(v.views),kind:v.kind==='shorts'?'shorts':'long',isVod:!!v.isVod};
-    stmts.push(env.DB.prepare('INSERT INTO videos(id,payload,last_seen) VALUES(?,?,?) ON CONFLICT(id) DO UPDATE SET payload=excluded.payload,last_seen=excluded.last_seen')
-      .bind(item.id,JSON.stringify(item),now));
-    stmts.push(env.DB.prepare('INSERT OR IGNORE INTO video_samples(id,at,views,source) VALUES(?,?,?,?)').bind(item.id,now,item.views,'admin-import'));
+  function pushBulk(prefix,rows,width,suffix='') {
+    for(let i=0;i<rows.length;i+=20){
+      const part=rows.slice(i,i+20);
+      const placeholder='('+Array(width).fill('?').join(',')+')';
+      stmts.push(env.DB.prepare(prefix+Array(part.length).fill(placeholder).join(',')+suffix)
+        .bind(...part.flat()));
+    }
   }
+  pushBulk('INSERT INTO videos(id,payload,last_seen) VALUES ',videoRows,3,
+    ' ON CONFLICT(id) DO UPDATE SET payload=excluded.payload,last_seen=excluded.last_seen');
+  pushBulk('INSERT OR IGNORE INTO video_samples(id,at,views,source) VALUES ',sampleRows,4);
   for(const [table,items] of [['reddit',reddit],['official',official]])
-    for(const item of items)
-      stmts.push(env.DB.prepare('INSERT INTO '+table+'(id,payload,last_seen) VALUES(?,?,?) ON CONFLICT(id) DO UPDATE SET payload=excluded.payload,last_seen=excluded.last_seen')
-        .bind(String(item.id).slice(0,300),JSON.stringify(item),now));
-  for(const item of saved)
-    stmts.push(env.DB.prepare('INSERT INTO saved(id,kind,title,url,note,saved_at) VALUES(?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title,url=excluded.url,note=excluded.note')
-      .bind(String(item.id).slice(0,300),String(item.kind||'video').slice(0,30),
-        String(item.title).slice(0,400),safeUrl(item.url)||'',String(item.note||'').slice(0,3000),
-        Number(item.savedAt)||now));
-  for(let i=0;i<stmts.length;i+=80)await env.DB.batch(stmts.slice(i,i+80));
-  return {videos:vids.length,reddit:reddit.length,official:official.length,saved:saved.length};
+    pushBulk('INSERT INTO '+table+'(id,payload,last_seen) VALUES ',
+      items.map(x=>[String(x.id).slice(0,300),JSON.stringify(x),now]),3,
+      ' ON CONFLICT(id) DO UPDATE SET payload=excluded.payload,last_seen=excluded.last_seen');
+  pushBulk('INSERT INTO saved(id,kind,title,url,note,saved_at) VALUES ',
+    saved.map(item=>[String(item.id).slice(0,300),String(item.kind||'video').slice(0,30),
+      String(item.title).slice(0,400),safeUrl(item.url)||'',
+      String(item.note||'').slice(0,3000),Number(item.savedAt)||now]),6,
+    ' ON CONFLICT(id) DO UPDATE SET title=excluded.title,url=excluded.url,note=excluded.note');
+  if(stmts.length>50)throw new Error('D1 query limit exceeded, split imports into smaller batches');
+  if(stmts.length)await env.DB.batch(stmts);
+  return {videos:vids.length,reddit:reddit.length,official:official.length,saved:saved.length,
+    importedMeasurementSamples:sampleRows.length,queries:stmts.length};
 }
 async function exportAll(env) {
   const [videos,reddit,official,saved]=await Promise.all([
