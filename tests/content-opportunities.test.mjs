@@ -121,20 +121,18 @@ test('scheduled AI creates a cached brief and never regenerates unchanged source
   assert.equal(calls,1);
   assert.equal(db.cache.get(idea.id).signature,sourceSignature(idea));
 });
-test('strict six-generation UTC cap, max two per scan, and owner dismissals',async()=>{
+test('strict six-generation UTC cap, max one per AI interval, and owner dismissals',async()=>{
   const db=mockDB(),day=new Date(now).toISOString().slice(0,10);
   let calls=0;
   const env={DB:db,AI:{async run(){calls++;return response;}}};
   const many=Array.from({length:11},(_,i)=>({...idea,
     id:'opportunity:forever:paladin-'+i, sources:[{...idea.sources[0],id:'source-'+i}]}));
-  const a=await automaticallyGenerate(env,many,now);
-  assert.equal(a.generated,2);
-  assert.equal(calls,2);
-  await automaticallyGenerate(env,many,now+10000);
-  const c=await automaticallyGenerate(env,many,now+20000);
-  assert.equal(c.generated,2);
+  for(let i=0;i<MAX_AI_PER_DAY;i++) {
+    const run=await automaticallyGenerate(env,many,now+i*300000);
+    assert.equal(run.generated,1);
+  }
   assert.equal(db.usage.get(day),MAX_AI_PER_DAY);
-  const done=await automaticallyGenerate(env,many,now+30000);
+  const done=await automaticallyGenerate(env,many,now+3600000);
   assert.equal(done.status,'daily-cap');
   assert.equal(calls,6);
   const db2=mockDB();db2.suppressed.add(many[0].id);
