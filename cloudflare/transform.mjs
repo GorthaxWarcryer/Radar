@@ -1,5 +1,6 @@
 import { makeContentIdeas } from '../src/core.mjs';
 import { hotVelocity, HOUR_MS } from '../site-integration/hot-hourly.mjs';
+import { isOfficialYouTubeChannel } from '../src/official-youtube.mjs';
 
 const DAY = 24*HOUR_MS;
 const validId = id => typeof id==='string' && /^[\w-]{11}$/.test(id);
@@ -33,6 +34,8 @@ export function fromGithubVideo(v,now=Date.now()) {
   }:null;
   return {
     id:v.id,kind,title:String(v.title||'Untitled').slice(0,400),
+    channelId:String(v.channelId||''),
+    officialSource:isOfficialYouTubeChannel(v.channelId),
     channelName:String(v.channel||v.channelName||'').slice(0,160),
     thumbnail:'https://i.ytimg.com/vi/'+v.id+'/mqdefault.jpg',
     url:'https://www.youtube.com/watch?v='+v.id,
