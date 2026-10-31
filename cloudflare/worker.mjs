@@ -92,7 +92,7 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
     now,githubAt:Number(metaObj.githubLastGeneratedAt)||null});
 }
 async function adminRequired(req,env) {
-  return verifyAdmin(req,env)?null:error(env.ADMIN_TOKEN?'Administrator authorization required':'Administrator secret not configured',env.ADMIN_TOKEN?401:503);
+  return await verifyAdmin(req,env)?null:error(env.ADMIN_TOKEN?'Administrator authorization required':'Administrator secret not configured',env.ADMIN_TOKEN?401:503);
 }
 async function upsertData(env,data,now=Date.now()) {
   if(!data||typeof data!=='object'||Array.isArray(data))throw Error('Invalid import');
