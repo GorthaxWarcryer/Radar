@@ -37,7 +37,10 @@ async function sourceHot(fetcher=fetch) {
 export async function synchronize(env,fetcher=fetch,now=Date.now()) {
   if(!env.DB)throw new Error('D1 database binding missing');
   const d=await sourceHot(fetcher);
-  const videos=d.videos.map(v=>fromGithubVideo(v,now)).filter(Boolean);
+  // HOT records contain only <24h uploads; catalog preserves 24–48h Popular candidates.
+  const merged=new Map();
+  for(const v of [...(d.catalog||[]),...d.videos]) if(v?.id)merged.set(v.id,v);
+  const videos=[...merged.values()].map(v=>fromGithubVideo(v,now)).filter(Boolean);
   const samples=new Map();
   for (const [id,entries] of Object.entries(d.watchSamples||{})) {
     if(!/^[a-zA-Z0-9_-]{11}$/.test(id)||!Array.isArray(entries))continue;
@@ -104,7 +107,7 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
   let videos=parsePayload(videoRows);
   if(!videos.length) {
     // Before first Cloudflare cron or admin sync, show working public GitHub data without mutating D1.
-    try {const d=await sourceHot(fetcher);videos=d.videos.map(x=>fromGithubVideo(x,now)).filter(Boolean);metaObj.githubLastGeneratedAt=d.generatedAt;}
+    try {const d=await sourceHot(fetcher);const merged=new Map();for(const x of [...(d.catalog||[]),...d.videos])if(x?.id)merged.set(x.id,x);videos=[...merged.values()].map(x=>fromGithubVideo(x,now)).filter(Boolean);metaObj.githubLastGeneratedAt=d.generatedAt;}
     catch {/* D1-only fallback */}
   }
   const official=parsePayload(officialRows);
