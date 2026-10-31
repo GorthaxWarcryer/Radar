@@ -242,6 +242,79 @@ export default {
         const blue=await synchronizeBluePosts(env,fetch,now);
         return reply({...await synchronize(env,fetch,now),official,blue},200);
       }
+      if(req.method==='GET'&&path==='/api/discovery/config') {
+        // Public, explicitly safe configuration: never returns API keys or private notes.
+        const [rows,settings,hidden]=await Promise.all([
+          readRows(env.DB,'SELECT id,official,blocked FROM managed_channels ORDER BY updated_at DESC LIMIT 30'),
+          readRows(env.DB,"SELECT value FROM discovery_settings WHERE key='queries'"),
+          readRows(env.DB,'SELECT id FROM hidden_videos LIMIT 500')
+        ]);
+        let queries=['WoW Forever','World of Warcraft Forever','WoW Classic'];
+        try{const decoded=JSON.parse(settings[0]?.value||'null');if(Array.isArray(decoded)&&decoded.length)queries=decoded.slice(0,6);}catch{}
+        return reply({version:1,queries,channels:rows.filter(r=>!r.blocked&&/^UC[\w-]{22}$/.test(r.id))
+          .map(r=>({id:r.id,official:!!r.official})),blockedChannels:rows.filter(r=>r.blocked).map(r=>r.id),
+          hiddenVideos:hidden.map(r=>r.id),englishOnly:true,excludeRussian:true,updatedAt:now});
+      }
+      if(req.method==='POST'&&path==='/api/research/status'){
+        const denied=await adminRequired(req,env);if(denied)return denied;
+        const d=await bodyJson(req);
+        const allowed=['New','Seen','Investigating','Planned','Published','Dismissed'];
+        if(typeof d.id!=='string'||d.id.length<1||d.id.length>300||!allowed.includes(d.status))
+          return error('Valid research id and status are required',400);
+        // Allow updates only for items already saved in private workspace.
+        const exists=await readRows(env.DB,'SELECT id FROM saved WHERE id=? LIMIT 1',[d.id]);
+        if(!exists.length)return error('Save the source before assigning a status',404);
+        await env.DB.prepare('INSERT INTO research(id,status,updated_at) VALUES(?,?,?) ON CONFLICT(id) DO UPDATE SET status=excluded.status,updated_at=excluded.updated_at')
+          .bind(d.id,d.status,now).run();
+        return reply({ok:true,id:d.id,status:d.status});
+      }
+      if(req.method==='GET'&&path==='/api/research/csv'){
+        const denied=await adminRequired(req,env);if(denied)return denied;
+        const rows=await readRows(env.DB,"SELECT s.id,s.kind,s.title,s.url,s.note,COALESCE(r.status,'New') AS status,s.saved_at AS savedAt FROM saved s LEFT JOIN research r ON r.id=s.id ORDER BY s.saved_at DESC LIMIT 4000");
+        const escCsv=x=>{let v=String(x??'');if(/^[=+\-@\t\r]/.test(v))v="'"+v;
+          return '"'+v.replaceAll('"','""')+'"';};
+        const csv=[['id','kind','title','url','note','status','savedAt'],...rows.map(r=>
+          [r.id,r.kind,r.title,r.url,r.note,r.status,new Date(r.savedAt).toISOString()])]
+          .map(row=>row.map(escCsv).join(',')).join('\r\n');
+        return new Response(csv,{status:200,headers:{'content-type':'text/csv; charset=utf-8',
+          'content-disposition':'attachment; filename="azeroth-radar-research.csv"',
+          'cache-control':'private, no-store','x-content-type-options':'nosniff'}});
+      }
+      if(req.method==='POST'&&path==='/api/channels'){
+        const denied=await adminRequired(req,env);if(denied)return denied;
+        const d=await bodyJson(req);
+        if(typeof d.id!=='string'||!/^UC[a-zA-Z0-9_-]{22}$/.test(d.id))
+          return error('Valid YouTube UC channel ID required',400);
+        await env.DB.prepare('INSERT INTO managed_channels(id,title,official,blocked,updated_at) VALUES(?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title,official=excluded.official,blocked=excluded.blocked,updated_at=excluded.updated_at')
+          .bind(d.id,String(d.title||'').slice(0,150),d.official?1:0,d.blocked?1:0,now).run();
+        return reply({ok:true,id:d.id});
+      }
+      if(req.method==='DELETE'&&path.startsWith('/api/channels/')){
+        const denied=await adminRequired(req,env);if(denied)return denied;
+        const id=decodeURIComponent(path.slice('/api/channels/'.length));
+        if(!/^UC[a-zA-Z0-9_-]{22}$/.test(id))return error('Invalid channel ID',400);
+        await env.DB.prepare('DELETE FROM managed_channels WHERE id=?').bind(id).run();
+        return reply({ok:true});
+      }
+      if(req.method==='POST'&&path==='/api/discovery/settings'){
+        const denied=await adminRequired(req,env);if(denied)return denied;
+        const d=await bodyJson(req);
+        if(!Array.isArray(d.queries)||d.queries.length<1||d.queries.length>6||
+           !d.queries.every(x=>typeof x==='string'&&x.length>=3&&x.length<=80))
+          return error('Use 1-6 short search queries',400);
+        await env.DB.prepare('INSERT INTO discovery_settings(key,value,updated_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at')
+          .bind('queries',JSON.stringify([...new Set(d.queries.map(x=>x.trim()))]),now).run();
+        return reply({ok:true});
+      }
+      if(req.method==='POST'&&path==='/api/hide-video'){
+        const denied=await adminRequired(req,env);if(denied)return denied;
+        const d=await bodyJson(req);
+        if(typeof d.id!=='string'||!/^[a-zA-Z0-9_-]{11}$/.test(d.id))return error('Valid video id required',400);
+        if(d.hidden===false)await env.DB.prepare('DELETE FROM hidden_videos WHERE id=?').bind(d.id).run();
+        else await env.DB.prepare('INSERT INTO hidden_videos(id,updated_at) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET updated_at=excluded.updated_at')
+          .bind(d.id,now).run();
+        return reply({ok:true});
+      }
       if(req.method==='POST'&&path==='/api/save') {
         const denied=await adminRequired(req,env);if(denied)return denied;
         const s=await bodyJson(req);
