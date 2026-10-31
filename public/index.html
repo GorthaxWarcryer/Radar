@@ -11,6 +11,7 @@
 <script defer src="/app.js"></script>
 </head>
 <body data-theme="default">
+<a class="skip-link" href="#main-content">Skip to content</a>
 <div class="site-shell">
   <aside class="sidebar" aria-label="Main navigation">
     <a href="#hot" class="brand" aria-label="Azeroth Radar home">
@@ -19,7 +20,7 @@
     </a>
     <div class="sidebar-label">DISCOVER</div>
     <nav class="side-nav" id="side-nav" aria-label="Sections">
-      <button class="nav-link active" data-section="hot"><span class="nav-ico">↗</span>HOT <span class="mini-hot">LIVE</span></button>
+      <button class="nav-link active" data-section="hot"><span class="nav-ico">↗</span>HOT <span class="mini-hot">HOURLY</span></button>
       <button class="nav-link" data-section="popular"><span class="nav-ico">▦</span>Popular</button>
       <button class="nav-link" data-section="stories"><span class="nav-ico">▤</span>Stories</button>
       <button class="nav-link" data-section="ideas"><span class="nav-ico">✦</span>Content Creation</button>
@@ -32,8 +33,8 @@
       <button class="nav-link" data-section="settings"><span class="nav-ico">⚙</span>Settings</button>
     </nav>
     <div class="side-bottom">
-      <div class="status-dot-label"><i class="status-dot"></i><span id="connection-label">Local project ready</span></div>
-      <span class="side-version">AZEROTH RADAR · REBUILD v0.4</span>
+      <div class="status-dot-label"><i class="status-dot"></i><span id="connection-label">Checking sources…</span></div>
+      <span class="side-version">AZEROTH RADAR · CREATOR DASHBOARD</span>
     </div>
   </aside>
   <div class="main-area">
@@ -41,8 +42,9 @@
       <div class="mobile-brand"><div class="brand-mark small" aria-hidden="true"><span class="brand-core"></span></div><b>AZEROTH <em>RADAR</em></b></div>
       <div class="crumb"><span>DISCOVER</span><span class="slash">/</span><strong id="crumb-section">HOT</strong></div>
       <div class="top-actions">
-        <div class="sync-label"><i class="status-dot"></i><span id="sync-label">Waiting for feed</span></div>
-        <button class="subtle-btn" id="demo-toggle" title="Preview sample layout">Preview demo</button>
+        <div class="sync-label" role="status" aria-live="polite"><i class="status-dot"></i><span id="sync-label">Waiting for feed</span></div>
+        <button class="subtle-btn refresh-btn" id="refresh-feed" type="button" title="Refresh the latest collected data" aria-label="Refresh the latest collected data"><span aria-hidden="true">↻</span> <span class="refresh-label">Refresh</span></button>
+        <button class="subtle-btn demo-btn" id="demo-toggle" type="button" title="Preview sample layout">Demo</button>
         
       </div>
     </header>
@@ -51,11 +53,12 @@
     </nav>
     <main class="main-content" id="main-content" tabindex="-1">
       <div id="demo-warning" class="demo-warning hidden"><span>PREVIEW MODE</span> Sample cards and metrics are illustrative, not live YouTube/Reddit data. <button id="exit-demo">Use live feed</button></div>
-      <div id="main-view"></div>
+      <div id="main-view" aria-label="Azeroth Radar dashboard"></div>
       <footer><span>AZEROTH RADAR · CONTENT INTELLIGENCE</span><span>Source-backed signals. Never confuse total views with measured growth.</span></footer>
     </main>
   </div>
 </div>
-<div id="toast" role="status" aria-live="polite"></div>
+<div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+<noscript><div class="no-script">Azeroth Radar needs JavaScript to display current YouTube and Blizzard sources.</div></noscript>
 </body>
 </html>
