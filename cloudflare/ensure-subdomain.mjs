@@ -22,9 +22,7 @@ let subdomain=current.data?.result?.subdomain||'';
 if(subdomain){
   console.log('Existing account workers.dev subdomain found and preserved.');
 }else{
-  if(current.status!==404 && current.ok)
-    throw Error('Unexpected Cloudflare account subdomain data, refusing to overwrite existing settings');
-  if(current.status!==404)
+  if(current.status!==404 && !current.ok)
     throw Error('Could not read Cloudflare account subdomain (HTTP '+current.status+'); cannot safely configure it.');
   for(const name of ['azeroth-radar-gorthax','gorthax-azeroth-radar','azeroth-radar-gorthax-2026']){
     const created=await call('PUT',{subdomain:name});
