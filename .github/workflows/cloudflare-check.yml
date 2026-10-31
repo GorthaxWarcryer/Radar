@@ -24,3 +24,5 @@ jobs:
           node -e "const fs=require('node:fs'); const x=JSON.parse(fs.readFileSync('wrangler.jsonc','utf8')); if (!x.d1_databases || x.assets.directory!=='./public') throw Error('Invalid Cloudflare config')"
       - name: Test Cloudflare API, saved-data privacy and HOT growth
         run: node --test cloudflare/tests/*.test.mjs site-integration/tests/hot-hourly.test.mjs
+      - name: Confirm Cloudflare Worker bundles without deploying
+        run: npx --yes wrangler@4 deploy --dry-run --outdir=.wrangler/ci-check
