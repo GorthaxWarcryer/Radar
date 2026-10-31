@@ -35,7 +35,7 @@ a{color:#78d2e6}
 <small>Azeroth Radar · GitHub companion</small>
 <h1>HOT Warcraft Videos</h1>
 <p>A new video first appears using its average views per hour since upload. Later observations replace the estimate with actual measured growth.</p>
-<div class="notice"><b>Important:</b> This is a separate GitHub-powered feed, not an override of the original ChatGPT Site. GitHub recalculates rankings every hour but does not independently collect current YouTube view counts. Check the observation timestamp.</div>
+<div class="notice" id="apiNotice"><b>Important:</b> This is a separate GitHub-powered feed, not an override of the original ChatGPT Site. When a YouTube API key is configured, GitHub measures actual view counts every hour. Check the observation timestamp.</div>
 <div class="stats">
 <div class="stat"><span>HOT candidates</span><strong id="total">—</strong></div>
 <div class="stat"><span>Estimated since upload</span><strong id="estimated">—</strong></div>
@@ -72,7 +72,11 @@ $('long').onclick=()=>{mode='long';render()};$('short').onclick=()=>{mode='short
   try{
     const r=await fetch('./latest.json?nocache='+Date.now(),{cache:'no-store'});
     if(!r.ok)throw Error('HTTP '+r.status);
-    feed=await r.json();$('total').textContent=feed.counts.eligible;
+    feed=await r.json();const api=feed.youtubeApi||{};
+    $('apiNotice').textContent=api.status==='connected'?
+      'YouTube API connected: '+api.observations+' actual view-count snapshots this run ('+api.requests+' API requests). Video discovery remains on the original Site schedule.':
+      'YouTube API not connected yet. GitHub is ranking the original Site snapshots only. Add the YOUTUBE_API_KEY repository secret to enable real hourly sampling.';
+    $('total').textContent=feed.counts.eligible;
     $('estimated').textContent=feed.counts.estimated;$('measured').textContent=feed.counts.measured;
     $('lastScan').textContent=date(feed.sourceLastScan);$('updated').textContent='GitHub updated '+date(feed.generatedAt);render();
   }catch(e){$('updated').textContent='Unable to load GitHub HOT data';$('results').textContent='Read the latest GitHub Actions run for current rankings.'}
