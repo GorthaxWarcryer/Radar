@@ -213,26 +213,52 @@ function render() {
   updateTheme();updateNav();
   const data=state.demo?demoData():state.feed;
   $('#demo-warning').classList.toggle('hidden',!state.demo);
-  $('#demo-toggle').textContent=state.demo?'Live feed':'Preview demo';
-  if(!data) {root.innerHTML=empty('Loading Azeroth Radar','Reading the local API and its saved sources...',false);return;}
+  $('#demo-toggle').textContent=state.demo?'Live feed':'Demo';
+  if(!data) {root.innerHTML='<div class="loading-shell" role="status" aria-label="Loading source data"><div class="loading-bar"></div><div class="loading-row"></div><div class="loading-row"></div><p>Loading the latest collected signals…</p></div>';return;}
   const renderers={popular:()=>videoSection(data,'popular'),hot:()=>videoSection(data,'hot'),stories:()=>storiesSection(data),ideas:()=>ideasSection(data),watchlist:()=>watchlistSection(data),channels:()=>channelsSection(data),activity:()=>activitySection(data),settings:()=>settingsSection(data)};
   root.innerHTML=renderers[state.section]();
 }
-async function fetchFeed() {
-  if (location.protocol === 'file:' || document.documentElement.dataset.preview === 'true') {
-    $('#sync-label').textContent = 'Illustrative preview — no live connection';
-    $('#connection-label').textContent = 'Preview only';
+let feedRequestInProgress=false;
+let lastFeedRefreshAt=0;
+function isEditing() {
+  return Boolean(document.activeElement?.matches('input, textarea, select, [contenteditable="true"]'));
+}
+async function fetchFeed({manual=false}={}) {
+  if(feedRequestInProgress)return;
+  if(location.protocol==='file:'||document.documentElement.dataset.preview==='true'){
+    $('#sync-label').textContent='Illustrative preview — no live connection';
+    $('#connection-label').textContent='Preview only';
     render();
     return;
   }
-  try { const res=await fetch('/api/feed',{cache:'no-store',headers:state.adminToken?{'X-Admin-Token':state.adminToken}:{}}); if(!res.ok) throw new Error('Feed HTTP '+res.status);
-    state.feed=await res.json(); const sources=state.feed.sources||{};
-    $('#sync-label').textContent=state.feed.summary?.lastScan?`Updated ${age(state.feed.summary.lastScan)}`:'No scans yet';
-    $('#connection-label').textContent=Object.values(sources).some(x=>x==='complete')?'Feed source connected':'Configure data sources';
-  } catch(error) { state.feed={popular:{long:[],shorts:[]},hot:{long:[],shorts:[]},stories:[],contentCreation:{items:[]},summary:{},saved:[],channels:[],scans:[],sources:{}};
-    $('#sync-label').textContent='API unavailable'; toast(`Feed error: ${error.message}`);
+  feedRequestInProgress=true;
+  const refresh=$('#refresh-feed');
+  if(refresh){refresh.disabled=true;refresh.setAttribute('aria-busy','true');}
+  try {
+    const response=await fetch('/api/feed',{cache:'no-store',headers:state.adminToken?{'X-Admin-Token':state.adminToken}:{}});
+    if(!response.ok)throw Error('Feed HTTP '+response.status);
+    state.feed=await response.json();
+    lastFeedRefreshAt=Date.now();
+    const sources=state.feed.sources||{};
+    const updatedAt=Number(state.feed.summary?.lastScan||state.feed.generatedAt||0);
+    $('#sync-label').textContent=updatedAt?'Latest source '+age(updatedAt):'Awaiting first source scan';
+    $('#sync-label').title=updatedAt?'Source snapshot: '+time(updatedAt):'No source snapshot yet';
+    const hasSources=Boolean(sources.youtube&&sources.youtube!=='error'&&sources.youtube!=='not_configured');
+    $('#connection-label').textContent=hasSources?'YouTube scanning connected':'Data collection status available';
+    if(manual)toast('Latest collected data loaded');
+  }catch(error){
+    // A temporary network interruption must never wipe the user's current research view.
+    $('#sync-label').textContent=state.feed?'Offline · showing last loaded data':'Feed unavailable';
+    $('#connection-label').textContent='Connection needs attention';
+    if(manual||!state.feed)toast('Could not refresh. '+error.message);
+    if(!state.feed)state.feed={popular:{long:[],shorts:[]},hot:{long:[],shorts:[]},
+      stories:[],contentCreation:{items:[]},summary:{},saved:[],channels:[],scans:[],sources:{}};
+  }finally{
+    feedRequestInProgress=false;
+    if(refresh){refresh.disabled=false;refresh.removeAttribute('aria-busy');}
+    // Do not erase partly-written research notes or a search query on refresh.
+    if(!isEditing()||manual)render();
   }
-  render();
 }
 async function adminFetch(url, options={}) {
   const go=async()=>fetch(url,{...options,headers:{'Content-Type':'application/json',...(state.adminToken?{'X-Admin-Token':state.adminToken}:{}),...(options.headers||{})}});
@@ -240,11 +266,18 @@ async function adminFetch(url, options={}) {
   if(res.status===401) { const token=window.prompt('Enter the rebuild server ADMIN_TOKEN (kept in memory for this tab only):'); if(!token) throw new Error('Authorization required'); state.adminToken=token; res=await go(); }
   const response=await res.json(); if(!res.ok) throw new Error(response.error||`HTTP ${res.status}`); return response;
 }
-function moveSection(section) {state.section=section; window.location.hash=section; render(); window.scrollTo({top:0,behavior:'smooth'});}
+function moveSection(section) {
+  state.section=section;
+  window.location.hash=section;
+  render();
+  window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  $('#main-content')?.focus({preventScroll:true});
+}
 document.addEventListener('click',async e=>{
   const button=e.target.closest('button'); if(!button) return;
   try {
     if(button.dataset.section) return moveSection(button.dataset.section);
+    if(button.id==='refresh-feed')return fetchFeed({manual:true});
     if(button.dataset.kind) {state.kind=button.dataset.kind;return render();}
     if(button.dataset.window){state.viewWindow=button.dataset.window;return render();}
     if(button.dataset.videoSort){if(state.section==='hot')state.hotSort=button.dataset.videoSort;else state.popularSort=button.dataset.videoSort;return render();}
@@ -293,6 +326,30 @@ document.addEventListener('submit',function onRedditSubmit(e) {
   toast("Reddit discussion saved on this device.");
   render();
 });
-window.addEventListener('hashchange',()=>{const page=location.hash.replace('#','');if(['popular','hot','stories','ideas','watchlist','channels','activity','settings'].includes(page)){state.section=page;render();}});
-if(location.hash) {const page=location.hash.slice(1);if(['popular','hot','stories','ideas','watchlist','channels','activity'].includes(page))state.section=page;}
-render();fetchFeed();setInterval(fetchFeed,60000);
+window.addEventListener('hashchange',()=>{const page=location.hash.replace('#','');if(['popular','hot','stories','ideas','watchlist','channels','activity','settings'].includes(page)&&state.section!==page){state.section=page;render();}});
+if(location.hash) {const page=location.hash.slice(1);if(['popular','hot','stories','ideas','watchlist','channels','activity','settings'].includes(page))state.section=page;}
+document.addEventListener('keydown',event=>{
+  if(event.target?.id==='video-filter'){
+    if(event.key==='Enter'){
+      event.preventDefault();
+      state.searchTerm=event.target.value.trim().slice(0,140);
+      render();
+      $('#video-filter')?.focus();
+    }else if(event.key==='Escape'&&state.searchTerm){
+      event.preventDefault();
+      state.searchTerm='';
+      render();
+      $('#video-filter')?.focus();
+    }
+    return;
+  }
+  if(event.key==='/'&&!event.ctrlKey&&!event.metaKey&&!event.altKey&&!isEditing()&&['hot','popular'].includes(state.section)){
+    event.preventDefault();
+    $('#video-filter')?.focus();
+  }
+});
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden&&!isEditing()&&Date.now()-lastFeedRefreshAt>120000)fetchFeed();
+});
+render();fetchFeed();
+setInterval(()=>{if(!document.hidden&&!isEditing())fetchFeed();},60000);
