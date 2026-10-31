@@ -60,6 +60,12 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: npx --yes wrangler@4 d1 execute azeroth-radar-db --remote --file=./cloudflare/schema.sql --config wrangler.jsonc --yes
+      - name: Backfill live blue posts immediately after schema setup
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          node cloudflare/seed-blue.mjs
+          npx --yes wrangler@4 d1 execute azeroth-radar-db --remote --file=./.blue-posts-seed.sql --config wrangler.jsonc --yes
       - name: Register first workers.dev hostname only if account has none
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
