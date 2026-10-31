@@ -44,7 +44,8 @@ jobs:
               auth = urllib.request.Request(token_url, headers={'Authorization': 'Bearer ' + os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']})
               with urllib.request.urlopen(auth, timeout=20) as response:
                   token = json.load(response)['value']
-              req = urllib.request.Request(audience, data=json.dumps({'operation': operation}).encode(), headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'User-Agent': 'AzerothRadar-Scheduler/1.0'})
+              # Send token to the verified canonical Site, not to the legacy audience URL.
+              req = urllib.request.Request(BASE + '/api/refresh', data=json.dumps({'operation': operation}).encode(), headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'User-Agent': 'AzerothRadar-Scheduler/1.0'})
               with urllib.request.urlopen(req, timeout=35) as response:
                   return json.load(response)
           
@@ -129,7 +130,8 @@ jobs:
               auth = urllib.request.Request(token_url, headers={'Authorization': 'Bearer ' + os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']})
               with urllib.request.urlopen(auth, timeout=20) as response:
                   token = json.load(response)['value']
-              req = urllib.request.Request(audience, data=json.dumps({'operation': operation}).encode(), headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'User-Agent': 'AzerothRadar-Scheduler/1.0'})
+              # Send token to the verified canonical Site, not to the legacy audience URL.
+              req = urllib.request.Request(BASE + '/api/refresh', data=json.dumps({'operation': operation}).encode(), headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'User-Agent': 'AzerothRadar-Scheduler/1.0'})
               with urllib.request.urlopen(req, timeout=35) as response:
                   return json.load(response)
           
