@@ -1,0 +1,43 @@
+name: One-time original vs Cloudflare public feature audit
+on:
+  push:
+    paths:
+      - '.github/workflows/migration-gap-audit-once.yml'
+permissions:
+  contents: none
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Compare public non-sensitive Site and Cloudflare API schemas
+        shell: python {0}
+        run: |
+          import urllib.request,urllib.error,json
+          sites={
+            'original':'https://azeroth-radar-petro.gorthax.chatgpt.site',
+            'cloudflare':'https://azeroth-radar.azeroth-radar-gorthax.workers.dev'
+          }
+          paths=['/','/api/feed?view=dashboard','/api/health']
+          for site,base in sites.items():
+            print('=== '+site+' ===')
+            for path in paths:
+              try:
+                req=urllib.request.Request(base+path,headers={'User-Agent':'AzerothRadar-ReadOnly-Migration-Audit/1.0','Accept':'application/json,text/html'})
+                with urllib.request.urlopen(req,timeout=24) as resp:
+                  code=resp.status; typ=resp.headers.get('content-type',''); data=resp.read(5000000)
+                print(path,'HTTP',code,'bytes',len(data),'content-type',typ)
+                if 'json' in typ or path.startswith('/api/'):
+                  try:
+                    parsed=json.loads(data)
+                    print('top-level-keys',sorted(parsed.keys()) if isinstance(parsed,dict) else type(parsed).__name__)
+                    if isinstance(parsed,dict):
+                      for key in ['videos','stories','channels','scans','savedVideos','saved','contentCreation','popular','hot','reddit','bluePosts','storyColumns','health','config','sources','summary']:
+                        item=parsed.get(key)
+                        if isinstance(item,list): print('  '+key,'list-count',len(item))
+                        elif isinstance(item,dict): print('  '+key,'object-keys',sorted(item.keys())[:35])
+                  except ValueError: print('body not JSON')
+                elif path=='/':
+                  print('homepage HTML fingerprint: has app root',b'__next' in data or b'__VINEXT' in data,'has Azeroth Radar',b'Azeroth Radar' in data)
+              except urllib.error.HTTPError as e: print(path,'HTTP',e.code)
+              except Exception as e: print(path,'failed',type(e).__name__,str(e)[:110])
