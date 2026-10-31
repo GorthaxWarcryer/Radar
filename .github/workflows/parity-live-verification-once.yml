@@ -51,4 +51,4 @@ jobs:
             raise AssertionError('Unauthenticated channel mutation unexpectedly succeeded')
           except urllib.error.HTTPError as e:
             print('Unauthorized channel mutation:',e.code)
-            assert e.code in (401,503)
+            assert e.code in (401,403,503)
