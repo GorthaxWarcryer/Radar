@@ -49,7 +49,7 @@ export async function synchronize(env,fetcher=fetch,now=Date.now()) {
       s.views>=0 && s.capturedAt<=now && now-s.capturedAt<72*3600000)
       samples.set(id+':'+s.capturedAt,{id,at:s.capturedAt,views:s.views,source:s.source||'github'});
   }
-  for(const v of d.videos)for(const s of v.samples||[])
+  for(const v of [...(d.catalog||[]),...d.videos])for(const s of v.samples||[])
     if(/^[a-zA-Z0-9_-]{11}$/.test(v.id||'')&&Number.isFinite(s?.capturedAt)&&
       Number.isSafeInteger(s?.views)&&s.views>=0&&s.capturedAt<=now&&now-s.capturedAt<72*3600000)
       samples.set(v.id+':'+s.capturedAt,{id:v.id,at:s.capturedAt,views:s.views,source:s.source||'github'});
