@@ -1,6 +1,7 @@
 import { buildFeed, fromGithubVideo, normalizeIncomingStory, safeUrl } from './transform.mjs';
 import { synchronizeOfficial, officialSourceStatus } from './official.mjs';
 import { synchronizeBluePosts } from './blue-posts.mjs';
+import { OFFICIAL_YOUTUBE_CHANNELS, isOfficialYouTubeChannel } from '../src/official-youtube.mjs';
 
 const GITHUB_HOT='https://raw.githubusercontent.com/GorthaxWarcryer/Radar/main/docs/hot/latest.json';
 const headers={'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'};
@@ -126,14 +127,18 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
     latestPostAt:blueEntries.length?Math.max(...blueEntries.map(p=>p.publishedAt)):null};
   const hidden=new Set(hiddenRows.map(x=>x.id));
   const blocked=new Set(channels.filter(x=>x.blocked).map(x=>x.id));
-  const visibleVideos=videos.filter(v=>!hidden.has(v.id)&&(!v.channelId||!blocked.has(v.channelId)));
+  const visibleVideos=videos.filter(v=>!hidden.has(v.id)&&(!v.channelId||!blocked.has(v.channelId)))
+    .map(v=>({...v,officialSource:isOfficialYouTubeChannel(v.channelId)}));
   const config=Object.fromEntries(settings.map(x=>{try{return [x.key,JSON.parse(x.value)];}catch{return [x.key,x.value];}}));
   const base=buildFeed({videos:visibleVideos,reddit:parsePayload(redditRows),official,
     officialSources:[...officialSourceStatus(scans,recentOfficial),blueStatus],
     saved:savedRows,scans,privateSaved:isAdmin,
     now,githubAt:Number(metaObj.githubLastGeneratedAt)||null});
-  return {...base,channels:channels.filter(c=>!c.blocked).map(c=>({
-      id:c.id,title:c.title,official:!!c.official,handle:''})),
+  const builtin=OFFICIAL_YOUTUBE_CHANNELS.filter(c=>!blocked.has(c.id))
+    .map(c=>({...c,official:true,platform:'youtube',trackedBy:'github-discovery'}));
+  const managed=channels.filter(c=>!c.blocked&&!OFFICIAL_YOUTUBE_CHANNELS.some(x=>x.id===c.id))
+    .map(c=>({id:c.id,title:c.title,official:false,handle:''}));
+  return {...base,channels:[...builtin,...managed],
     discoverySettings:{queries:config.queries||['WoW Forever','World of Warcraft Forever','WoW Classic'],
       englishOnly:true,excludeRussian:true,channelCount:channels.filter(c=>!c.blocked).length},
     researchStatuses:['New','Seen','Investigating','Planned','Published','Dismissed'],
