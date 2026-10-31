@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": 1793434271975,
+  "generatedAt": 1793434291122,
   "sourceLastScan": 1793427408479,
   "sourceFeed": "https://azeroth-radar-petro.gorthax.chatgpt.site/api/feed?view=dashboard",
   "independentDiscoveryAt": 1793434261901,
@@ -10,7 +10,7 @@
     "requests": 4,
     "observations": 171,
     "attempted": 172,
-    "lastCheckedAt": 1793434271975
+    "lastCheckedAt": 1793434291122
   },
   "disclaimer": "GitHub polls YouTube API hourly; discovery now also runs independently on GitHub, and can supplement the original Site.",
   "counts": {
@@ -71,6 +71,12 @@
         "capturedAt": 1793434271711,
         "views": 25206,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "Ivg3dl0cuHU",
+        "capturedAt": 1793434290832,
+        "views": 25206,
+        "source": "youtube-data-api"
       }
     ],
     "3d47J9r3Hl4": [
@@ -84,6 +90,12 @@
         "capturedAt": 1793434271711,
         "views": 6617,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "3d47J9r3Hl4",
+        "capturedAt": 1793434290832,
+        "views": 6619,
+        "source": "youtube-data-api"
       }
     ],
     "OxzHxyirmgE": [
@@ -95,6 +107,12 @@
       {
         "id": "OxzHxyirmgE",
         "capturedAt": 1793434271711,
+        "views": 21707,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "OxzHxyirmgE",
+        "capturedAt": 1793434290832,
         "views": 21707,
         "source": "youtube-data-api"
       }
@@ -128,6 +146,12 @@
         "capturedAt": 1793434271711,
         "views": 8441,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "B9IoL1xyym0",
+        "capturedAt": 1793434290832,
+        "views": 8441,
+        "source": "youtube-data-api"
       }
     ],
     "ZdfP0Zap6Uw": [
@@ -141,6 +165,12 @@
         "capturedAt": 1793434271711,
         "views": 25843,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "ZdfP0Zap6Uw",
+        "capturedAt": 1793434290832,
+        "views": 25843,
+        "source": "youtube-data-api"
       }
     ],
     "GjUUoq9MAV0": [
@@ -152,6 +182,12 @@
       {
         "id": "GjUUoq9MAV0",
         "capturedAt": 1793434271711,
+        "views": 22875,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "GjUUoq9MAV0",
+        "capturedAt": 1793434290832,
         "views": 22875,
         "source": "youtube-data-api"
       }
@@ -190,6 +226,12 @@
         "capturedAt": 1793434271711,
         "views": 16360,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "XtJskkJZTXw",
+        "capturedAt": 1793434290832,
+        "views": 16360,
+        "source": "youtube-data-api"
       }
     ],
     "KrRe7wjrauQ": [
@@ -201,6 +243,12 @@
       {
         "id": "KrRe7wjrauQ",
         "capturedAt": 1793434271711,
+        "views": 8679,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "KrRe7wjrauQ",
+        "capturedAt": 1793434290832,
         "views": 8679,
         "source": "youtube-data-api"
       }
@@ -232,6 +280,12 @@
       {
         "id": "l9GwCosk91o",
         "capturedAt": 1793434271711,
+        "views": 10022,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "l9GwCosk91o",
+        "capturedAt": 1793434290832,
         "views": 10022,
         "source": "youtube-data-api"
       }
@@ -270,6 +324,12 @@
         "capturedAt": 1793434271711,
         "views": 30273,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "1JhKzviW1h8",
+        "capturedAt": 1793434290832,
+        "views": 30273,
+        "source": "youtube-data-api"
       }
     ],
     "1GEmk7Fci2E": [
@@ -304,6 +364,12 @@
       {
         "id": "1GEmk7Fci2E",
         "capturedAt": 1793434271711,
+        "views": 113200,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "1GEmk7Fci2E",
+        "capturedAt": 1793434290832,
         "views": 113200,
         "source": "youtube-data-api"
       }
@@ -342,6 +408,12 @@
         "capturedAt": 1793434271711,
         "views": 15737,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "GZRZemt6owc",
+        "capturedAt": 1793434290832,
+        "views": 15737,
+        "source": "youtube-data-api"
       }
     ],
     "KqkbtdEpEFw": [
@@ -378,6 +450,12 @@
         "capturedAt": 1793434271711,
         "views": 13429,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "KqkbtdEpEFw",
+        "capturedAt": 1793434290832,
+        "views": 13429,
+        "source": "youtube-data-api"
       }
     ],
     "vUVmyAiqSnQ": [
@@ -407,6 +485,12 @@
       {
         "id": "vUVmyAiqSnQ",
         "capturedAt": 1793434271711,
+        "views": 36658,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "vUVmyAiqSnQ",
+        "capturedAt": 1793434290832,
         "views": 36658,
         "source": "youtube-data-api"
       }
@@ -440,6 +524,12 @@
         "capturedAt": 1793434271711,
         "views": 8796,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "kiu2BtQWfrc",
+        "capturedAt": 1793434290832,
+        "views": 8796,
+        "source": "youtube-data-api"
       }
     ],
     "TYsXxYB-PKM": [
@@ -469,6 +559,12 @@
       {
         "id": "TYsXxYB-PKM",
         "capturedAt": 1793434271711,
+        "views": 13571,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "TYsXxYB-PKM",
+        "capturedAt": 1793434290832,
         "views": 13571,
         "source": "youtube-data-api"
       }
@@ -502,6 +598,12 @@
         "capturedAt": 1793434271711,
         "views": 56377,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "RFohAIFM6z4",
+        "capturedAt": 1793434290832,
+        "views": 56377,
+        "source": "youtube-data-api"
       }
     ],
     "97b2MbM8lYU": [
@@ -531,6 +633,12 @@
       {
         "id": "97b2MbM8lYU",
         "capturedAt": 1793434271711,
+        "views": 23429,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "97b2MbM8lYU",
+        "capturedAt": 1793434290832,
         "views": 23429,
         "source": "youtube-data-api"
       }
@@ -564,6 +672,12 @@
         "capturedAt": 1793434271711,
         "views": 16420,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "bny3G9X9OBA",
+        "capturedAt": 1793434290832,
+        "views": 16488,
+        "source": "youtube-data-api"
       }
     ],
     "YAgGcYEFtok": [
@@ -593,6 +707,12 @@
       {
         "id": "YAgGcYEFtok",
         "capturedAt": 1793434271711,
+        "views": 6133,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "YAgGcYEFtok",
+        "capturedAt": 1793434290832,
         "views": 6133,
         "source": "youtube-data-api"
       }
@@ -626,6 +746,12 @@
         "capturedAt": 1793434271711,
         "views": 7948,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "MQGdDd10u-g",
+        "capturedAt": 1793434290832,
+        "views": 7948,
+        "source": "youtube-data-api"
       }
     ],
     "MdhZBttk3Bw": [
@@ -655,6 +781,12 @@
       {
         "id": "MdhZBttk3Bw",
         "capturedAt": 1793434271711,
+        "views": 53450,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "MdhZBttk3Bw",
+        "capturedAt": 1793434290832,
         "views": 53450,
         "source": "youtube-data-api"
       }
@@ -688,6 +820,12 @@
         "capturedAt": 1793434271711,
         "views": 218525,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "LiMslP8HfWY",
+        "capturedAt": 1793434290832,
+        "views": 218525,
+        "source": "youtube-data-api"
       }
     ],
     "gq72Jg297IY": [
@@ -717,6 +855,12 @@
       {
         "id": "gq72Jg297IY",
         "capturedAt": 1793434271711,
+        "views": 6073,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "gq72Jg297IY",
+        "capturedAt": 1793434290832,
         "views": 6073,
         "source": "youtube-data-api"
       }
@@ -750,6 +894,12 @@
         "capturedAt": 1793434271711,
         "views": 54368,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "WJapDjuEdfA",
+        "capturedAt": 1793434290832,
+        "views": 54368,
+        "source": "youtube-data-api"
       }
     ],
     "NNHRQWoJoYo": [
@@ -781,6 +931,12 @@
         "capturedAt": 1793434271711,
         "views": 18849,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "NNHRQWoJoYo",
+        "capturedAt": 1793434290832,
+        "views": 18856,
+        "source": "youtube-data-api"
       }
     ],
     "OiSlEJ8x7T8": [
@@ -810,6 +966,12 @@
       {
         "id": "OiSlEJ8x7T8",
         "capturedAt": 1793434271711,
+        "views": 38955,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "OiSlEJ8x7T8",
+        "capturedAt": 1793434290832,
         "views": 38955,
         "source": "youtube-data-api"
       }
@@ -843,6 +1005,12 @@
         "capturedAt": 1793434271711,
         "views": 5486,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "o6dDhrwCAL0",
+        "capturedAt": 1793434290832,
+        "views": 5486,
+        "source": "youtube-data-api"
       }
     ],
     "wZX2_WZ9xCw": [
@@ -874,6 +1042,12 @@
         "capturedAt": 1793434271711,
         "views": 6751,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "wZX2_WZ9xCw",
+        "capturedAt": 1793434290832,
+        "views": 6751,
+        "source": "youtube-data-api"
       }
     ],
     "vIMgi56sc0o": [
@@ -887,6 +1061,12 @@
         "capturedAt": 1793434271711,
         "views": 59,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "vIMgi56sc0o",
+        "capturedAt": 1793434290832,
+        "views": 64,
+        "source": "youtube-data-api"
       }
     ],
     "zrQbenyqSck": [
@@ -898,6 +1078,12 @@
       {
         "id": "zrQbenyqSck",
         "capturedAt": 1793434271711,
+        "views": 4,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "zrQbenyqSck",
+        "capturedAt": 1793434290832,
         "views": 4,
         "source": "youtube-data-api"
       }
@@ -913,6 +1099,12 @@
         "capturedAt": 1793434271711,
         "views": 12,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "sW0-Y-rnrk4",
+        "capturedAt": 1793434290832,
+        "views": 12,
+        "source": "youtube-data-api"
       }
     ],
     "YJ2ZZetHITA": [
@@ -924,6 +1116,12 @@
       {
         "id": "YJ2ZZetHITA",
         "capturedAt": 1793434271711,
+        "views": 0,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "YJ2ZZetHITA",
+        "capturedAt": 1793434290832,
         "views": 0,
         "source": "youtube-data-api"
       }
@@ -939,6 +1137,12 @@
         "capturedAt": 1793434271711,
         "views": 36,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "cbGRCcn9aHo",
+        "capturedAt": 1793434290832,
+        "views": 36,
+        "source": "youtube-data-api"
       }
     ],
     "7WSZ_Yqr7GM": [
@@ -950,6 +1154,12 @@
       {
         "id": "7WSZ_Yqr7GM",
         "capturedAt": 1793434271711,
+        "views": 233,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "7WSZ_Yqr7GM",
+        "capturedAt": 1793434290832,
         "views": 233,
         "source": "youtube-data-api"
       }
@@ -965,6 +1175,12 @@
         "capturedAt": 1793434271711,
         "views": 262,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "fF7dst38RWY",
+        "capturedAt": 1793434290832,
+        "views": 262,
+        "source": "youtube-data-api"
       }
     ],
     "OkZRBp-5Xhs": [
@@ -976,6 +1192,12 @@
       {
         "id": "OkZRBp-5Xhs",
         "capturedAt": 1793434271711,
+        "views": 92,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "OkZRBp-5Xhs",
+        "capturedAt": 1793434290832,
         "views": 92,
         "source": "youtube-data-api"
       }
@@ -1014,6 +1236,12 @@
         "capturedAt": 1793434271711,
         "views": 653,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "H_rlr1JQ07c",
+        "capturedAt": 1793434290832,
+        "views": 655,
+        "source": "youtube-data-api"
       }
     ],
     "JTuh5NjUaAA": [
@@ -1026,6 +1254,12 @@
         "id": "JTuh5NjUaAA",
         "capturedAt": 1793434271711,
         "views": 432,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "JTuh5NjUaAA",
+        "capturedAt": 1793434290832,
+        "views": 436,
         "source": "youtube-data-api"
       }
     ],
@@ -1040,6 +1274,12 @@
         "capturedAt": 1793434271711,
         "views": 823,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "pide_G_WvCQ",
+        "capturedAt": 1793434290832,
+        "views": 823,
+        "source": "youtube-data-api"
       }
     ],
     "QtQ2zuTHQSs": [
@@ -1052,6 +1292,12 @@
         "id": "QtQ2zuTHQSs",
         "capturedAt": 1793434271711,
         "views": 0,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "QtQ2zuTHQSs",
+        "capturedAt": 1793434290832,
+        "views": 10,
         "source": "youtube-data-api"
       }
     ],
@@ -1089,6 +1335,12 @@
         "capturedAt": 1793434271711,
         "views": 1933,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "EncsznAZcgE",
+        "capturedAt": 1793434290832,
+        "views": 1967,
+        "source": "youtube-data-api"
       }
     ],
     "UcmnWnS6FVI": [
@@ -1100,6 +1352,12 @@
       {
         "id": "UcmnWnS6FVI",
         "capturedAt": 1793434271711,
+        "views": 45,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "UcmnWnS6FVI",
+        "capturedAt": 1793434290832,
         "views": 45,
         "source": "youtube-data-api"
       }
@@ -1133,6 +1391,12 @@
         "capturedAt": 1793434271711,
         "views": 30,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "95zlPZ3Jdtc",
+        "capturedAt": 1793434290832,
+        "views": 28,
+        "source": "youtube-data-api"
       }
     ],
     "zjSnrF2Hneg": [
@@ -1164,6 +1428,12 @@
         "capturedAt": 1793434271711,
         "views": 1,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "zjSnrF2Hneg",
+        "capturedAt": 1793434290832,
+        "views": 1,
+        "source": "youtube-data-api"
       }
     ],
     "c_Fht2KSbik": [
@@ -1176,6 +1446,12 @@
         "id": "c_Fht2KSbik",
         "capturedAt": 1793434271711,
         "views": 1662,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "c_Fht2KSbik",
+        "capturedAt": 1793434290832,
+        "views": 1663,
         "source": "youtube-data-api"
       }
     ],
@@ -1190,6 +1466,12 @@
         "capturedAt": 1793434271711,
         "views": 663,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "qqfLXgviMxY",
+        "capturedAt": 1793434290832,
+        "views": 663,
+        "source": "youtube-data-api"
       }
     ],
     "rcKfJeFWiIQ": [
@@ -1201,6 +1483,12 @@
       {
         "id": "rcKfJeFWiIQ",
         "capturedAt": 1793434271711,
+        "views": 156,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "rcKfJeFWiIQ",
+        "capturedAt": 1793434290832,
         "views": 156,
         "source": "youtube-data-api"
       }
@@ -1234,6 +1522,12 @@
         "capturedAt": 1793434271711,
         "views": 753,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "sF-mGAIJfVQ",
+        "capturedAt": 1793434290832,
+        "views": 753,
+        "source": "youtube-data-api"
       }
     ],
     "zFhHRsW4zZs": [
@@ -1247,6 +1541,12 @@
         "capturedAt": 1793434271711,
         "views": 9,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "zFhHRsW4zZs",
+        "capturedAt": 1793434290832,
+        "views": 9,
+        "source": "youtube-data-api"
       }
     ],
     "YoUTMMHq1_s": [
@@ -1258,6 +1558,12 @@
       {
         "id": "YoUTMMHq1_s",
         "capturedAt": 1793434271799,
+        "views": 922,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "YoUTMMHq1_s",
+        "capturedAt": 1793434290962,
         "views": 922,
         "source": "youtube-data-api"
       }
@@ -1291,6 +1597,12 @@
         "capturedAt": 1793434271799,
         "views": 47,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "tyblNAMWiBg",
+        "capturedAt": 1793434290962,
+        "views": 47,
+        "source": "youtube-data-api"
       }
     ],
     "nQlEsgmsvnI": [
@@ -1322,6 +1634,12 @@
         "capturedAt": 1793434271799,
         "views": 2299,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "nQlEsgmsvnI",
+        "capturedAt": 1793434290962,
+        "views": 2299,
+        "source": "youtube-data-api"
       }
     ],
     "ddouBF_6l4w": [
@@ -1334,6 +1652,12 @@
         "id": "ddouBF_6l4w",
         "capturedAt": 1793434271799,
         "views": 113,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "ddouBF_6l4w",
+        "capturedAt": 1793434290962,
+        "views": 156,
         "source": "youtube-data-api"
       }
     ],
@@ -1348,6 +1672,12 @@
         "capturedAt": 1793434271799,
         "views": 6,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "LOFq4-dtrvg",
+        "capturedAt": 1793434290962,
+        "views": 8,
+        "source": "youtube-data-api"
       }
     ],
     "Vg53KAUnU14": [
@@ -1359,6 +1689,12 @@
       {
         "id": "Vg53KAUnU14",
         "capturedAt": 1793434271799,
+        "views": 195,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "Vg53KAUnU14",
+        "capturedAt": 1793434290962,
         "views": 195,
         "source": "youtube-data-api"
       }
@@ -1374,6 +1710,12 @@
         "capturedAt": 1793434271799,
         "views": 969,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "xcCZqHveid4",
+        "capturedAt": 1793434290962,
+        "views": 1052,
+        "source": "youtube-data-api"
       }
     ],
     "BJxqAqn3QzI": [
@@ -1386,6 +1728,12 @@
         "id": "BJxqAqn3QzI",
         "capturedAt": 1793434271799,
         "views": 339,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "BJxqAqn3QzI",
+        "capturedAt": 1793434290962,
+        "views": 340,
         "source": "youtube-data-api"
       }
     ],
@@ -1400,6 +1748,12 @@
         "capturedAt": 1793434271799,
         "views": 29,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "ire53YehzBA",
+        "capturedAt": 1793434290962,
+        "views": 36,
+        "source": "youtube-data-api"
       }
     ],
     "IJJSWFxLgbI": [
@@ -1413,6 +1767,12 @@
         "capturedAt": 1793434271799,
         "views": 1134,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "IJJSWFxLgbI",
+        "capturedAt": 1793434290962,
+        "views": 1105,
+        "source": "youtube-data-api"
       }
     ],
     "b-MFrj5CF_k": [
@@ -1424,6 +1784,12 @@
       {
         "id": "b-MFrj5CF_k",
         "capturedAt": 1793434271799,
+        "views": 3345,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "b-MFrj5CF_k",
+        "capturedAt": 1793434290962,
         "views": 3345,
         "source": "youtube-data-api"
       }
@@ -1439,6 +1805,12 @@
         "capturedAt": 1793434271799,
         "views": 39,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "gIWWDTDYi-0",
+        "capturedAt": 1793434290962,
+        "views": 48,
+        "source": "youtube-data-api"
       }
     ],
     "b07zHjdK5wc": [
@@ -1452,6 +1824,12 @@
         "capturedAt": 1793434271799,
         "views": 109,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "b07zHjdK5wc",
+        "capturedAt": 1793434290962,
+        "views": 111,
+        "source": "youtube-data-api"
       }
     ],
     "qhUlJOOCacE": [
@@ -1463,6 +1841,12 @@
       {
         "id": "qhUlJOOCacE",
         "capturedAt": 1793434271799,
+        "views": 1,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "qhUlJOOCacE",
+        "capturedAt": 1793434290962,
         "views": 1,
         "source": "youtube-data-api"
       }
@@ -1501,6 +1885,12 @@
         "capturedAt": 1793434271799,
         "views": 838,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "V7WyqbWcfVc",
+        "capturedAt": 1793434290962,
+        "views": 839,
+        "source": "youtube-data-api"
       }
     ],
     "Fs-hl7QLsIk": [
@@ -1512,6 +1902,12 @@
       {
         "id": "Fs-hl7QLsIk",
         "capturedAt": 1793434271799,
+        "views": 538,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "Fs-hl7QLsIk",
+        "capturedAt": 1793434290962,
         "views": 538,
         "source": "youtube-data-api"
       }
@@ -1527,6 +1923,12 @@
         "capturedAt": 1793434271799,
         "views": 2,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "bTjwkJVsb5Y",
+        "capturedAt": 1793434290962,
+        "views": 2,
+        "source": "youtube-data-api"
       }
     ],
     "CfEyUbBW_Mk": [
@@ -1540,6 +1942,12 @@
         "capturedAt": 1793434271799,
         "views": 1124,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "CfEyUbBW_Mk",
+        "capturedAt": 1793434290962,
+        "views": 864,
+        "source": "youtube-data-api"
       }
     ],
     "0B30gbrZiqU": [
@@ -1551,6 +1959,12 @@
       {
         "id": "0B30gbrZiqU",
         "capturedAt": 1793434271799,
+        "views": 1834,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "0B30gbrZiqU",
+        "capturedAt": 1793434290962,
         "views": 1834,
         "source": "youtube-data-api"
       }
@@ -1584,6 +1998,12 @@
         "capturedAt": 1793434271799,
         "views": 1,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "xpwAL6uXok4",
+        "capturedAt": 1793434290962,
+        "views": 1,
+        "source": "youtube-data-api"
       }
     ],
     "k1FRZX_zTLU": [
@@ -1596,6 +2016,12 @@
         "id": "k1FRZX_zTLU",
         "capturedAt": 1793434271799,
         "views": 128,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "k1FRZX_zTLU",
+        "capturedAt": 1793434290962,
+        "views": 118,
         "source": "youtube-data-api"
       }
     ],
@@ -1610,6 +2036,12 @@
         "capturedAt": 1793434271799,
         "views": 705,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "JlqsyKzcgXM",
+        "capturedAt": 1793434290962,
+        "views": 705,
+        "source": "youtube-data-api"
       }
     ],
     "GK7BcJNV5ro": [
@@ -1621,6 +2053,12 @@
       {
         "id": "GK7BcJNV5ro",
         "capturedAt": 1793434271799,
+        "views": 1876,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "GK7BcJNV5ro",
+        "capturedAt": 1793434290962,
         "views": 1876,
         "source": "youtube-data-api"
       }
@@ -1659,6 +2097,12 @@
         "capturedAt": 1793434271799,
         "views": 1427,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "9Id4acG-YV4",
+        "capturedAt": 1793434290962,
+        "views": 1427,
+        "source": "youtube-data-api"
       }
     ],
     "w38NeIwTVSc": [
@@ -1695,6 +2139,12 @@
         "capturedAt": 1793434271799,
         "views": 325,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "w38NeIwTVSc",
+        "capturedAt": 1793434290962,
+        "views": 350,
+        "source": "youtube-data-api"
       }
     ],
     "E-7C1ePSA1Q": [
@@ -1706,6 +2156,12 @@
       {
         "id": "E-7C1ePSA1Q",
         "capturedAt": 1793434271799,
+        "views": 2662,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "E-7C1ePSA1Q",
+        "capturedAt": 1793434290962,
         "views": 2662,
         "source": "youtube-data-api"
       }
@@ -1744,6 +2200,12 @@
         "capturedAt": 1793434271799,
         "views": 3107,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "rR8RgyqRdQw",
+        "capturedAt": 1793434290962,
+        "views": 3107,
+        "source": "youtube-data-api"
       }
     ],
     "qM_bcoq7eGg": [
@@ -1780,6 +2242,12 @@
         "capturedAt": 1793434271799,
         "views": 1264,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "qM_bcoq7eGg",
+        "capturedAt": 1793434290962,
+        "views": 1264,
+        "source": "youtube-data-api"
       }
     ],
     "aIcD1xKwMLU": [
@@ -1793,6 +2261,12 @@
         "capturedAt": 1793434271799,
         "views": 663,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "aIcD1xKwMLU",
+        "capturedAt": 1793434290962,
+        "views": 664,
+        "source": "youtube-data-api"
       }
     ],
     "EeTNEdhuy3o": [
@@ -1804,6 +2278,12 @@
       {
         "id": "EeTNEdhuy3o",
         "capturedAt": 1793434271799,
+        "views": 1383,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "EeTNEdhuy3o",
+        "capturedAt": 1793434290962,
         "views": 1383,
         "source": "youtube-data-api"
       }
@@ -1837,6 +2317,12 @@
         "capturedAt": 1793434271799,
         "views": 3,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "O6IfqvA3Kik",
+        "capturedAt": 1793434290962,
+        "views": 3,
+        "source": "youtube-data-api"
       }
     ],
     "nBaVElSyIYg": [
@@ -1868,6 +2354,12 @@
         "capturedAt": 1793434271799,
         "views": 947,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "nBaVElSyIYg",
+        "capturedAt": 1793434290962,
+        "views": 926,
+        "source": "youtube-data-api"
       }
     ],
     "FCFe7-pheWw": [
@@ -1881,6 +2373,12 @@
         "capturedAt": 1793434271799,
         "views": 537,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "FCFe7-pheWw",
+        "capturedAt": 1793434290962,
+        "views": 537,
+        "source": "youtube-data-api"
       }
     ],
     "MPoZtvu6en0": [
@@ -1892,6 +2390,12 @@
       {
         "id": "MPoZtvu6en0",
         "capturedAt": 1793434271799,
+        "views": 1265,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "MPoZtvu6en0",
+        "capturedAt": 1793434290962,
         "views": 1265,
         "source": "youtube-data-api"
       }
@@ -1925,6 +2429,12 @@
         "capturedAt": 1793434271799,
         "views": 0,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "8b7WTZZ1yL0",
+        "capturedAt": 1793434290962,
+        "views": 0,
+        "source": "youtube-data-api"
       }
     ],
     "qwI6BmcOAxQ": [
@@ -1954,6 +2464,12 @@
       {
         "id": "qwI6BmcOAxQ",
         "capturedAt": 1793434271799,
+        "views": 10,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "qwI6BmcOAxQ",
+        "capturedAt": 1793434290962,
         "views": 10,
         "source": "youtube-data-api"
       }
@@ -1987,6 +2503,12 @@
         "capturedAt": 1793434271799,
         "views": 858,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "D6Uvop7IGeY",
+        "capturedAt": 1793434290962,
+        "views": 884,
+        "source": "youtube-data-api"
       }
     ],
     "sRZmFCQnP98": [
@@ -1998,6 +2520,12 @@
       {
         "id": "sRZmFCQnP98",
         "capturedAt": 1793434271799,
+        "views": 548,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "sRZmFCQnP98",
+        "capturedAt": 1793434290962,
         "views": 548,
         "source": "youtube-data-api"
       }
@@ -2013,6 +2541,12 @@
         "capturedAt": 1793434271799,
         "views": 278,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "qDjonbDyRjo",
+        "capturedAt": 1793434290962,
+        "views": 274,
+        "source": "youtube-data-api"
       }
     ],
     "brTyl5iKrxk": [
@@ -2024,6 +2558,12 @@
       {
         "id": "brTyl5iKrxk",
         "capturedAt": 1793434271799,
+        "views": 1253,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "brTyl5iKrxk",
+        "capturedAt": 1793434290962,
         "views": 1253,
         "source": "youtube-data-api"
       }
@@ -2039,6 +2579,12 @@
         "capturedAt": 1793434271799,
         "views": 1,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "d5MpUnJfm90",
+        "capturedAt": 1793434290962,
+        "views": 1,
+        "source": "youtube-data-api"
       }
     ],
     "7jfOsbC2HO0": [
@@ -2052,6 +2598,12 @@
         "capturedAt": 1793434271799,
         "views": 23,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "7jfOsbC2HO0",
+        "capturedAt": 1793434290962,
+        "views": 21,
+        "source": "youtube-data-api"
       }
     ],
     "dJAUdVe-oxA": [
@@ -2063,6 +2615,12 @@
       {
         "id": "dJAUdVe-oxA",
         "capturedAt": 1793434271799,
+        "views": 2520,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "dJAUdVe-oxA",
+        "capturedAt": 1793434290962,
         "views": 2520,
         "source": "youtube-data-api"
       }
@@ -2078,6 +2636,12 @@
         "capturedAt": 1793434271799,
         "views": 423,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "n292W2Xc6vo",
+        "capturedAt": 1793434290962,
+        "views": 423,
+        "source": "youtube-data-api"
       }
     ],
     "pQYQpK8Rb-M": [
@@ -2091,6 +2655,12 @@
         "capturedAt": 1793434271799,
         "views": 1171,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "pQYQpK8Rb-M",
+        "capturedAt": 1793434290962,
+        "views": 1176,
+        "source": "youtube-data-api"
       }
     ],
     "wqZEubCT_A4": [
@@ -2102,6 +2672,12 @@
       {
         "id": "wqZEubCT_A4",
         "capturedAt": 1793434271799,
+        "views": 1080,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "wqZEubCT_A4",
+        "capturedAt": 1793434290962,
         "views": 1080,
         "source": "youtube-data-api"
       }
@@ -2117,6 +2693,12 @@
         "capturedAt": 1793434271799,
         "views": 1027,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "m9qNta-aJcY",
+        "capturedAt": 1793434290962,
+        "views": 1024,
+        "source": "youtube-data-api"
       }
     ],
     "LyOPHBJ7bm8": [
@@ -2129,6 +2711,12 @@
         "id": "LyOPHBJ7bm8",
         "capturedAt": 1793434271799,
         "views": 663,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "LyOPHBJ7bm8",
+        "capturedAt": 1793434290962,
+        "views": 684,
         "source": "youtube-data-api"
       }
     ],
@@ -2166,6 +2754,12 @@
         "capturedAt": 1793434271799,
         "views": 2379,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "0iyAgdSpAnc",
+        "capturedAt": 1793434290962,
+        "views": 2415,
+        "source": "youtube-data-api"
       }
     ],
     "82SRyIN0Vxg": [
@@ -2201,6 +2795,12 @@
         "id": "82SRyIN0Vxg",
         "capturedAt": 1793434271799,
         "views": 1048,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "82SRyIN0Vxg",
+        "capturedAt": 1793434290962,
+        "views": 1050,
         "source": "youtube-data-api"
       }
     ],
@@ -2238,6 +2838,12 @@
         "capturedAt": 1793434271903,
         "views": 1165,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "TJFzhpBeLzA",
+        "capturedAt": 1793434291025,
+        "views": 1165,
+        "source": "youtube-data-api"
       }
     ],
     "BfP0NbAz2ho": [
@@ -2267,6 +2873,12 @@
       {
         "id": "BfP0NbAz2ho",
         "capturedAt": 1793434271903,
+        "views": 7,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "BfP0NbAz2ho",
+        "capturedAt": 1793434291025,
         "views": 7,
         "source": "youtube-data-api"
       }
@@ -2305,6 +2917,12 @@
         "capturedAt": 1793434271903,
         "views": 1112,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "1DIpgFlHl_8",
+        "capturedAt": 1793434291025,
+        "views": 1112,
+        "source": "youtube-data-api"
       }
     ],
     "pMzjX-ga2kY": [
@@ -2341,6 +2959,12 @@
         "capturedAt": 1793434271903,
         "views": 0,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "pMzjX-ga2kY",
+        "capturedAt": 1793434291025,
+        "views": 0,
+        "source": "youtube-data-api"
       }
     ],
     "q7Tab5qs0rc": [
@@ -2352,6 +2976,12 @@
       {
         "id": "q7Tab5qs0rc",
         "capturedAt": 1793434271903,
+        "views": 2725,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "q7Tab5qs0rc",
+        "capturedAt": 1793434291025,
         "views": 2725,
         "source": "youtube-data-api"
       }
@@ -2390,6 +3020,12 @@
         "capturedAt": 1793434271903,
         "views": 528,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "C39O51kA9PM",
+        "capturedAt": 1793434291025,
+        "views": 528,
+        "source": "youtube-data-api"
       }
     ],
     "HIqM6i5yYaU": [
@@ -2403,6 +3039,12 @@
         "capturedAt": 1793434271903,
         "views": 2,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "HIqM6i5yYaU",
+        "capturedAt": 1793434291025,
+        "views": 2,
+        "source": "youtube-data-api"
       }
     ],
     "nUsldUttv5I": [
@@ -2414,6 +3056,12 @@
       {
         "id": "nUsldUttv5I",
         "capturedAt": 1793434271903,
+        "views": 3305,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "nUsldUttv5I",
+        "capturedAt": 1793434291025,
         "views": 3305,
         "source": "youtube-data-api"
       }
@@ -2447,6 +3095,12 @@
         "capturedAt": 1793434271903,
         "views": 962,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "EzpNMIwQZAk",
+        "capturedAt": 1793434291025,
+        "views": 962,
+        "source": "youtube-data-api"
       }
     ],
     "6uId6uxrAk4": [
@@ -2458,6 +3112,12 @@
       {
         "id": "6uId6uxrAk4",
         "capturedAt": 1793434271903,
+        "views": 6,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "6uId6uxrAk4",
+        "capturedAt": 1793434291025,
         "views": 6,
         "source": "youtube-data-api"
       }
@@ -2491,6 +3151,12 @@
         "capturedAt": 1793434271903,
         "views": 2393,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "PPTU4SjyRW4",
+        "capturedAt": 1793434291025,
+        "views": 2393,
+        "source": "youtube-data-api"
       }
     ],
     "4-0kf6qVoTc": [
@@ -2502,6 +3168,12 @@
       {
         "id": "4-0kf6qVoTc",
         "capturedAt": 1793434271903,
+        "views": 1263,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "4-0kf6qVoTc",
+        "capturedAt": 1793434291025,
         "views": 1263,
         "source": "youtube-data-api"
       }
@@ -2535,6 +3207,12 @@
         "capturedAt": 1793434271903,
         "views": 43,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "LsqQO0-hDH4",
+        "capturedAt": 1793434291025,
+        "views": 43,
+        "source": "youtube-data-api"
       }
     ],
     "vIRoP6VvKM8": [
@@ -2547,6 +3225,12 @@
         "id": "vIRoP6VvKM8",
         "capturedAt": 1793434271903,
         "views": 1930,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "vIRoP6VvKM8",
+        "capturedAt": 1793434291025,
+        "views": 1932,
         "source": "youtube-data-api"
       }
     ],
@@ -2577,6 +3261,12 @@
       {
         "id": "WFX3y_ksaLc",
         "capturedAt": 1793434271903,
+        "views": 923,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "WFX3y_ksaLc",
+        "capturedAt": 1793434291025,
         "views": 923,
         "source": "youtube-data-api"
       }
@@ -2610,6 +3300,12 @@
         "capturedAt": 1793434271903,
         "views": 756,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "6Ie3symBfu4",
+        "capturedAt": 1793434291025,
+        "views": 756,
+        "source": "youtube-data-api"
       }
     ],
     "qkT5LrBP1uA": [
@@ -2639,6 +3335,12 @@
       {
         "id": "qkT5LrBP1uA",
         "capturedAt": 1793434271903,
+        "views": 748,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "qkT5LrBP1uA",
+        "capturedAt": 1793434291025,
         "views": 748,
         "source": "youtube-data-api"
       }
@@ -2672,6 +3374,12 @@
         "capturedAt": 1793434271903,
         "views": 6256,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "E3zKDTo3jKg",
+        "capturedAt": 1793434291025,
+        "views": 6256,
+        "source": "youtube-data-api"
       }
     ],
     "Sp9aAYwVk24": [
@@ -2701,6 +3409,12 @@
       {
         "id": "Sp9aAYwVk24",
         "capturedAt": 1793434271903,
+        "views": 1653,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "Sp9aAYwVk24",
+        "capturedAt": 1793434291025,
         "views": 1653,
         "source": "youtube-data-api"
       }
@@ -2734,6 +3448,12 @@
         "capturedAt": 1793434271903,
         "views": 9,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "OJxjqzv5O7Y",
+        "capturedAt": 1793434291025,
+        "views": 9,
+        "source": "youtube-data-api"
       }
     ],
     "XmbNKGGu2fQ": [
@@ -2763,6 +3483,12 @@
       {
         "id": "XmbNKGGu2fQ",
         "capturedAt": 1793434271903,
+        "views": 68,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "XmbNKGGu2fQ",
+        "capturedAt": 1793434291025,
         "views": 68,
         "source": "youtube-data-api"
       }
@@ -2796,6 +3522,12 @@
         "capturedAt": 1793434271903,
         "views": 6520,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "FCkZqn93Xig",
+        "capturedAt": 1793434291025,
+        "views": 6520,
+        "source": "youtube-data-api"
       }
     ],
     "FJMz-vkOzlU": [
@@ -2825,6 +3557,12 @@
       {
         "id": "FJMz-vkOzlU",
         "capturedAt": 1793434271903,
+        "views": 2,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "FJMz-vkOzlU",
+        "capturedAt": 1793434291025,
         "views": 2,
         "source": "youtube-data-api"
       }
@@ -2858,6 +3596,12 @@
         "capturedAt": 1793434271903,
         "views": 333,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "WKOO4xLw3zg",
+        "capturedAt": 1793434291025,
+        "views": 333,
+        "source": "youtube-data-api"
       }
     ],
     "JXZ3UZyWKpU": [
@@ -2887,6 +3631,12 @@
       {
         "id": "JXZ3UZyWKpU",
         "capturedAt": 1793434271903,
+        "views": 129,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "JXZ3UZyWKpU",
+        "capturedAt": 1793434291025,
         "views": 129,
         "source": "youtube-data-api"
       }
@@ -2920,6 +3670,12 @@
         "capturedAt": 1793434271903,
         "views": 1152,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "sZisazZHz-A",
+        "capturedAt": 1793434291025,
+        "views": 1152,
+        "source": "youtube-data-api"
       }
     ],
     "FOf2TD2P7Wo": [
@@ -2949,6 +3705,12 @@
       {
         "id": "FOf2TD2P7Wo",
         "capturedAt": 1793434271903,
+        "views": 1377,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "FOf2TD2P7Wo",
+        "capturedAt": 1793434291025,
         "views": 1377,
         "source": "youtube-data-api"
       }
@@ -2982,6 +3744,12 @@
         "capturedAt": 1793434271903,
         "views": 1384,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "J3vkUsnzGXc",
+        "capturedAt": 1793434291025,
+        "views": 1384,
+        "source": "youtube-data-api"
       }
     ],
     "bmTcxKo7FQQ": [
@@ -3011,6 +3779,12 @@
       {
         "id": "bmTcxKo7FQQ",
         "capturedAt": 1793434271903,
+        "views": 4,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "bmTcxKo7FQQ",
+        "capturedAt": 1793434291025,
         "views": 4,
         "source": "youtube-data-api"
       }
@@ -3044,6 +3818,12 @@
         "capturedAt": 1793434271903,
         "views": 1228,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "LLskUiOYgio",
+        "capturedAt": 1793434291025,
+        "views": 1228,
+        "source": "youtube-data-api"
       }
     ],
     "Vp2G0_x0aw4": [
@@ -3073,6 +3853,12 @@
       {
         "id": "Vp2G0_x0aw4",
         "capturedAt": 1793434271903,
+        "views": 1037,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "Vp2G0_x0aw4",
+        "capturedAt": 1793434291025,
         "views": 1037,
         "source": "youtube-data-api"
       }
@@ -3106,6 +3892,12 @@
         "capturedAt": 1793434271903,
         "views": 44,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "uSHr3viLO3I",
+        "capturedAt": 1793434291025,
+        "views": 44,
+        "source": "youtube-data-api"
       }
     ],
     "I8XxVmt7LSA": [
@@ -3135,6 +3927,12 @@
       {
         "id": "I8XxVmt7LSA",
         "capturedAt": 1793434271903,
+        "views": 2,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "I8XxVmt7LSA",
+        "capturedAt": 1793434291025,
         "views": 2,
         "source": "youtube-data-api"
       }
@@ -3168,6 +3966,12 @@
         "capturedAt": 1793434271903,
         "views": 4349,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "DrGf1tWTAto",
+        "capturedAt": 1793434291025,
+        "views": 4349,
+        "source": "youtube-data-api"
       }
     ],
     "kNLpfDHmwuI": [
@@ -3197,6 +4001,12 @@
       {
         "id": "kNLpfDHmwuI",
         "capturedAt": 1793434271903,
+        "views": 1173,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "kNLpfDHmwuI",
+        "capturedAt": 1793434291025,
         "views": 1173,
         "source": "youtube-data-api"
       }
@@ -3230,6 +4040,12 @@
         "capturedAt": 1793434271903,
         "views": 4316,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "0Ho3zKP_FxU",
+        "capturedAt": 1793434291025,
+        "views": 4316,
+        "source": "youtube-data-api"
       }
     ],
     "7QJgSW89LFs": [
@@ -3259,6 +4075,12 @@
       {
         "id": "7QJgSW89LFs",
         "capturedAt": 1793434271903,
+        "views": 10,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "7QJgSW89LFs",
+        "capturedAt": 1793434291025,
         "views": 10,
         "source": "youtube-data-api"
       }
@@ -3292,6 +4114,12 @@
         "capturedAt": 1793434271903,
         "views": 6,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "v0Bcp5qMdT0",
+        "capturedAt": 1793434291025,
+        "views": 6,
+        "source": "youtube-data-api"
       }
     ],
     "4uYP4BYXJ7Y": [
@@ -3321,6 +4149,12 @@
       {
         "id": "4uYP4BYXJ7Y",
         "capturedAt": 1793434271903,
+        "views": 1067,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "4uYP4BYXJ7Y",
+        "capturedAt": 1793434291025,
         "views": 1067,
         "source": "youtube-data-api"
       }
@@ -3354,6 +4188,12 @@
         "capturedAt": 1793434271903,
         "views": 284,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "71F1DPm7w_A",
+        "capturedAt": 1793434291025,
+        "views": 284,
+        "source": "youtube-data-api"
       }
     ],
     "2mr3SW9VZt8": [
@@ -3383,6 +4223,12 @@
       {
         "id": "2mr3SW9VZt8",
         "capturedAt": 1793434271903,
+        "views": 685,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "2mr3SW9VZt8",
+        "capturedAt": 1793434291025,
         "views": 685,
         "source": "youtube-data-api"
       }
@@ -3416,6 +4262,12 @@
         "capturedAt": 1793434271903,
         "views": 2435,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "BTMuq80ieX0",
+        "capturedAt": 1793434291025,
+        "views": 2435,
+        "source": "youtube-data-api"
       }
     ],
     "Xf0JQuzLjO8": [
@@ -3445,6 +4297,12 @@
       {
         "id": "Xf0JQuzLjO8",
         "capturedAt": 1793434271903,
+        "views": 5,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "Xf0JQuzLjO8",
+        "capturedAt": 1793434291025,
         "views": 5,
         "source": "youtube-data-api"
       }
@@ -3478,6 +4336,12 @@
         "capturedAt": 1793434271903,
         "views": 222,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "ITxs7TUZLg0",
+        "capturedAt": 1793434291025,
+        "views": 222,
+        "source": "youtube-data-api"
       }
     ],
     "8pxSsU4aqqE": [
@@ -3507,6 +4371,12 @@
       {
         "id": "8pxSsU4aqqE",
         "capturedAt": 1793434271903,
+        "views": 51,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "8pxSsU4aqqE",
+        "capturedAt": 1793434291025,
         "views": 51,
         "source": "youtube-data-api"
       }
@@ -3540,6 +4410,12 @@
         "capturedAt": 1793434271903,
         "views": 79,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "yxLYjnJYIAM",
+        "capturedAt": 1793434291025,
+        "views": 79,
+        "source": "youtube-data-api"
       }
     ],
     "EtiKEsOCyZE": [
@@ -3571,6 +4447,12 @@
         "capturedAt": 1793434271903,
         "views": 1465,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "EtiKEsOCyZE",
+        "capturedAt": 1793434291025,
+        "views": 1465,
+        "source": "youtube-data-api"
       }
     ],
     "Nl734IGUSEs": [
@@ -3600,6 +4482,12 @@
       {
         "id": "Nl734IGUSEs",
         "capturedAt": 1793434271903,
+        "views": 1426,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "Nl734IGUSEs",
+        "capturedAt": 1793434291025,
         "views": 1426,
         "source": "youtube-data-api"
       }
@@ -3640,6 +4528,12 @@
         "capturedAt": 1793434271903,
         "views": 1351,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "Yh8b-eSeFgw",
+        "capturedAt": 1793434291025,
+        "views": 1351,
+        "source": "youtube-data-api"
       }
     ],
     "zV3CBMNikJI": [
@@ -3671,6 +4565,12 @@
         "capturedAt": 1793434271975,
         "views": 1248,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "zV3CBMNikJI",
+        "capturedAt": 1793434291122,
+        "views": 1236,
+        "source": "youtube-data-api"
       }
     ],
     "9pSAKWD1WJM": [
@@ -3700,6 +4600,12 @@
       {
         "id": "9pSAKWD1WJM",
         "capturedAt": 1793434271975,
+        "views": 0,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "9pSAKWD1WJM",
+        "capturedAt": 1793434291122,
         "views": 0,
         "source": "youtube-data-api"
       }
@@ -3733,6 +4639,12 @@
         "capturedAt": 1793434271975,
         "views": 45,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "HlbSECxFmss",
+        "capturedAt": 1793434291122,
+        "views": 45,
+        "source": "youtube-data-api"
       }
     ],
     "Hb5rCKG1B-o": [
@@ -3762,6 +4674,12 @@
       {
         "id": "Hb5rCKG1B-o",
         "capturedAt": 1793434271975,
+        "views": 1619,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "Hb5rCKG1B-o",
+        "capturedAt": 1793434291122,
         "views": 1619,
         "source": "youtube-data-api"
       }
@@ -3795,6 +4713,12 @@
         "capturedAt": 1793434271975,
         "views": 114,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "ngJKl7pJeXE",
+        "capturedAt": 1793434291122,
+        "views": 119,
+        "source": "youtube-data-api"
       }
     ],
     "Q5FdnLXsbVw": [
@@ -3825,6 +4749,12 @@
         "id": "Q5FdnLXsbVw",
         "capturedAt": 1793434271975,
         "views": 33,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "Q5FdnLXsbVw",
+        "capturedAt": 1793434291122,
+        "views": 31,
         "source": "youtube-data-api"
       }
     ],
@@ -3857,6 +4787,12 @@
         "capturedAt": 1793434271975,
         "views": 1419,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "MHNwmnroqgY",
+        "capturedAt": 1793434291122,
+        "views": 1421,
+        "source": "youtube-data-api"
       }
     ],
     "OYfhpmBCcbA": [
@@ -3888,6 +4824,12 @@
         "capturedAt": 1793434271975,
         "views": 1247,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "OYfhpmBCcbA",
+        "capturedAt": 1793434291122,
+        "views": 1242,
+        "source": "youtube-data-api"
       }
     ],
     "0bNtHMiKYDY": [
@@ -3917,6 +4859,12 @@
       {
         "id": "0bNtHMiKYDY",
         "capturedAt": 1793434271975,
+        "views": 176,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "0bNtHMiKYDY",
+        "capturedAt": 1793434291122,
         "views": 176,
         "source": "youtube-data-api"
       }
@@ -3950,6 +4898,12 @@
         "capturedAt": 1793434271975,
         "views": 2372,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "6fZxeCrM-ys",
+        "capturedAt": 1793434291122,
+        "views": 2337,
+        "source": "youtube-data-api"
       }
     ],
     "CrCHqWIkQI8": [
@@ -3979,6 +4933,12 @@
       {
         "id": "CrCHqWIkQI8",
         "capturedAt": 1793434271975,
+        "views": 15,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "CrCHqWIkQI8",
+        "capturedAt": 1793434291122,
         "views": 15,
         "source": "youtube-data-api"
       }
@@ -4012,6 +4972,12 @@
         "capturedAt": 1793434271975,
         "views": 1282,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "5o-Nqa2bUbs",
+        "capturedAt": 1793434291122,
+        "views": 1272,
+        "source": "youtube-data-api"
       }
     ],
     "c17JXtU-H04": [
@@ -4041,6 +5007,12 @@
       {
         "id": "c17JXtU-H04",
         "capturedAt": 1793434271975,
+        "views": 73,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "c17JXtU-H04",
+        "capturedAt": 1793434291122,
         "views": 73,
         "source": "youtube-data-api"
       }
@@ -4074,6 +5046,12 @@
         "capturedAt": 1793434271975,
         "views": 1205,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "YxjBVfvvv8Y",
+        "capturedAt": 1793434291122,
+        "views": 1204,
+        "source": "youtube-data-api"
       }
     ],
     "FEZ6KyD8vAY": [
@@ -4105,6 +5083,12 @@
         "capturedAt": 1793434271975,
         "views": 1260,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "FEZ6KyD8vAY",
+        "capturedAt": 1793434291122,
+        "views": 1262,
+        "source": "youtube-data-api"
       }
     ],
     "T9toKcrmsdc": [
@@ -4134,6 +5118,12 @@
       {
         "id": "T9toKcrmsdc",
         "capturedAt": 1793434271975,
+        "views": 1316,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "T9toKcrmsdc",
+        "capturedAt": 1793434291122,
         "views": 1316,
         "source": "youtube-data-api"
       }
@@ -4167,6 +5157,12 @@
         "capturedAt": 1793434271975,
         "views": 2553,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "MMdys0qdgug",
+        "capturedAt": 1793434291122,
+        "views": 2553,
+        "source": "youtube-data-api"
       }
     ],
     "GjaiPNYUqsM": [
@@ -4196,6 +5192,12 @@
       {
         "id": "GjaiPNYUqsM",
         "capturedAt": 1793434271975,
+        "views": 1266,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "GjaiPNYUqsM",
+        "capturedAt": 1793434291122,
         "views": 1266,
         "source": "youtube-data-api"
       }
@@ -4229,6 +5231,12 @@
         "capturedAt": 1793434271975,
         "views": 487,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "mHWB_j0gxmo",
+        "capturedAt": 1793434291122,
+        "views": 487,
+        "source": "youtube-data-api"
       }
     ],
     "BkFO3usnbRU": [
@@ -4258,6 +5266,12 @@
       {
         "id": "BkFO3usnbRU",
         "capturedAt": 1793434271975,
+        "views": 1097,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "BkFO3usnbRU",
+        "capturedAt": 1793434291122,
         "views": 1097,
         "source": "youtube-data-api"
       }
@@ -4291,6 +5305,12 @@
         "capturedAt": 1793434271975,
         "views": 266,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "6jecavKviAY",
+        "capturedAt": 1793434291122,
+        "views": 248,
+        "source": "youtube-data-api"
       }
     ],
     "woG_qXVb50Y": [
@@ -4322,6 +5342,12 @@
         "capturedAt": 1793434271975,
         "views": 1213,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "woG_qXVb50Y",
+        "capturedAt": 1793434291122,
+        "views": 1210,
+        "source": "youtube-data-api"
       }
     ]
   },
@@ -4336,10 +5362,10 @@
       "thumbnail": "https://i.ytimg.com/vi/1GEmk7Fci2E/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 9261,
+      "vph": 9182,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -4374,6 +5400,12 @@
           "capturedAt": 1793434271711,
           "views": 113200,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "1GEmk7Fci2E",
+          "capturedAt": 1793434290832,
+          "views": 113200,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -4387,10 +5419,10 @@
       "thumbnail": "https://i.ytimg.com/vi/Ivg3dl0cuHU/mqdefault.jpg",
       "isShort": false,
       "velocityType": "estimated-since-upload",
-      "vph": 5854,
+      "vph": 5847,
       "estimate": true,
       "intervalMinutes": null,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793434261901,
@@ -4400,6 +5432,12 @@
         {
           "id": "Ivg3dl0cuHU",
           "capturedAt": 1793434271711,
+          "views": 25206,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "Ivg3dl0cuHU",
+          "capturedAt": 1793434290832,
           "views": 25206,
           "source": "youtube-data-api"
         }
@@ -4415,10 +5453,10 @@
       "thumbnail": "https://i.ytimg.com/vi/LiMslP8HfWY/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 4002,
+      "vph": 3968,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398707,
@@ -4448,6 +5486,12 @@
           "capturedAt": 1793434271711,
           "views": 218525,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "LiMslP8HfWY",
+          "capturedAt": 1793434290832,
+          "views": 218525,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -4461,10 +5505,10 @@
       "thumbnail": "https://i.ytimg.com/vi/1JhKzviW1h8/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 3700,
+      "vph": 3668,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -4499,6 +5543,12 @@
           "capturedAt": 1793434271711,
           "views": 30273,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "1JhKzviW1h8",
+          "capturedAt": 1793434290832,
+          "views": 30273,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -4512,10 +5562,10 @@
       "thumbnail": "https://i.ytimg.com/vi/ZdfP0Zap6Uw/mqdefault.jpg",
       "isShort": false,
       "velocityType": "estimated-since-upload",
-      "vph": 3662,
+      "vph": 3659,
       "estimate": true,
       "intervalMinutes": null,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793434261901,
@@ -4525,6 +5575,12 @@
         {
           "id": "ZdfP0Zap6Uw",
           "capturedAt": 1793434271711,
+          "views": 25843,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "ZdfP0Zap6Uw",
+          "capturedAt": 1793434290832,
           "views": 25843,
           "source": "youtube-data-api"
         }
@@ -4540,10 +5596,10 @@
       "thumbnail": "https://i.ytimg.com/vi/OxzHxyirmgE/mqdefault.jpg",
       "isShort": false,
       "velocityType": "estimated-since-upload",
-      "vph": 3438,
+      "vph": 3435,
       "estimate": true,
       "intervalMinutes": null,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793434261901,
@@ -4553,6 +5609,12 @@
         {
           "id": "OxzHxyirmgE",
           "capturedAt": 1793434271711,
+          "views": 21707,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "OxzHxyirmgE",
+          "capturedAt": 1793434290832,
           "views": 21707,
           "source": "youtube-data-api"
         }
@@ -4568,10 +5630,10 @@
       "thumbnail": "https://i.ytimg.com/vi/GjUUoq9MAV0/mqdefault.jpg",
       "isShort": false,
       "velocityType": "estimated-since-upload",
-      "vph": 3227,
+      "vph": 3225,
       "estimate": true,
       "intervalMinutes": null,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793434261901,
@@ -4581,6 +5643,12 @@
         {
           "id": "GjUUoq9MAV0",
           "capturedAt": 1793434271711,
+          "views": 22875,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "GjUUoq9MAV0",
+          "capturedAt": 1793434290832,
           "views": 22875,
           "source": "youtube-data-api"
         }
@@ -4596,10 +5664,10 @@
       "thumbnail": "https://i.ytimg.com/vi/RFohAIFM6z4/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 1799,
+      "vph": 1784,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398707,
@@ -4629,6 +5697,12 @@
           "capturedAt": 1793434271711,
           "views": 56377,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "RFohAIFM6z4",
+          "capturedAt": 1793434290832,
+          "views": 56377,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -4642,10 +5716,10 @@
       "thumbnail": "https://i.ytimg.com/vi/GZRZemt6owc/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 1608,
+      "vph": 1594,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -4680,6 +5754,12 @@
           "capturedAt": 1793434271711,
           "views": 15737,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "GZRZemt6owc",
+          "capturedAt": 1793434290832,
+          "views": 15737,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -4693,10 +5773,10 @@
       "thumbnail": "https://i.ytimg.com/vi/XtJskkJZTXw/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 1588,
+      "vph": 1574,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -4731,6 +5811,12 @@
           "capturedAt": 1793434271711,
           "views": 16360,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "XtJskkJZTXw",
+          "capturedAt": 1793434290832,
+          "views": 16360,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -4744,10 +5830,10 @@
       "thumbnail": "https://i.ytimg.com/vi/FCkZqn93Xig/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 1443,
+      "vph": 1431,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271903,
+      "latestObservedAt": 1793434291025,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -4777,6 +5863,12 @@
           "capturedAt": 1793434271903,
           "views": 6520,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "FCkZqn93Xig",
+          "capturedAt": 1793434291025,
+          "views": 6520,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -4790,10 +5882,10 @@
       "thumbnail": "https://i.ytimg.com/vi/E3zKDTo3jKg/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 1417,
+      "vph": 1405,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271903,
+      "latestObservedAt": 1793434291025,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -4823,6 +5915,12 @@
           "capturedAt": 1793434271903,
           "views": 6256,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "E3zKDTo3jKg",
+          "capturedAt": 1793434291025,
+          "views": 6256,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -4831,15 +5929,15 @@
       "title": "What if WoW Had Skill Shots",
       "channel": "SavixPlaylist",
       "publishedAt": 1793415617000,
-      "views": 6617,
+      "views": 6619,
       "url": "https://www.youtube.com/watch?v=3d47J9r3Hl4",
       "thumbnail": "https://i.ytimg.com/vi/3d47J9r3Hl4/mqdefault.jpg",
       "isShort": false,
       "velocityType": "estimated-since-upload",
-      "vph": 1277,
+      "vph": 1276,
       "estimate": true,
       "intervalMinutes": null,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793434261901,
@@ -4850,6 +5948,12 @@
           "id": "3d47J9r3Hl4",
           "capturedAt": 1793434271711,
           "views": 6617,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "3d47J9r3Hl4",
+          "capturedAt": 1793434290832,
+          "views": 6619,
           "source": "youtube-data-api"
         }
       ]
@@ -4864,10 +5968,10 @@
       "thumbnail": "https://i.ytimg.com/vi/l9GwCosk91o/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 1196,
+      "vph": 1186,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427401474,
@@ -4897,6 +6001,12 @@
           "capturedAt": 1793434271711,
           "views": 10022,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "l9GwCosk91o",
+          "capturedAt": 1793434290832,
+          "views": 10022,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -4910,10 +6020,10 @@
       "thumbnail": "https://i.ytimg.com/vi/vUVmyAiqSnQ/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 1163,
+      "vph": 1153,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -4943,6 +6053,12 @@
           "capturedAt": 1793434271711,
           "views": 36658,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "vUVmyAiqSnQ",
+          "capturedAt": 1793434290832,
+          "views": 36658,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -4956,10 +6072,10 @@
       "thumbnail": "https://i.ytimg.com/vi/KrRe7wjrauQ/mqdefault.jpg",
       "isShort": false,
       "velocityType": "estimated-since-upload",
-      "vph": 1115,
+      "vph": 1114,
       "estimate": true,
       "intervalMinutes": null,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793434261901,
@@ -4969,6 +6085,12 @@
         {
           "id": "KrRe7wjrauQ",
           "capturedAt": 1793434271711,
+          "views": 8679,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "KrRe7wjrauQ",
+          "capturedAt": 1793434290832,
           "views": 8679,
           "source": "youtube-data-api"
         }
@@ -4984,10 +6106,10 @@
       "thumbnail": "https://i.ytimg.com/vi/B9IoL1xyym0/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 1106,
+      "vph": 1097,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427401474,
@@ -5017,6 +6139,12 @@
           "capturedAt": 1793434271711,
           "views": 8441,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "B9IoL1xyym0",
+          "capturedAt": 1793434290832,
+          "views": 8441,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5030,10 +6158,10 @@
       "thumbnail": "https://i.ytimg.com/vi/WJapDjuEdfA/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 1085,
+      "vph": 1076,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427395082,
@@ -5063,6 +6191,12 @@
           "capturedAt": 1793434271711,
           "views": 54368,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "WJapDjuEdfA",
+          "capturedAt": 1793434290832,
+          "views": 54368,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5076,10 +6210,10 @@
       "thumbnail": "https://i.ytimg.com/vi/MdhZBttk3Bw/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 1058,
+      "vph": 1049,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398707,
@@ -5109,6 +6243,12 @@
           "capturedAt": 1793434271711,
           "views": 53450,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "MdhZBttk3Bw",
+          "capturedAt": 1793434290832,
+          "views": 53450,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5117,15 +6257,15 @@
       "title": "trying to sell my cooking profession in wow forever #wow #worldofwarcraft #warcraft",
       "channel": "Shax",
       "publishedAt": 1793391828000,
-      "views": 16420,
+      "views": 16488,
       "url": "https://www.youtube.com/watch?v=bny3G9X9OBA",
       "thumbnail": "https://i.ytimg.com/vi/bny3G9X9OBA/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 864,
+      "vph": 966,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398707,
@@ -5155,6 +6295,12 @@
           "capturedAt": 1793434271711,
           "views": 16420,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "bny3G9X9OBA",
+          "capturedAt": 1793434290832,
+          "views": 16488,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5168,10 +6314,10 @@
       "thumbnail": "https://i.ytimg.com/vi/KqkbtdEpEFw/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 849,
+      "vph": 842,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -5206,6 +6352,12 @@
           "capturedAt": 1793434271711,
           "views": 13429,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "KqkbtdEpEFw",
+          "capturedAt": 1793434290832,
+          "views": 13429,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5219,10 +6371,10 @@
       "thumbnail": "https://i.ytimg.com/vi/TYsXxYB-PKM/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 778,
+      "vph": 771,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -5252,6 +6404,12 @@
           "capturedAt": 1793434271711,
           "views": 13571,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "TYsXxYB-PKM",
+          "capturedAt": 1793434290832,
+          "views": 13571,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5265,10 +6423,10 @@
       "thumbnail": "https://i.ytimg.com/vi/97b2MbM8lYU/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 548,
+      "vph": 544,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398707,
@@ -5298,6 +6456,12 @@
           "capturedAt": 1793434271711,
           "views": 23429,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "97b2MbM8lYU",
+          "capturedAt": 1793434290832,
+          "views": 23429,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5311,10 +6475,10 @@
       "thumbnail": "https://i.ytimg.com/vi/kiu2BtQWfrc/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 529,
+      "vph": 524,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -5344,6 +6508,12 @@
           "capturedAt": 1793434271711,
           "views": 8796,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "kiu2BtQWfrc",
+          "capturedAt": 1793434290832,
+          "views": 8796,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5357,10 +6527,10 @@
       "thumbnail": "https://i.ytimg.com/vi/YAgGcYEFtok/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 436,
+      "vph": 432,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427401474,
@@ -5390,6 +6560,12 @@
           "capturedAt": 1793434271711,
           "views": 6133,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "YAgGcYEFtok",
+          "capturedAt": 1793434290832,
+          "views": 6133,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5403,10 +6579,10 @@
       "thumbnail": "https://i.ytimg.com/vi/OiSlEJ8x7T8/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 347,
+      "vph": 344,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427395082,
@@ -5436,6 +6612,12 @@
           "capturedAt": 1793434271711,
           "views": 38955,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "OiSlEJ8x7T8",
+          "capturedAt": 1793434290832,
+          "views": 38955,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5449,10 +6631,10 @@
       "thumbnail": "https://i.ytimg.com/vi/wZX2_WZ9xCw/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 281,
+      "vph": 279,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427395574,
@@ -5482,6 +6664,12 @@
           "capturedAt": 1793434271711,
           "views": 6751,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "wZX2_WZ9xCw",
+          "capturedAt": 1793434290832,
+          "views": 6751,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5495,10 +6683,10 @@
       "thumbnail": "https://i.ytimg.com/vi/MQGdDd10u-g/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 241,
+      "vph": 239,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427401474,
@@ -5528,6 +6716,12 @@
           "capturedAt": 1793434271711,
           "views": 7948,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "MQGdDd10u-g",
+          "capturedAt": 1793434290832,
+          "views": 7948,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5544,7 +6738,7 @@
       "vph": 81,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427395082,
@@ -5574,6 +6768,64 @@
           "capturedAt": 1793434271711,
           "views": 5486,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "o6dDhrwCAL0",
+          "capturedAt": 1793434290832,
+          "views": 5486,
+          "source": "youtube-data-api"
+        }
+      ]
+    },
+    {
+      "id": "NNHRQWoJoYo",
+      "title": "Helpful Druid Macros in WoW Forever",
+      "channel": "Psybear_tv",
+      "publishedAt": 1793367783000,
+      "views": 18856,
+      "url": "https://www.youtube.com/watch?v=NNHRQWoJoYo",
+      "thumbnail": "https://i.ytimg.com/vi/NNHRQWoJoYo/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "measured-hourly",
+      "vph": 79,
+      "estimate": false,
+      "intervalMinutes": 37,
+      "latestObservedAt": 1793434290832,
+      "samples": [
+        {
+          "capturedAt": 1793427395082,
+          "views": 18658,
+          "source": "original-site"
+        },
+        {
+          "id": "NNHRQWoJoYo",
+          "capturedAt": 1793432059089,
+          "views": 18807,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "NNHRQWoJoYo",
+          "capturedAt": 1793434002940,
+          "views": 18849,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "NNHRQWoJoYo",
+          "capturedAt": 1793434183546,
+          "views": 18849,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "NNHRQWoJoYo",
+          "capturedAt": 1793434271711,
+          "views": 18849,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "NNHRQWoJoYo",
+          "capturedAt": 1793434290832,
+          "views": 18856,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -5590,7 +6842,7 @@
       "vph": 73,
       "estimate": false,
       "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
+      "latestObservedAt": 1793434290832,
       "samples": [
         {
           "capturedAt": 1793427395574,
@@ -5620,51 +6872,11 @@
           "capturedAt": 1793434271711,
           "views": 6073,
           "source": "youtube-data-api"
-        }
-      ]
-    },
-    {
-      "id": "NNHRQWoJoYo",
-      "title": "Helpful Druid Macros in WoW Forever",
-      "channel": "Psybear_tv",
-      "publishedAt": 1793367783000,
-      "views": 18849,
-      "url": "https://www.youtube.com/watch?v=NNHRQWoJoYo",
-      "thumbnail": "https://i.ytimg.com/vi/NNHRQWoJoYo/mqdefault.jpg",
-      "isShort": false,
-      "velocityType": "measured-hourly",
-      "vph": 68,
-      "estimate": false,
-      "intervalMinutes": 37,
-      "latestObservedAt": 1793434271711,
-      "samples": [
-        {
-          "capturedAt": 1793427395082,
-          "views": 18658,
-          "source": "original-site"
         },
         {
-          "id": "NNHRQWoJoYo",
-          "capturedAt": 1793432059089,
-          "views": 18807,
-          "source": "youtube-data-api"
-        },
-        {
-          "id": "NNHRQWoJoYo",
-          "capturedAt": 1793434002940,
-          "views": 18849,
-          "source": "youtube-data-api"
-        },
-        {
-          "id": "NNHRQWoJoYo",
-          "capturedAt": 1793434183546,
-          "views": 18849,
-          "source": "youtube-data-api"
-        },
-        {
-          "id": "NNHRQWoJoYo",
-          "capturedAt": 1793434271711,
-          "views": 18849,
+          "id": "gq72Jg297IY",
+          "capturedAt": 1793434290832,
+          "views": 6073,
           "source": "youtube-data-api"
         }
       ]
