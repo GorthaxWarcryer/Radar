@@ -562,3 +562,5 @@ footer { color:var(--muted2); font-size:10px; line-height:1.7; }
  .digest-panel,.profile-panel {padding:16px;}
  .intelligence-actions {margin-left:0;}
 }
+
+.source-excerpt{margin:6px 0 3px!important;color:var(--muted);font-size:11px;line-height:1.55;overflow-wrap:anywhere;}
