@@ -166,6 +166,15 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visib
 .channel-detail { flex:1; min-width:0; }
 .channel-detail h3 { font-size:12px; margin:0 0 4px; }
 .channel-detail p { font-size:10px; color:var(--muted2); margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.official-channel { align-items:flex-start; }
+.official-avatar { background:#377cbd1c; border-color:#3376ae55; color:var(--blue); }
+.official-channel .channel-detail p { white-space:normal; margin-bottom:7px; line-height:1.6; }
+.official-channel .status-pill { flex-shrink:0; }
+.source-metadata { font-size:10px; color:var(--muted); line-height:1.6; }
+.source-link { display:inline-block; color:var(--blue); font-weight:700; font-size:11px; margin-top:7px; text-decoration:none; }
+.source-link:hover { text-decoration:underline; }
+.source-error { font-size:10px; color:var(--red); margin-top:6px; overflow-wrap:anywhere; }
+@media(max-width:520px) { .official-channel { flex-wrap:wrap; } .official-channel .status-pill { margin-left:50px; } }
 .demo-warning { padding:13px 15px; margin-bottom:24px; border:1px solid var(--accent); background:var(--accent-soft); color:var(--text); font-size:12px; line-height:1.7; display:flex; align-items:center; gap:11px; flex-wrap:wrap; border-radius:6px; }
 .demo-warning span { font-weight:900; color:var(--accent); font-size:10px; letter-spacing:1px; }
 .demo-warning button { background:none; border:0; text-decoration:underline; color:var(--accent); font-size:12px; font-weight:800; }
