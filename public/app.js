@@ -130,12 +130,7 @@ function demoData() {
     popular:{long:longs,shorts},hot:{long:longs.filter(v=>v.growth).sort((a,b)=>b.growth.perHour-a.growth.perHour),shorts:shorts.filter(v=>v.growth).sort((a,b)=>b.growth.perHour-a.growth.perHour)},
     stories,contentCreation:{items:topics},saved:[],channels:[{id:'demo-channel',title:'Example Creator',handle:'@example'}],scans:[{at:t-15*60000,provider:'youtube',status:'demo',count:8,error:''}],sources:{youtube:'demo',reddit:'demo',official:'demo'} };
 }
-function updateTheme() {
-  document.body.dataset.theme=state.theme;
-  $('#theme-default').classList.toggle('active',state.theme==='default');
-  $('#theme-brd').classList.toggle('active',state.theme==='brd');
-  try {localStorage.setItem(preferences.theme,state.theme);}catch{}
-}
+function updateTheme() { document.body.dataset.theme='default'; }
 function updateNav() {
   document.querySelectorAll('[data-section]').forEach(el=>{ const selected=el.dataset.section===state.section; el.classList.toggle('active',selected); if(el.tagName==='BUTTON') el.setAttribute('aria-current',selected?'page':'false'); });
   const names={popular:'Popular',hot:'HOT',stories:'Stories',ideas:'Content Creation',watchlist:'Watchlist',channels:'Channels',activity:'Scan Activity'};
