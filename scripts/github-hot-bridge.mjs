@@ -128,9 +128,9 @@ export function calculate(feed,previous={},now=Date.now(),apiRead={status:'missi
     const sourceViews=Number.isSafeInteger(Number(v.hotLatestViews))?Number(v.hotLatestViews):Number(v.views);
     const prior=before[v.id];
     const priorAt=prior?.latestObservedAt||prior?.hotMeasuredAt||null;
-    const records=[{views:sourceViews,at:siteAt},
-      ...(prior&&Number.isSafeInteger(prior.views)?[{views:prior.views,at:priorAt}]:[]),
-      ...(apiLatest?[{views:apiLatest.views,at:apiLatest.capturedAt}]:[])].filter(x=>
+    const records=[...(apiLatest?[{views:apiLatest.views,at:apiLatest.capturedAt}]:[]),
+      {views:sourceViews,at:siteAt},
+      ...(prior&&Number.isSafeInteger(prior.views)?[{views:prior.views,at:priorAt}]:[])].filter(x=>
       Number.isSafeInteger(x.views)&&x.views>=0&&Number.isFinite(x.at)&&x.at>=v.publishedAt&&x.at<=now)
       .sort((a,b)=>b.at-a.at);
     const latest=records[0];
