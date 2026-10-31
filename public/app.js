@@ -55,19 +55,67 @@ function videoSection(data,mode) {
         (isHot?'<div class="info-note"><strong>HOT growth:</strong> Initial average since publication is labeled estimated; later snapshots produce measured views per hour. Last observation time matters.</div>':'')+
     `<div class="section-split">${videoBoard('New uploads','Published within the last 24 hours',fresh,data)}${(!isHot&&state.viewWindow==='48'?videoBoard('Tracked · 48 Hours','Published 24–48 hours ago',tracked,data):'')}</div>`;
 }
+const REDDIT_LOCAL_KEY="azeroth-radar-reddit-picks-v1";
+const REDDIT_COMMUNITIES=[{"slug":"wowforever","label":"WoW Forever","note":"Forever beta, class balance, launches and community reaction"},{"slug":"classicwow","label":"WoW Classic","note":"Classic and Forever discussions, gameplay and community news"},{"slug":"wow","label":"World of Warcraft","note":"Broader WoW announcements, reactions and player discussions"},{"slug":"wowhardcore","label":"WoW Hardcore","note":"Hardcore experiences, challenges and community debate"},{"slug":"worldofpvp","label":"WoW PvP","note":"Arena meta, PvP balance and competitive discussion"}];
+function redditPostUrl(raw) {
+  try {
+    const u=new URL(String(raw||"").trim());
+    if(u.protocol!=="https:")return "";
+    if(u.hostname==="redd.it" && /^\/[a-z0-9]+\/?$/i.test(u.pathname)){u.search="";u.hash="";return u.href;}
+    if(!["reddit.com","www.reddit.com","old.reddit.com","new.reddit.com"].includes(u.hostname))return "";
+    if(!/^\/r\/[a-z0-9_]+\/comments\/[a-z0-9]+(?:\/|$)/i.test(u.pathname))return "";
+    u.search="";u.hash="";u.hostname="www.reddit.com";return u.href;
+  } catch {return "";}
+}
+
+function redditSaved() {
+  try {
+    const raw=JSON.parse(localStorage.getItem(REDDIT_LOCAL_KEY)||"[]");
+    if(!Array.isArray(raw))return [];
+    return raw.filter(x=>x&&typeof x.title==="string"&&x.title.trim()&&redditPostUrl(x.url))
+      .slice(0,60).map(x=>({url:redditPostUrl(x.url),title:String(x.title).slice(0,180),savedAt:Number(x.savedAt)||Date.now()}));
+  } catch {return [];}
+}
+
+function redditDirectory() {
+  const cards=REDDIT_COMMUNITIES.map(c=>{
+    const root="https://www.reddit.com/r/"+c.slug+"/";
+    const top=root+"top/?t=day";
+    const hot=root+"hot/";
+    const comments=root+"search/?q=&restrict_sr=1&sort=comments&t=day";
+    return `<article class="reddit-community"><div class="reddit-community-head"><div class="reddit-community-icon">r/</div><div><a class="reddit-community-name" href="${root}" target="_blank" rel="noopener noreferrer">r/${esc(c.slug)} ↗</a><p>${esc(c.note)}</p></div></div><div class="reddit-links"><a href="${top}" target="_blank" rel="noopener noreferrer" aria-label="Top posts today in r/${esc(c.slug)}">Top today ↗</a><a href="${hot}" target="_blank" rel="noopener noreferrer" aria-label="Hot posts in r/${esc(c.slug)}">Hot ↗</a><a href="${comments}" target="_blank" rel="noopener noreferrer" aria-label="Comment-count search in r/${esc(c.slug)}" title="Reddit search ordered by comment count (past 24h), subject to Reddit search availability">Most comments ↗</a></div></article>`;
+  }).join("");
+  const saved=redditSaved();
+  const selections=saved.length?saved.map((s,i)=>`<article class="reddit-saved"><div><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" class="story-title">${esc(s.title)} ↗</a><div class="reddit-saved-date">Added ${storyAge(s.savedAt)} · Saved on this device</div></div><button class="small-action" data-reddit-remove="${i}" aria-label="Remove ${esc(s.title)}">Remove</button></article>`).join(""):`<div class="reddit-saved-empty">No discussions saved yet. Copy a Reddit post link here after finding an active discussion.</div>`;
+  return `<section class="reddit-hub"><div class="reddit-hub-header"><div><h2>REDDIT <span>DISCOVERY</span></h2><p>Open public subreddit rankings directly on Reddit. Scores, upvotes, comments and freshness are displayed on Reddit, not automatically collected by Azeroth Radar.</p></div><span class="reddit-noapi">NO REDDIT API</span></div><div class="reddit-community-grid">${cards}</div><p class="reddit-fineprint">Top today covers Reddit's past-day ranking. Hot is Reddit's current ranking. Most comments opens Reddit's day-filtered comment-count search, which may depend on Reddit's search availability.</p></section><section class="reddit-manual panel"><h2>Save a discussion to Stories</h2><p>Found a useful post? Add its title and Reddit URL below. Saved links remain only in this browser and are not shared with other devices or scanned automatically.</p><form id="reddit-add-form" class="reddit-form"><input id="reddit-post-url" type="url" required maxlength="500" placeholder="https://www.reddit.com/r/.../comments/..." aria-label="Reddit discussion URL" /><input id="reddit-post-title" type="text" required maxlength="180" placeholder="Discussion title" aria-label="Discussion title"/><button type="submit">Add discussion</button></form><div class="reddit-saved-header"><h3>Saved discussions</h3><span class="count">${saved.length}</span></div><div class="reddit-saved-list">${selections}</div></section>`;
+}
+
 function renderStory(s,data) {
   const official = s.source==='Official';
   const metrics=official?'':`<span>▲ ${s.score === null || s.score === undefined ? '—' : fmt(s.score)}</span><span>◷ ${s.comments === null || s.comments === undefined ? '—' : fmt(s.comments)} comments</span>`;
   return `<article class="story-card"><div class="story-top"><span class="source-chip ${official?'official':''}">${official?'Official Source':esc('r/'+(s.subreddit||'wow'))}</span><span class="story-time">${storyAge(s.publishedAt)}</span></div>${titleLink(s.title,s.url,'story-title')}<p class="story-summary">${esc(s.summary || (official?'Official update or blue post':'Reddit discussion currently qualifying for Top/Today or Hot.'))}</p><div class="story-bottom">${metrics}${official?`<span>${esc(s.sourceId==='blue'?((s.author?s.author+' · ':'')+'Blizzard forum · via independent tracker'):(s.sourceName||'Blizzard / official update'))}</span>`:''}${saveButton(s,'story',data)}</div></article>`;
 }
 function storiesSection(data) {
-  let stories=(data.stories||[]).filter(s=>state.storyType==='all'||(state.storyType==='official'?s.source==='Official':s.source!=='Official'));
-  if(state.storySort==='score') stories.sort((a,b)=>(b.score??-1)-(a.score??-1));
-  else if(state.storySort==='comments') stories.sort((a,b)=>(b.comments??-1)-(a.comments??-1));
-  else stories.sort((a,b)=>b.publishedAt-a.publishedAt);
-  return sectionTitle('Community & Official', 'LATEST <span>STORIES</span>', 'Official blue posts and current Reddit Top/Today or Hot discoveries. Fresh sources only, up to 48 hours old.') +
-    `<div class="toolbar"><div class="toolbar-left">${btnSegment([{id:'all',text:'All'},{id:'reddit',text:'Reddit'},{id:'official',text:'Official'}],state.storyType,'story-type')}</div><div class="toolbar-right">${btnSegment([{id:'new',text:'Newest'},{id:'score',text:'Top score'},{id:'comments',text:'Most comments'}],state.storySort,'story-sort')}</div></div>`+
-    (stories.length?`<div class="stories-grid">${stories.map(s=>renderStory(s,data)).join('')}</div>`:empty('No fresh stories', 'Reddit requires approved API access and successful Top/Today or Hot listing checks. Blizzard news and blue posts are collected hourly when their sources are reachable. Check Channels or Scan Activity for any source errors.'));
+  const all=data.stories||[];
+  const showReddit=state.storyType!=="official";
+  const showOfficial=state.storyType!=="reddit";
+  const order=arr=>{
+    const items=[...arr];
+    if(state.storySort==="score")items.sort((a,b)=>(b.score??-1)-(a.score??-1));
+    else if(state.storySort==="comments")items.sort((a,b)=>(b.comments??-1)-(a.comments??-1));
+    else items.sort((a,b)=>b.publishedAt-a.publishedAt);
+    return items;
+  };
+  const previous=showReddit?order(all.filter(s=>s.source!=="Official")):[];
+  const official=showOfficial?order(all.filter(s=>s.source==="Official")):[];
+  const storyTool=btnSegment([{id:"all",text:"All"},{id:"reddit",text:"Reddit"},{id:"official",text:"Official"}],state.storyType,"story-type");
+  const sortTool=(previous.length||official.length)?btnSegment([{id:"new",text:"Newest"},{id:"score",text:"Top score"},{id:"comments",text:"Most comments"}],state.storySort,"story-sort"):"";
+  const sectionLabel=state.storyType==="official"?"Official Blizzard announcements and WoW blue posts published in the past 48 hours.":"Browse active WoW conversations directly on Reddit, save interesting links locally, and see official Blizzard posts in Stories. No Reddit API or scraping.";
+  return sectionTitle("Community & Official","LATEST <span>STORIES</span>",sectionLabel)+
+    `<div class="toolbar"><div class="toolbar-left">${storyTool}</div><div class="toolbar-right">${sortTool}</div></div>`+
+    (showReddit?redditDirectory():"")+
+    (previous.length?`<section class="reddit-previous"><h2>Previously imported Reddit discussions</h2><div class="stories-grid">${previous.map(s=>renderStory(s,data)).join("")}</div></section>`:"")+
+    (showOfficial?`<section class="reddit-official"><h2>OFFICIAL <span>UPDATES</span></h2>${official.length?`<div class="stories-grid">${official.map(s=>renderStory(s,data)).join("")}</div>`:empty("No recent official updates","Blizzard news and blue posts appear here when the official source collector finds qualifying posts.",false)}</section>`:"");
 }
 function ideaCard(item,i,data) {
   const open=state.expanded.has(item.id);
@@ -107,7 +155,7 @@ function channelsSection(data) {
 function activitySection(data) {
   const scans=data.scans||[], sources=data.sources||{};
   return sectionTitle('System health','SCAN <span>ACTIVITY</span>','Provider results, errors, and hourly refresh history from this rebuilt project.')+
-    `<div class="toolbar"><div class="toolbar-left"><span class="status-pill ${sources.youtube==='error'?'error':sources.youtube==='not_configured'?'off':''}">YouTube: ${esc(sources.youtube||'n/a')}</span><span class="status-pill ${sources.reddit==='error'?'error':sources.reddit==='not_configured'?'off':''}">Reddit: ${esc(sources.reddit||'n/a')}</span><span class="status-pill ${sources.official==='error'?'error':sources.official==='not_configured'?'off':''}">Official: ${esc(sources.official||'n/a')}</span></div><button class="subtle-btn" data-scan-now="1">↻ Scan now</button></div>`+
+    `<div class="toolbar"><div class="toolbar-left"><span class="status-pill ${sources.youtube==='error'?'error':sources.youtube==='not_configured'?'off':''}">YouTube: ${esc(sources.youtube||'n/a')}</span><span class="status-pill ${sources.reddit==='error'?'error':sources.reddit==='not_configured'?'off':''}">Reddit: Browse only</span><span class="status-pill ${sources.official==='error'?'error':sources.official==='not_configured'?'off':''}">Official: ${esc(sources.official||'n/a')}</span></div><button class="subtle-btn" data-scan-now="1">↻ Scan now</button></div>`+
     `<div class="info-note"><strong>Incremental scanning:</strong> Official Blizzard feeds are checked hourly even overnight. YouTube's separate Cloudflare sync runs from 05:00–20:00 Kyiv time; a normal progress state is not a scan failure. ${data.scanProgress?`YouTube: ${fmt(data.scanProgress.queuedVideos||0)} queued videos; channel ${fmt((data.scanProgress.nextChannel||0)+1)} of ${fmt(data.scanProgress.totalChannels||0)}.`:''}</div>`+
     (scans.length?`<section class="panel"><table class="saved-table"><thead><tr><th>Provider</th><th>Result</th><th>Time / details</th></tr></thead><tbody>${scans.map(s=>`<tr><td><strong>${esc(s.provider)}</strong></td><td><span class="status-pill ${s.status==='error'?'error':s.status==='not_configured'?'off':''}">${esc(s.status)} · ${fmt(s.count)} items</span></td><td>${time(s.at)}${s.error?`<div class="video-time" title="${esc(s.error)}">${esc(s.error)}</div>`:''}</td></tr>`).join('')}</tbody></table></section>`:empty('No scans recorded yet',"Blizzard's official news is checked hourly, including overnight; YouTube discovery uses its separate GitHub schedule."));
 }
@@ -115,10 +163,10 @@ function settingsSection(data) {
   const cfg=data.discoverySettings||{},diag=data.diagnostics||{},queries=cfg.queries||['WoW Forever','World of Warcraft Forever','WoW Classic'];
   const auth=data.canManage===true;
   return sectionTitle('Workspace controls','RADAR <span>SETTINGS</span>','Free-tier source controls. YouTube API credentials stay in GitHub Secrets, never in this browser.')+
-    `<section class="panel" style="padding:23px;margin-bottom:18px"><h2>Connection status</h2><p class="story-summary">GitHub YouTube collection: ${esc(data.sources?.youtube||'unknown')} · Blizzard: ${esc(data.sources?.official||'pending')} · Reddit: ${esc(data.sources?.reddit||'awaiting authorized API access')}</p><p class="story-summary">Last GitHub measurement: ${diag.lastGithubAt?age(diag.lastGithubAt):'Not yet available'} · Last Cloudflare sync: ${diag.lastSiteSyncAt?age(diag.lastSiteSyncAt):'Not yet available'}</p><div class="info-note">All source collectors use published APIs and free infrastructure. AI briefs and paid transcription are disabled. Only the original theme is active.</div></section>`+
+    `<section class="panel" style="padding:23px;margin-bottom:18px"><h2>Connection status</h2><p class="story-summary">GitHub YouTube collection: ${esc(data.sources?.youtube||'unknown')} · Blizzard: ${esc(data.sources?.official||'pending')} · Reddit: Browse only (no API)</p><p class="story-summary">Last GitHub measurement: ${diag.lastGithubAt?age(diag.lastGithubAt):'Not yet available'} · Last Cloudflare sync: ${diag.lastSiteSyncAt?age(diag.lastSiteSyncAt):'Not yet available'}</p><div class="info-note">All source collectors use published APIs and free infrastructure. AI briefs and paid transcription are disabled. Only the original theme is active.</div></section>`+
     `<section class="panel" style="padding:23px;margin-bottom:18px"><h2>Discovery terms</h2><p class="story-summary">GitHub reads these search terms at its next scheduled discovery scan. One term per line, up to six.</p><textarea id="discovery-queries" rows="5" style="width:100%;padding:12px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px">${esc(queries.join('\n'))}</textarea><p>${auth?'<button class="subtle-btn" data-save-queries="1">Save search terms</button>':'Unlock administrator access to change settings.'}</p></section>`+
     `<section class="panel" style="padding:23px;margin-bottom:18px"><h2>Track a YouTube channel</h2><p class="story-summary">Add the channel's public UC ID (not the @handle). GitHub can monitor its uploads without an additional paid service.</p><input id="tracked-channel-id" placeholder="UCxxxxxxxxxxxxxxxxxxxxxx" style="width:100%;max-width:340px;padding:10px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px"><input id="tracked-channel-title" placeholder="Channel name" style="width:100%;max-width:230px;padding:10px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px">${auth?'<button class="subtle-btn" data-add-channel="1">Track channel</button>':'<p>Administrator access required.</p>'}<div>${(data.channels||[]).map(c=>`<p><b>${esc(c.title||c.id)}</b> <small>${esc(c.id)}</small> ${auth?`<button class="small-action" data-remove-channel="${esc(c.id)}">Remove</button>`:''}</p>`).join('')}</div></section>`+
-    `<section class="panel" style="padding:23px"><h2>Account and Reddit</h2><p class="story-summary">${auth?'Administrator access is active for this browser tab.':'Private notes and settings are locked. Set ADMIN_TOKEN as a Cloudflare Worker secret and unlock using your administrator token.'}</p>${auth?'':'<button class="subtle-btn" data-unlock="1">Unlock administrator</button>'}<div class="info-note">Reddit data collection remains disabled until Reddit approves external API access. It will not scrape or fabricate top/hot stories.</div></section>`;
+    `<section class="panel" style="padding:23px"><h2>Account and Reddit</h2><p class="story-summary">${auth?'Administrator access is active for this browser tab.':'Private notes and settings are locked. Set ADMIN_TOKEN as a Cloudflare Worker secret and unlock using your administrator token.'}</p>${auth?'':'<button class="subtle-btn" data-unlock="1">Unlock administrator</button>'}<div class="info-note">Reddit browsing is available without API credentials. Top Today, Hot and Most Comments open on Reddit itself. Saved discussion links stay in this browser; no scraping, background collection or AI charges.</div></section>`;
 }
 const DEMO_AGE=Date.now();
 function demoData() {
@@ -210,6 +258,7 @@ document.addEventListener('click',async e=>{
     if(button.dataset.expand) {const id=button.dataset.expand; if(state.expanded.has(id))state.expanded.delete(id);else state.expanded.add(id);return render();}
     if(button.dataset.showDemo||button.id==='demo-toggle'||button.id==='exit-demo') {state.demo=button.id==='exit-demo'?false:!state.demo; return render();}
     if(button.dataset.unlock) {const token=window.prompt('Enter the rebuild ADMIN_TOKEN:'); if(token){state.adminToken=token;await fetchFeed();} return;}
+    if(button.dataset.redditRemove!==undefined) {const idx=Number(button.dataset.redditRemove),items=redditSaved();if(!Number.isInteger(idx)||idx<0||idx>=items.length)return;items.splice(idx,1);try{localStorage.setItem(REDDIT_LOCAL_KEY,JSON.stringify(items));}catch{toast('Browser storage unavailable');return;}toast('Discussion removed');return render();}
     if(button.dataset.save) {await adminFetch('/api/save',{method:'POST',body:JSON.stringify({id:button.dataset.save,kind:button.dataset.kind,title:button.dataset.title,url:button.dataset.url})});toast('Saved to watchlist');return fetchFeed();}
     if(button.dataset.remove) {await adminFetch('/api/save/'+encodeURIComponent(button.dataset.remove),{method:'DELETE'});toast('Removed from watchlist');return fetchFeed();}
     if(button.dataset.saveQueries){const text=document.getElementById('discovery-queries')?.value||'';
@@ -224,6 +273,21 @@ document.addEventListener('click',async e=>{
       const item=(state.feed?.saved||[]).find(s=>s.id===id); if(!item)return;await adminFetch('/api/save',{method:'POST',body:JSON.stringify({id,kind:item.kind,title:item.title,url:item.url,note})});toast('Note saved');return fetchFeed(); }
     if(button.dataset.scanNow){button.disabled=true;button.textContent='Scanning…'; const resp=await adminFetch('/api/scan',{method:'POST'});toast(resp.status==='busy'?'Scan already running':resp.status==='running'?'Scan started in background; open Scan Activity for progress.':'Scan result: '+resp.status);return fetchFeed();}
   } catch(error) {toast(error.message);} finally {if(button?.dataset.scanNow){button.disabled=false;button.textContent='↻ Scan now';}}
+});
+document.addEventListener('submit',function onRedditSubmit(e) {
+  if(e.target?.id!=="reddit-add-form")return;
+  e.preventDefault();
+  const url=redditPostUrl(document.getElementById("reddit-post-url")?.value);
+  const title=(document.getElementById("reddit-post-title")?.value||"").trim().slice(0,180);
+  if(!url){toast("Use a valid Reddit post URL (not a subreddit or search page).");return;}
+  if(!title){toast("Enter the discussion title.");return;}
+  const saved=redditSaved();
+  if(saved.some(x=>x.url===url)){toast("That discussion is already saved.");return;}
+  try {
+    localStorage.setItem(REDDIT_LOCAL_KEY,JSON.stringify([{url,title,savedAt:Date.now()},...saved].slice(0,60)));
+  }catch{toast("Browser storage is unavailable; the link was not saved.");return;}
+  toast("Reddit discussion saved on this device.");
+  render();
 });
 window.addEventListener('hashchange',()=>{const page=location.hash.replace('#','');if(['popular','hot','stories','ideas','watchlist','channels','activity','settings'].includes(page)){state.section=page;render();}});
 if(location.hash) {const page=location.hash.slice(1);if(['popular','hot','stories','ideas','watchlist','channels','activity'].includes(page))state.section=page;}

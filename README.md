@@ -18,7 +18,7 @@ A **standalone, deployment-ready, editable source-code rebuild** of the original
 - HOT and Popular, each with **Long Form / Shorts**, **List / Preview**, and **New uploads / Tracked 48 hours**.
 - Popular ranks by **lifetime total views**. HOT ranks by **measured views gained/hour** from two or more real samples; it never substitutes views or views/age for actual measurements.
 - Min **5,000 total views**, videos must be <48 hours old, archived livestreams excluded.
-- Stories include verified Reddit Top/Today or Hot listings plus imported official posts/blue posts; no YouTube Stories; stale stories automatically expire.
+- Stories provide direct no-API Reddit discovery links and locally saved discussion references alongside imported official posts/blue posts; no YouTube Stories.
 - Content Creation provides evidence-linked starter briefs (source, title, proposed angle, five beats) instead of inventing source claims.
 - Watchlist bookmarks and editable notes persist in SQLite; Channels and Scan Activity screens.
 - **Default** and **Blackrock Depths** themes only; legacy theme values (Terran/Zerg/Protoss) fall back to Default.
@@ -51,9 +51,11 @@ Set `YOUTUBE_API_KEY` and `YOUTUBE_CHANNELS` (comma-separated YouTube `UC...` ch
 
 Every scan persists view samples. **HOT remains empty until at least two scans** of the same eligible video exist, ideally separated by an hour. Archived livestream VODs are excluded by YouTube metadata when detectable. Short/long classification uses the 180-second duration heuristic; some edge cases may need refinement.
 
-## Connect Reddit
+## Reddit discovery — no API or scraping
 
-If you have approved Reddit API access, set `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, and a truthful `REDDIT_USER_AGENT`. The scanner uses OAuth app credentials to read `top?t=day` and `hot` listings for `wowforever,classicwow,wow` (change `REDDIT_SUBREDDITS` as desired). It will not invent post scores, use generic search results to establish listing eligibility, or show unverified old posts. **Reddit API permission and rate limits are the operator's responsibility.** API requests may fail without approved access.
+The live Cloudflare Stories page links directly to Reddit's **Top Today**, **Hot** and **Most Comments** views for r/wowforever, r/classicwow, r/wow, r/wowhardcore and r/worldofpvp. It does **not** collect Reddit data, call the Reddit API, scrape pages, or display invented vote/comment counts. Those metrics remain visible on Reddit when a user opens the links.
+
+Visitors can manually paste a Reddit **post** URL and title into the Stories page. That private list is saved in their own browser localStorage only (not in D1 or across devices). Official Blizzard/blue posts continue to be sourced separately and are unaffected. Legacy Node.js optional Reddit OAuth importer is not used by the Cloudflare Worker deployment.
 
 ## Official posts and blue posts
 
