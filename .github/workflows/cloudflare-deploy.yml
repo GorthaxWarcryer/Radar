@@ -28,7 +28,7 @@ jobs:
         run: |
           node --check cloudflare/worker.mjs
           node --check public/app.js
-          node --test cloudflare/tests/*.test.mjs
+          node --test cloudflare/tests/*.test.mjs tests/reddit-directory.test.mjs tests/ux-dashboard.test.mjs
       - name: Resolve Cloudflare account automatically from private API token
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
