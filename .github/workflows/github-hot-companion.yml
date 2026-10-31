@@ -26,5 +26,5 @@ jobs:
         run: node --test site-integration/tests/hot-hourly.test.mjs tests/github-hot-bridge.test.mjs
       - name: Read original Site feed and publish ranked GitHub companion
         env:
-          GH_BRIDGE_TOKEN: \${{ github.token }}
+          GH_BRIDGE_TOKEN: ${{ github.token }}
         run: node scripts/github-hot-bridge.mjs
