@@ -1,0 +1,44 @@
+name: HOT feed one-time read-only audit
+on:
+  push:
+    paths: ['.github/workflows/hot-readonly-audit.yml']
+permissions:
+  contents: none
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Inspect public HOT feed and sample eligibility without updating data
+        shell: python {0}
+        run: |
+          import urllib.request, json, time, datetime
+          from zoneinfo import ZoneInfo
+          url='https://azeroth-radar-petro.gorthax.chatgpt.site/api/feed?view=dashboard'
+          req=urllib.request.Request(url,headers={'User-Agent':'AzerothRadar-ReadOnlyAudit/1.0'})
+          with urllib.request.urlopen(req,timeout=45) as response:
+            d=json.load(response)
+          now=int(time.time()*1000)
+          vids=d.get('videos') or []
+          rank=d.get('rankings') or {}
+          def dt(value):
+            return datetime.datetime.fromtimestamp(value/1000,datetime.timezone.utc).astimezone(ZoneInfo('Europe/Kyiv')).strftime('%Y-%m-%d %H:%M') if isinstance(value,(int,float)) and value>0 else None
+          def pick(v):
+            return {k:v.get(k) for k in ('id','title','views','vph','hotVph','intervalMinutes','hotSampleCount','hotReason','fresh','duration','width','height') if k in v}|{'published':dt(v.get('publishedAt')),'measured':dt(v.get('hotMeasuredAt')),'prior':dt(v.get('hotPriorAt'))}
+          vi={v.get('id'):v for v in vids}
+          recent=[v for v in vids if isinstance(v.get('publishedAt'),(int,float)) and 0<=now-v['publishedAt']<86400000]
+          eligible=[v for v in recent if (v.get('views') or 0)>=5000]
+          last6=[v for v in eligible if now-v['publishedAt']<6*3600000]
+          last12=[v for v in eligible if now-v['publishedAt']<12*3600000]
+          hot=rank.get('hot') or []
+          sh=rank.get('shortsHot') or []
+          print('FEED_AUDIT',json.dumps({
+            'nowKyiv':dt(now),'scanAt':dt(d.get('lastScan')),'discoveryAt':dt(d.get('lastDiscovery')),
+            'totalInDashboard':len(vids),'published24h':len(recent),'above5000':len(eligible),'above5000Published6h':len(last6),'above5000Published12h':len(last12),
+            'rankings':{k:len(rank.get(k) or []) for k in ('hot','shortsHot','popular','shortsPopular')},
+            'diagnostics':d.get('hotDiagnostics'),
+            'hotLong':[pick(vi[x]) for x in hot[:15] if x in vi],
+            'hotShorts':[pick(vi[x]) for x in sh[:10] if x in vi],
+            'recentOver5000NotHot':[pick(v) for v in sorted([v for v in eligible if v.get('id') not in set(hot+sh)],key=lambda v:v.get('publishedAt',0),reverse=True)[:15]],
+            'recentOver5000':[pick(v) for v in sorted(eligible,key=lambda v:v.get('publishedAt',0),reverse=True)[:18]]
+          },ensure_ascii=False))
