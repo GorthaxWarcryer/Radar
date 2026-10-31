@@ -22,7 +22,7 @@ The site uses Cloudflare's built-in AI binding, not a ChatGPT personal conversat
 
 - Model: @cf/meta/llama-3.2-3b-instruct, a free-tier-compatible small text model.
 - The model runs only from the scheduled Cloudflare Worker event, after existing daytime YouTube source syncing. Visitors and dashboard refreshes never trigger inference.
-- On each hourly scheduled run, up to two new source-linked opportunities receive automatic creative briefs.
+- One new source-linked opportunity receives an automatic brief at each of six scheduled daytime slots: 05, 08, 11, 14, 17 and 20 Kyiv time (the Worker cron currently starts at minute 26).
 - Maximum six AI inference attempts per UTC day, enforced by atomic, durable D1 counters (including failed requests). This per-application limit avoids burst traffic, although it cannot account for other Cloudflare projects using the same account.
 - D1 caches AI output by topic and source signature for up to 48h, so identical topics don't request AI again on subsequent scans.
 - Each brief includes three titles, thumbnail text, creative angles and a verification note. It is shown inline on the Content Opportunities card.
