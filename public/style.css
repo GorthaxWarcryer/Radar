@@ -8,12 +8,6 @@ body[data-theme='default'] {
   --text:#e9ecef; --muted:#9aa5b1; --muted2:#67737f; --accent:#e9ba67; --accent-soft:#d9a94f22; --accent-ink:#17120a;
   --teal:#66c7ad; --red:#f1847b; --blue:#78b0ed; --shadow:0 12px 40px #00000028; --texture:none;
 }
-body[data-theme='brd'] {
-  --base:#0e0d0b; --sidebar:#15120e; --panel:#1d1813; --panel2:#251e16; --panel3:#33281c; --border:#47382a; --border-soft:#34291f;
-  --text:#f3e6d2; --muted:#b2a08b; --muted2:#8b7560; --accent:#ec9a49; --accent-soft:#ed7c2b20; --accent-ink:#1e0e06;
-  --teal:#b6c58d; --red:#f17d5e; --blue:#a5c9e6; --shadow:0 15px 45px #00000088;
-  --texture:radial-gradient(ellipse at 100% 0%, #b94e1017 0%, transparent 38%),repeating-linear-gradient(90deg,transparent,transparent 95px,#f5a04204 96px,#00000000 97px);
-}
 a { color: inherit; text-decoration: none; }
 button, input, textarea { font: inherit; }
 button { cursor: pointer; }
