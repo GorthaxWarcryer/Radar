@@ -91,6 +91,9 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visib
 .video-title { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; font-size:12px; font-weight:800; line-height:1.5; margin-bottom:7px; }
 .video-title:hover { color:var(--accent); }
 .video-channel { font-size:11px; color:var(--muted); text-overflow:ellipsis; white-space:nowrap; overflow:hidden; }
+.video-channel-row { display:flex; align-items:center; gap:7px; min-width:0; flex-wrap:wrap; }
+.video-channel-row .video-channel { min-width:0; max-width:100%; }
+.source-chip.video-official-badge { display:inline-flex; align-items:center; flex-shrink:0; font-size:9px; letter-spacing:.2px; padding:3px 6px; line-height:1.2; vertical-align:middle; white-space:nowrap; }
 .video-bottom { display:flex; justify-content:space-between; align-items:center; gap:7px; margin-top:10px; flex-wrap:wrap; }
 .video-number { color:var(--accent); font-family:'Barlow Condensed',Impact,sans-serif; letter-spacing:.2px; font-weight:800; font-size:19px; white-space:nowrap; }
 .video-number small { font-family:'DM Sans',sans-serif; color:var(--muted2); font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-left:3px; }
