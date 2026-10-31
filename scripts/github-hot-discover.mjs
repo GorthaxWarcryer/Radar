@@ -33,7 +33,11 @@ export function normalizeDiscovery(entry,observedAt,followedIds=new Set()) {
   const short=duration!==null&&duration<=180&&(duration<=90||/#shorts?\b/i.test(title));
   return {
     id:entry.id,title:title.slice(0,300),channelTitle:channelTitle.slice(0,140),channelId:channelId.slice(0,64),
-    publishedAt,views,hotMeasuredAt:observedAt,hotLatestViews:views,
+    publishedAt,views,description:String(s.description||'').slice(0,750),
+    tags:Array.isArray(s.tags)?s.tags.filter(x=>typeof x==='string').slice(0,12).map(x=>x.slice(0,40)):[],
+    likes:Number.isFinite(Number(stats.likeCount))?Number(stats.likeCount):null,
+    comments:Number.isFinite(Number(stats.commentCount))?Number(stats.commentCount):null,
+    hotMeasuredAt:observedAt,hotLatestViews:views,
     lastSeen:observedAt,observedAt,videoDurationSeconds:duration,
     isShort:short,isLivestream:false,isVod:false,source:'github-youtube-discovery'
   };
