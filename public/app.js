@@ -40,7 +40,12 @@ function renderVideo(v, data, position=0) {
   return state.layout==='preview' ? `<article class="video-card">${thumbnail(v,position===0)}${content}</article>` : `<article class="video-item">${thumbnail(v,position===0)}${content}</article>`;
 }
 function videoBoard(title,sub,items,data) {
-  return `<section class="panel"><div class="board-title"><h2>${esc(title)}<small>${esc(sub)}</small></h2><span class="count">${items.length}</span></div>${items.length?`<div class="${state.layout==='preview'?'card-grid':'video-list'}" style="${state.layout==='preview'?'padding:12px':''}">${items.map((v,i)=>renderVideo(v,data,i)).join('')}</div>`:empty(state.section==='hot'?'No HOT videos yet':'No qualifying videos yet',state.section==='hot'?'New uploads enter HOT using average views/hour since publication; later real observations update that rate.':'Connect YouTube sources or import a verified feed. Qualifying videos need at least 5,000 views.')}</section>`;
+  const searching=Boolean(state.searchTerm);
+  const missingTitle=searching?'No videos match your search':state.section==='hot'?'No HOT videos yet':'No qualifying videos yet';
+  const missingDetail=searching?'Try a different channel or keyword, or clear the current search.':state.section==='hot'?
+    'New uploads enter HOT using estimated views/hour, then real measurements as new snapshots arrive.':
+    'Only qualifying videos with 5,000+ views appear here.';
+  return `<section class="panel"><div class="board-title"><h2>${esc(title)}<small>${esc(sub)}</small></h2><span class="count">${items.length}</span></div>${items.length?`<div class="${state.layout==='preview'?'card-grid':'video-list'}" style="${state.layout==='preview'?'padding:12px':''}">${items.map((v,i)=>renderVideo(v,data,i)).join('')}</div>`:empty(missingTitle,missingDetail,!searching)}</section>`;
 }
 function videoSection(data,mode) {
   const isHot=mode==='hot'; const source=data[mode]?.[state.kind]||[];
