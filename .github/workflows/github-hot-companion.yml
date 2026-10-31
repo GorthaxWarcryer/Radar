@@ -10,6 +10,7 @@ on:
       - '.github/workflows/github-hot-companion.yml'
       - 'scripts/github-hot-bridge.mjs'
       - 'tests/github-hot-bridge.test.mjs'
+      - 'tests/github-hot-large-json.test.mjs'
       - 'site-integration/hot-hourly.mjs'
 permissions:
   contents: write
@@ -26,7 +27,7 @@ jobs:
         with:
           node-version: '22'
       - name: Verify estimated and measured growth calculations
-        run: node --test site-integration/tests/hot-hourly.test.mjs tests/github-hot-bridge.test.mjs
+        run: node --test site-integration/tests/hot-hourly.test.mjs tests/github-hot-bridge.test.mjs tests/github-hot-large-json.test.mjs
       - name: Read original Site feed and publish ranked GitHub companion
         env:
           GH_BRIDGE_TOKEN: ${{ github.token }}
