@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { calculate, summary, pollYoutubeViews, selectCandidates, combineSources } from '../scripts/github-hot-bridge.mjs';
+import { calculate, summary, pollYoutubeViews, selectCandidates, selectPopularCandidates, combineSources } from '../scripts/github-hot-bridge.mjs';
 const H=3600000, T=Date.parse('2026-10-31T10:00:00Z');
 const item=(id,views,age=1,seen=T)=>({id,title:'Video '+id,
   publishedAt:T-age*H,views,hotLatestViews:views,hotMeasuredAt:seen,width:640,height:360});
@@ -143,4 +143,25 @@ test('newer independent view count overrides older Site values without losing as
  assert.equal(merged.videos[0].views,10000);
  assert.equal(merged.videos[0].height,360);
  assert.equal(merged.videos[0].width,640);
+});
+
+test('Popular retains genuine 24–48h videos while HOT drops them',()=>{
+  const older={...item('1GEmk7Fci2E',12000,30),isShort:false};
+  const recent={...item('1JhKzviW1h8',8000,2),isShort:true};
+  const feed={videos:[older,recent]};
+  const selected=selectPopularCandidates(feed,T);
+  assert.equal(selected.length,2);
+  assert.equal(selectCandidates(feed,T).length,1);
+  const ranked=calculate(feed,{},T);
+  assert.equal(ranked.catalog.length,2);
+  assert.equal(ranked.popular48h.tracked24to48,1);
+  assert.equal(ranked.videos.length,1);
+});
+test('48h catalog uses true API observation timestamp and newer view count',()=>{
+ const v={...item('1GEmk7Fci2E',6000,30)};
+ const api={status:'connected',observations:[{id:v.id,views:18000,capturedAt:T,source:'youtube-data-api'}],requests:1};
+ const ranked=calculate({videos:[v]}, {},T,api);
+ assert.equal(ranked.catalog[0].views,18000);
+ assert.equal(ranked.catalog[0].hotMeasuredAt,T);
+ assert.equal(ranked.videos.length,0);
 });
