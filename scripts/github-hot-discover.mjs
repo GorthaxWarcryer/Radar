@@ -1,4 +1,5 @@
 import { writeFile } from 'node:fs/promises';
+import { OFFICIAL_YOUTUBE_CHANNELS, isOfficialYouTubeChannel } from '../src/official-youtube.mjs';
 
 const API='https://www.googleapis.com/youtube/v3/';
 const DEST='docs/hot/discovered.json';
@@ -23,13 +24,14 @@ export function normalizeDiscovery(entry,observedAt) {
   const lang=s.defaultAudioLanguage||s.defaultLanguage||'';
   const duration=durationSeconds(entry.contentDetails?.duration);
   const live=!!entry.liveStreamingDetails||(s.liveBroadcastContent&&s.liveBroadcastContent!=='none');
-  if(!title||!TOPICAL.test(title)||NON_ENGLISH_SCRIPT.test(title)||
+  if(!title||(!TOPICAL.test(title)&&!isOfficialYouTubeChannel(s.channelId))||NON_ENGLISH_SCRIPT.test(title)||
     (lang&&!/^en(?:-|$)/i.test(lang))||!Number.isFinite(publishedAt)||
     publishedAt>observedAt||observedAt-publishedAt>PERIOD||
     !Number.isSafeInteger(views)||views<0||live)return null;
   const short=duration!==null&&duration<=180&&(duration<=90||/#shorts?\b/i.test(title));
   return {
     id:entry.id,title:title.slice(0,300),channelTitle:channelTitle.slice(0,140),
+    channelId:String(s.channelId||'').slice(0,64),
     publishedAt,views,hotMeasuredAt:observedAt,hotLatestViews:views,
     lastSeen:observedAt,observedAt,videoDurationSeconds:duration,
     isShort:short,isLivestream:false,isVod:false,source:'github-youtube-discovery'
@@ -51,7 +53,7 @@ async function youtube(endpoint,params,key,fetcher) {
 }
 export async function discover(key,{fetcher=fetch,now=Date.now(),queries=QUERIES}={}) {
   if(!key)throw Error('YOUTUBE_API_KEY GitHub secret missing');
-  const ids=new Set();let searches=0,detailCalls=0;
+  const ids=new Set();let searches=0,detailCalls=0,officialPlaylistCalls=0;
   const after=new Date(now-PERIOD).toISOString();
   for(const q of queries.slice(0,3)) {
     const data=await youtube('search',{part:'snippet',q,type:'video',order:'date',
@@ -59,8 +61,17 @@ export async function discover(key,{fetcher=fetch,now=Date.now(),queries=QUERIES
     searches++;
     for(const x of data.items)if(ID.test(x.id?.videoId||''))ids.add(x.id.videoId);
   }
+  // Directly follow the verified official uploads playlist. YouTube's UU prefix
+  // is the uploads playlist for its immutable UC channel ID; playlistItems costs
+  // one quota unit per page, rather than another 100-unit search request.
+  for(const source of OFFICIAL_YOUTUBE_CHANNELS) {
+    const playlist=await youtube('playlistItems',{part:'contentDetails',
+      playlistId:'UU'+source.id.slice(2),maxResults:50},key,fetcher);
+    officialPlaylistCalls++;
+    for(const item of playlist.items)if(ID.test(item.contentDetails?.videoId||''))ids.add(item.contentDetails.videoId);
+  }
   const videos=[];
-  const list=[...ids].slice(0,150);
+  const list=[...ids].slice(0,200);
   for(let i=0;i<list.length;i+=50) {
     const d=await youtube('videos',{part:'snippet,statistics,contentDetails,liveStreamingDetails',
       id:list.slice(i,i+50).join(',')},key,fetcher);
@@ -70,7 +81,9 @@ export async function discover(key,{fetcher=fetch,now=Date.now(),queries=QUERIES
       if(v)videos.push(v);
     }
   }
-  return {videos,stats:{searches,detailCalls,returned:ids.size,qualified:videos.length},now};
+  return {videos,stats:{searches,officialPlaylistCalls,detailCalls,
+    returned:ids.size,qualified:videos.length,
+    officialUploads:videos.filter(v=>isOfficialYouTubeChannel(v.channelId)).length},now};
 }
 export function merge(previous={},current=[],now=Date.now()) {
   const ids=new Map();
