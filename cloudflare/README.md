@@ -1,3 +1,11 @@
+## Free-tier parity release — October 31, 2026
+
+The next production deployment restores **48-hour Popular tracking** (separate from 24-hour HOT), adds one **Original** theme, video search and sorting, research statuses/CSV, tracked-channel and search-term settings, source diagnostics, and expanded source-backed deterministic Content Creation briefs. No generative AI requests or paid transcription calls are made.
+
+GitHub HOT writes both the 24-hour ranking and a 48-hour Popular catalog. D1 sync imports both while retaining real observation timestamps. Blizzard source collectors remain enabled; Reddit collection remains disabled unless approved external API access is granted.
+
+**Private features remain locked** unless the GitHub repository secret `RADAR_ADMIN_TOKEN` (32+ characters) is configured and the Cloudflare deploy job is rerun. The deploy job transmits the value to Cloudflare Worker `ADMIN_TOKEN` via Wrangler without printing it. Owner-only data from the original ChatGPT Site is not automatically migrated.
+
 # Azeroth Radar — Cloudflare Worker + D1
 
 This is a new Cloudflare deployment of the **standalone GitHub rebuild**, **not a byte-for-byte export** of the original ChatGPT Site. Do not delete or redirect the original ChatGPT Site yet. The public dashboard is backed by the GitHub HOT collector and a NEW D1 database; old private original-Site data is NOT migrated.
