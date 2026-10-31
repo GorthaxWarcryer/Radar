@@ -24,6 +24,16 @@ jobs:
           node -e "const fs=require('node:fs'); const x=JSON.parse(fs.readFileSync('wrangler.jsonc','utf8')); if (!x.d1_databases || x.assets.directory!=='./public') throw Error('Invalid Cloudflare config')"
       - name: Test Cloudflare API, saved-data privacy and HOT growth
         run: node --test cloudflare/tests/*.test.mjs site-integration/tests/hot-hourly.test.mjs
+      - name: Probe live WoW Forever blue-post RSS (diagnostic only)
+        continue-on-error: true
+        run: |
+          node --input-type=module <<'NODE'
+          import {fetchBluePosts} from './cloudflare/blue-posts.mjs';
+          const posts = await fetchBluePosts(fetch,Date.now());
+          console.log(JSON.stringify({source:'WoW Forever blue RSS',freshPosts:posts.length,
+            sample:posts.slice(0,3).map(p=>({title:p.title,url:p.url,publishedAt:p.publishedAt}))}));
+          if(!posts.length) throw new Error('No qualifying blue posts within 48h or RSS schema changed');
+          NODE
       - name: Confirm Cloudflare Worker bundles without deploying
         run: npx --yes wrangler@4 deploy --dry-run --outdir=.wrangler/ci-check
       - name: Smoke-test actual local Worker and D1 API
