@@ -1,4 +1,4 @@
-name: One-time Cloudflare deployment after account autodiscovery
+name: One-time Cloudflare deployment after domain bootstrap
 on:
   push:
     paths:
