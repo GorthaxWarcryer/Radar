@@ -1,6 +1,7 @@
 import { buildFeed, fromGithubVideo, normalizeIncomingStory, safeUrl } from './transform.mjs';
 import { synchronizeOfficial, officialSourceStatus } from './official.mjs';
 import { synchronizeBluePosts } from './blue-posts.mjs';
+import { aiEnabled, developOpportunity } from './ai-ideas.mjs';
 import { OFFICIAL_YOUTUBE_CHANNELS, isOfficialYouTubeChannel } from '../src/official-youtube.mjs';
 
 const GITHUB_HOT='https://raw.githubusercontent.com/GorthaxWarcryer/Radar/main/docs/hot/latest.json';
@@ -138,7 +139,7 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
     .map(c=>({...c,official:true,platform:'youtube',trackedBy:'github-discovery'}));
   const managed=channels.filter(c=>!c.blocked&&!OFFICIAL_YOUTUBE_CHANNELS.some(x=>x.id===c.id))
     .map(c=>({id:c.id,title:c.title,official:false,handle:''}));
-  return {...base,channels:[...builtin,...managed],
+  return {...base,contentCreation:{...base.contentCreation,aiAvailable:aiEnabled(env)},channels:[...builtin,...managed],
     discoverySettings:{queries:config.queries||['WoW Forever','World of Warcraft Forever','WoW Classic'],
       englishOnly:true,excludeRussian:true,channelCount:channels.filter(c=>!c.blocked).length},
     researchStatuses:['New','Seen','Investigating','Planned','Published','Dismissed'],
@@ -259,6 +260,26 @@ export default {
         return reply({version:1,queries,channels:rows.filter(r=>!r.blocked&&/^UC[\w-]{22}$/.test(r.id))
           .map(r=>({id:r.id,official:!!r.official})),blockedChannels:rows.filter(r=>r.blocked).map(r=>r.id),
           hiddenVideos:hidden.map(r=>r.id),englishOnly:true,excludeRussian:true,updatedAt:now});
+      }
+      if(req.method==='POST'&&path==='/api/content/develop') {
+        // Owner-only, on demand, budget-capped model call. Normal scans and page loads never invoke AI.
+        const denied=await adminRequired(req,env);if(denied)return denied;
+        if(!aiEnabled(env))return error('Optional AI is disabled; set AI_IDEAS_ENABLED and OPENAI_API_KEY to opt in',409);
+        const d=await bodyJson(req);
+        if(typeof d.id!=='string'||!/^opportunity:[a-z0-9:-]{4,140}$/.test(d.id))
+          return error('Valid opportunity id required',400);
+        const current=await state(env,req,now);
+        const idea=current.contentCreation?.items?.find(x=>x.id===d.id);
+        if(!idea)return error('Opportunity is no longer in the current feed',404);
+        const key='ai-brief:'+d.id;
+        const cached=await readRows(env.DB,'SELECT value,updated_at FROM discovery_settings WHERE key=? LIMIT 1',[key]);
+        if(cached.length&&now-Number(cached[0].updated_at)<24*3600000) {
+          try {return reply({...JSON.parse(cached[0].value),cached:true});}catch{}
+        }
+        const result=await developOpportunity(idea,env);
+        await env.DB.prepare('INSERT INTO discovery_settings(key,value,updated_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at')
+          .bind(key,JSON.stringify(result),now).run();
+        return reply({...result,cached:false});
       }
       if(req.method==='POST'&&path==='/api/research/status'){
         const denied=await adminRequired(req,env);if(denied)return denied;

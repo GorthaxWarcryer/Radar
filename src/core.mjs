@@ -77,35 +77,159 @@ export function normalizeRedditPost(p, subreddit, sort, observedAt = Date.now())
   return classifyStory(post, observedAt) ? post : null;
 }
 
-export function makeContentIdeas({ videos, stories }, now = Date.now()) {
-  const eligible = videos.filter(v => eligibleVideo(v, now));
-  const sources = [...eligible.map(v => ({ ...v, sourceType: 'YouTube', signal: v.views || 0 })),
-    ...stories.filter(s => withinHours(s.publishedAt, 48, now)).map(s => ({ ...s, sourceType: s.source || 'Reddit', signal: (s.score || 0) * 30 + (s.comments || 0) * 100 }))];
-  sources.sort((a, b) => b.signal - a.signal);
-  const dedup = new Set(); const result = [];
-  for (const s of sources) {
-    const normalized = String(s.title || '').toLowerCase().replace(/\b(wow|world of warcraft|forever|blizzard|new|the|and|with|esfand|reacts|just)\b/g,'').replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(x=>x.length>3).slice(0,5).sort().join(' ');
-    if (!normalized || dedup.has(normalized)) continue;
-    dedup.add(normalized);
-    const topic = String(s.title || '').replace(/\s*\|.*$/, '').slice(0, 110);
-    const hotSignal = s.growth?.perHour ? `${s.growth.kind==='estimated-since-upload'?'Estimated average since upload':'Measured interval growth'}: ${s.growth.perHour.toLocaleString('en-US')} views/hour` : s.sourceType === 'YouTube' ? `${(s.views || 0).toLocaleString('en-US')} total views` : `${s.score ?? '—'} Reddit score · ${s.comments ?? '—'} comments`;
-    result.push({ id: `idea:${s.id}`, title: topic, proposedTitle: `What ${topic.replace(/[!?]+$/,'')} Means for WoW Players`,
-      summary: `${s.sourceType} signal: ${hotSignal}. Review the linked source before asserting mechanics or community consensus.`,
-      angle: 'Test the claim, compare player outcomes, and explain the practical decision.',
-      outline: ['What changed or started the discussion', 'What the original source actually says', 'A gameplay test or side-by-side comparison', 'What it means for different players', 'What to watch for next'],
-      format: s.sourceType === 'YouTube' ? 'Reaction + analysis' : 'Explainer / discussion',
-      priority: result.length < 3 ? 'High' : 'Watch', sourceUrl: s.url, sourceTitle: s.title,
-      sourceType: s.sourceType, publishedAt: s.publishedAt,
-      evidence: [s.id],
-      whyNow: 'Published '+Math.max(0,Math.round((now-s.publishedAt)/3600000))+' hours ago; '+hotSignal+'. This is a discovery signal, not proof of a game mechanic.',
-      viewerPayoff: 'Explain the practical player decision, backed by the original source and your own test.',
-      recordingPlan: ['Open the original source and distinguish verified facts from reactions',
-        'Capture an in-game comparison or reproducible test where possible',
-        'Present uncertainty and cite source links in the description',
-        'End with what players should do or check next'],
-      coverage:{verifiedSources:1,sourceLinks:[s.url].filter(Boolean),
-        note:'Single originating item; independent corroboration not provided'} });
-    if (result.length >= 12) break;
+
+const TOPIC_RULES = [
+  ['triple-spec', /\b(triple[\s-]?spec|third spec)\b/i, 'Triple specialization', 'Systems'],
+  ['paladin', /\bpaladin(s)?\b/i, 'Paladin changes', 'Classes'],
+  ['warrior', /\bwarrior(s)?\b/i, 'Warrior changes', 'Classes'],
+  ['shaman', /\bshaman(s)?\b/i, 'Shaman changes', 'Classes'],
+  ['mage', /\bmage(s)?\b/i, 'Mage changes', 'Classes'],
+  ['priest', /\bpriest(s)?\b/i, 'Priest changes', 'Classes'],
+  ['hunter', /\bhunter(s)?\b/i, 'Hunter changes', 'Classes'],
+  ['druid', /\bdruid(s)?\b/i, 'Druid changes', 'Classes'],
+  ['rogue', /\brogue(s)?\b/i, 'Rogue changes', 'Classes'],
+  ['warlock', /\bwarlock(s)?\b/i, 'Warlock changes', 'Classes'],
+  ['racial', /\b(racials?|race\s+changes|blood fury|berserking|touch of the grave)\b/i, 'Racial balance', 'Balance'],
+  ['raid', /\b(raids?|tier progression|raid release|raid schedule)\b/i, 'Raid progression', 'PvE'],
+  ['pvp', /\b(pvp|arenas?|battlegrounds?|duels?|tournaments?)\b/i, 'PvP', 'PvP'],
+  ['addon', /\b(addons?|weak\s?auras?|modding)\b/i, 'Addons', 'Systems'],
+  ['launch', /\b(launch|release date|launch day|server opening)\b/i, 'Launch', 'News'],
+  ['profession', /\b(professions?|engineering|blacksmithing|alchemy|herbalism)\b/i, 'Professions', 'Economy'],
+  ['economy', /\b(gold making|auction house|economy|farming gold)\b/i, 'Economy', 'Economy'],
+  ['mount', /\b(mounts?|cash shop|store mount|microtransactions?)\b/i, 'Mounts and monetization', 'Community'],
+  ['nostalgia', /\b(nostalgia|nostalgic)\b/i, 'Warcraft nostalgia', 'Community'],
+  ['talent', /\b(talents?|spec builds?|talent trees?)\b/i, 'Talents and builds', 'Classes']
+];
+const TOPIC_STOP = new Set('world warcraft forever classic blizzard wow new latest just huge big this that have does about and the with from into what how why where first look reacts reaction video trailer update changes change leaked datamined patch official news game gaming watch before after really more every player players we got getting means things'.split(' '));
+const clamp = (n,lo,hi) => Math.max(lo,Math.min(hi,n));
+const cappedLog = (value,base,cap) => Math.round(clamp(Math.log1p(Math.max(0,value))/Math.log1p(base),0,1)*cap);
+function sourceWorld(title='') {
+  return /\bforever\b/i.test(title) ? 'forever' :
+    /\b(classic|vanilla|era)\b/i.test(title) ? 'classic' :
+    /\b(retail|midnight|the war within)\b/i.test(title) ? 'retail' : 'wow';
+}
+function topicWords(title) {
+  return [...new Set(String(title).toLowerCase().replace(/[^a-z0-9 ]/g,' ')
+    .split(/\s+/).filter(w=>w.length>=4&&!TOPIC_STOP.has(w)))];
+}
+function classifyOpportunity(title) {
+  const world=sourceWorld(title);
+  const specific=TOPIC_RULES.find(([,re])=>re.test(title));
+  if(specific) {
+    const [key,,subject,category]=specific;
+    return {key:world+':'+key,subject,category,world};
   }
-  return result;
+  const words=topicWords(title);
+  const distinct=words.slice(0,4).sort().join('-')||'uncategorized';
+  const subject=String(title).replace(/\s*\|.*$/,'').replace(/[!?]+$/,'').trim().slice(0,95);
+  return {key:world+':'+distinct,subject,category:'Discussion',world};
+}
+function safeSource(s) {
+  const sourceType=s.sourceType;
+  return {id:String(s.id),title:String(s.title||''),url:String(s.url||''),
+    sourceType,channelName:String(s.channelName||s.subreddit||''),
+    publishedAt:Number(s.publishedAt)||0,
+    views:sourceType==='YouTube'?Number(s.views)||0:null,
+    growthPerHour:sourceType==='YouTube'&&Number.isFinite(s.growth?.perHour)?s.growth.perHour:null,
+    growthKind:sourceType==='YouTube'?s.growth?.kind||null:null,
+    score:sourceType==='Reddit'&&Number.isFinite(s.score)?s.score:null,
+    comments:sourceType==='Reddit'&&Number.isFinite(s.comments)?s.comments:null,
+    official:!!(s.officialSource||sourceType==='Official'||sourceType==='Blizzard')};
+}
+function creativeAngles(group) {
+  const subject=group.subject, world=group.world==='forever'?'WoW Forever':'World of Warcraft';
+  const name=subject==='PvP'?'PvP':subject;
+  if(group.category==='Classes'||group.category==='Balance') return [
+    {type:'Impact analysis',title:'How Much Could '+name+' Affect '+world+'?',approach:'Identify actual changes, then compare the consequences for relevant specs.'},
+    {type:'Gameplay test',title:'Testing '+name+': What Actually Changes?',approach:'Create a reproducible in-game comparison after verifying the source claims.'},
+    {type:'Debate',title:'Are These '+name+' Really a Good Idea?',approach:'Contrast the intended goals, trade-offs and player reactions without assuming consensus.'}
+  ];
+  if(group.category==='PvP') return [
+    {type:'Gameplay test',title:'What Actually Wins in '+world+' '+name+'?',approach:'Test the cited PvP claim with observable matches or controlled duels.'},
+    {type:'Analysis',title:'The Biggest Question About '+world+' '+name,approach:'Separate measured strengths from anecdotal wins.'},
+    {type:'Counterpoint',title:'Is Everyone Overlooking This '+name+' Trade-Off?',approach:'Evaluate risks and counterarguments from the original discussion.'}
+  ];
+  if(group.category==='PvE'||group.category==='Systems') return [
+    {type:'Analysis',title:'Could '+name+' Change How We Play '+world+'?',approach:'Explain the conditions and who benefits if the reported details hold up.'},
+    {type:'Comparison',title:name+': The Upsides and the Trade-Offs',approach:'Compare current and proposed behavior using direct source evidence.'},
+    {type:'Player guide',title:'What Should Players Do About '+name+'?',approach:'Give conditional, verifiable next steps instead of speculation presented as fact.'}
+  ];
+  if(group.category==='News') return [
+    {type:'News breakdown',title:'What We Actually Know About '+world+' '+name,approach:'Build a short, source-linked timeline of verified announcements.'},
+    {type:'Analysis',title:'The Biggest Open Questions Around '+name,approach:'Separate announcements from unresolved details.'},
+    {type:'Checklist',title:'What to Check Before '+world+' '+name,approach:'Practical preparation checklist, clearly labelled as conditional.'}
+  ];
+  return [
+    {type:'Reaction',title:'Why Is Everyone Talking About '+name+'?',approach:'Trace the original claim and the verified evidence for its spread.'},
+    {type:'Analysis',title:'The Question Behind '+name,approach:'Explore the disagreement or player choice beyond the viral headline.'},
+    {type:'Counterpoint',title:'What Might Be Missing From the '+name+' Discussion?',approach:'Offer a fair, evidence-linked alternative interpretation.'}
+  ];
+}
+function opportunityScore(sources,now) {
+  const yt=sources.filter(s=>s.sourceType==='YouTube');
+  const newest=Math.max(...sources.map(s=>s.publishedAt));
+  const ageHours=Math.max(0,(now-newest)/HOUR);
+  const channels=new Set(sources.map(s=>s.channelName||s.id)).size;
+  const peakViews=Math.max(0,...yt.map(s=>s.views||0));
+  const peakVelocity=Math.max(0,...yt.map(s=>s.growthPerHour||0));
+  const discussion=sources.filter(s=>s.sourceType==='Reddit');
+  const discussionPoints=discussion.length?clamp(Math.round(Math.max(...discussion.map(s=>s.comments||0))/25),0,9):0;
+  const parts={
+    freshness:Math.round(clamp((48-ageHours)/48,0,1)*18),
+    reach:cappedLog(peakViews,100000,16),
+    velocity:peakVelocity>0?cappedLog(peakVelocity,3000,24):0,
+    independentCoverage:clamp((channels-1)*7,0,21),
+    official:sources.some(s=>s.official)?12:0,
+    discussion:discussionPoints
+  };
+  const score=clamp(Object.values(parts).reduce((a,b)=>a+b,0),0,100);
+  return {score,parts,channels,peakViews,peakVelocity,ageHours:Math.round(ageHours*10)/10};
+}
+export function makeContentIdeas({videos=[],stories=[]}, now=Date.now()) {
+  const eligible=videos.filter(v=>eligibleVideo(v,now));
+  const combined=[
+    ...eligible.map(v=>safeSource({...v,sourceType:'YouTube'})),
+    ...stories.filter(s=>withinHours(s.publishedAt,48,now))
+      .map(s=>safeSource({...s,sourceType:s.source||s.sourceType||'Official'}))
+  ].filter(s=>s.title&&s.url);
+  const grouped=new Map();
+  for(const s of combined) {
+    const topic=classifyOpportunity(s.title);
+    if(!grouped.has(topic.key))grouped.set(topic.key,{...topic,sources:[]});
+    const g=grouped.get(topic.key);
+    if(!g.sources.some(x=>x.id===s.id))g.sources.push(s);
+  }
+  const ideas=[...grouped.values()].map(g=>{
+    g.sources.sort((a,b)=>(b.growthPerHour||0)-(a.growthPerHour||0)||
+      (b.views||0)-(a.views||0)||b.publishedAt-a.publishedAt);
+    const evidence=opportunityScore(g.sources,now);
+    const source=g.sources[0],angles=creativeAngles(g);
+    const signal=[
+      evidence.peakVelocity>0?evidence.peakVelocity.toLocaleString('en-US')+' views/hour (source-reported measurement or estimate)':
+        evidence.peakViews?evidence.peakViews.toLocaleString('en-US')+' video views':null,
+      g.sources.length>1?g.sources.length+' linked sources':null,
+      g.sources.some(s=>s.official)?'official source present':null
+    ].filter(Boolean).join(' · ');
+    const plural=g.sources.length===1?'one source':g.sources.length+' sources';
+    return {
+      id:'opportunity:'+g.key,title:g.subject,subject:g.subject,category:g.category,world:g.world,
+      format:angles[0].type,priority:evidence.score>=65?'High':evidence.score>=40?'Rising':'Watch',
+      opportunityScore:evidence.score,scoreBreakdown:evidence.parts,
+      summary:signal||'Recent original source; additional evidence needed.',
+      proposedTitle:angles[0].title,angles,angle:angles[0].approach,
+      sourceUrl:source.url,sourceTitle:source.title,sourceType:source.sourceType,
+      publishedAt:Math.max(...g.sources.map(s=>s.publishedAt)),
+      evidence:g.sources.map(s=>s.id),sources:g.sources.slice(0,8),
+      sourceCount:g.sources.length,independentChannels:evidence.channels,
+      whyNow:'Recent '+g.category.toLowerCase()+' coverage: '+signal+'. Popularity is not verification.',
+      viewerPayoff:'A specific player question or test grounded in the linked sources.',
+      outline:['State the exact question and source claim','Verify dates and original reporting',
+        angles[0].approach,'Show opposing evidence or limitations','Give a clear conditional viewer takeaway'],
+      recordingPlan:['Review each linked original source','Verify claims before recording',
+        'Gather in-game footage or direct screenshots where possible','Cite sources and label uncertainty'],
+      coverage:{verifiedSources:g.sources.length,sourceLinks:g.sources.map(s=>s.url),
+        note:'Source links are collected, not independently fact-checked. '+plural+' available.'}
+    };
+  }).sort((a,b)=>b.opportunityScore-a.opportunityScore||b.publishedAt-a.publishedAt);
+  return ideas.slice(0,12);
 }
