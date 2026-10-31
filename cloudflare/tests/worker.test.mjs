@@ -69,3 +69,39 @@ test('unknown website paths do not expose an administrative API',async()=>{
  const response=await worker.fetch(req,{DB});
  assert.equal(response.status,404);
 });
+
+test('D1 catalog stores 30-hour Popular candidates without promoting them into HOT',async()=>{
+  const writes=[];
+  const DB={prepare(sql){return{bind(...args){return{sql,args}}}},async batch(rows){writes.push(...rows);return rows.map(()=>({success:true}))}};
+  const older={...video,id:'1JhKzviW1h8',publishedAt:T-30*H,views:17000,samples:[{capturedAt:T,views:17000}]};
+  const feed={generatedAt:T,videos:[video],catalog:[older]};
+  const out=await synchronize({DB},async()=>({ok:true,json:async()=>feed}),T);
+  assert.equal(out.videos,2);
+  assert.ok(writes.some(row=>row.sql.startsWith('INSERT INTO videos')&&row.args.some(x=>typeof x==='string'&&x.includes('1JhKzviW1h8'))));
+  const normalized=fromGithubVideo(older,T);
+  const ranking=buildFeed({videos:[normalized],now:T});
+  assert.equal(ranking.hot.long.length,0);
+  assert.equal(ranking.popular.long.length,1);
+});
+test('all newly added research and channel mutations reject anonymous requests',async()=>{
+  for(const [path,payload] of [
+    ['/api/research/status',{id:'video',status:'Published'}],
+    ['/api/channels',{id:'UCbLj9QP9FAaHs_647QckGtg'}],
+    ['/api/discovery/settings',{queries:['WoW Forever']}],
+    ['/api/hide-video',{id:'1GEmk7Fci2E',hidden:true}]
+  ]) {
+    const r=await worker.fetch(new Request('https://example.com'+path,{
+      method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)
+    }),{DB:{},ADMIN_TOKEN:'z'.repeat(48)});
+    assert.equal(r.status,401,path);
+  }
+});
+test('public discovery config is bounded and does not expose credentials',async()=>{
+  const DB={prepare(sql){return {bind(){return {all:async()=>({results:[]})}}}}};
+  const r=await worker.fetch(new Request('https://example.com/api/discovery/config'),{DB});
+  assert.equal(r.status,200);
+  const body=await r.json();
+  assert.ok(body.queries.includes('WoW Forever'));
+  assert.equal(body.channels.length,0);
+  assert.equal(JSON.stringify(body).includes('API_TOKEN'),false);
+});
