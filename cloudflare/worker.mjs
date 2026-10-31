@@ -1,4 +1,5 @@
 import { buildFeed, fromGithubVideo, normalizeIncomingStory, safeUrl } from './transform.mjs';
+import { synchronizeOfficial, officialSourceStatus } from './official.mjs';
 
 const GITHUB_HOT='https://raw.githubusercontent.com/GorthaxWarcryer/Radar/main/docs/hot/latest.json';
 const headers={'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'};
@@ -105,7 +106,10 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
     try {const d=await sourceHot(fetcher);videos=d.videos.map(x=>fromGithubVideo(x,now)).filter(Boolean);metaObj.githubLastGeneratedAt=d.generatedAt;}
     catch {/* D1-only fallback */}
   }
-  return buildFeed({videos,reddit:parsePayload(redditRows),official:parsePayload(officialRows),
+  const official=parsePayload(officialRows);
+  const recentOfficial=official.filter(p=>Number(p.publishedAt)<=now&&now-Number(p.publishedAt)<48*3600000);
+  return buildFeed({videos,reddit:parsePayload(redditRows),official,
+    officialSources:officialSourceStatus(scans,recentOfficial),
     saved:savedRows,scans,privateSaved:isAdmin,
     now,githubAt:Number(metaObj.githubLastGeneratedAt)||null});
 }
@@ -205,7 +209,8 @@ export default {
       }
       if(req.method==='POST'&&path==='/api/scan'){
         const denied=await adminRequired(req,env);if(denied)return denied;
-        return reply(await synchronize(env,fetch,now),200);
+        const official=await synchronizeOfficial(env,fetch,now);
+        return reply({...await synchronize(env,fetch,now),official},200);
       }
       if(req.method==='POST'&&path==='/api/save') {
         const denied=await adminRequired(req,env);if(denied)return denied;
@@ -236,9 +241,13 @@ export default {
     }
   },
   async scheduled(event,env) {
+    const now=Date.now();
+    // Official Blizzard news continues through the night; YouTube remains on the agreed daytime schedule.
+    try {console.log('Official Blizzard source sync:',JSON.stringify(await synchronizeOfficial(env,fetch,now)));}
+    catch(e) {console.error('Official source sync failure:',fail(e));}
     const hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Kyiv',hour:'2-digit',hourCycle:'h23'}).format(new Date(event.scheduledTime)));
     if(hour<5||hour>20)return;
-    try{const result=await synchronize(env,fetch,Date.now());console.log('Cloudflare scheduled sync:',JSON.stringify(result));}
+    try{const result=await synchronize(env,fetch,now);console.log('Cloudflare scheduled sync:',JSON.stringify(result));}
     catch(e){console.error('Cloudflare scheduled sync failure:',fail(e));throw e;}
   }
 };
