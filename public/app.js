@@ -32,7 +32,7 @@ function thumbnail(v) {
 function renderVideo(v, data) {
   const isHot=state.section==='hot';
   const metric = isHot ? `${fmt(v.growth?.perHour)}<small>views / hr</small>` : `${fmt(v.views)}<small>total views</small>`;
-  const content = `<div class="video-copy">${titleLink(v.title,v.url,'video-title')}<div class="video-channel">${esc(v.channelName||'YouTube creator')}</div><div class="video-bottom"><span class="video-number">${metric}</span>${saveButton(v,'video',data)}</div><div class="video-time">${age(v.publishedAt)} ${isHot&&v.growth?.kind==='estimated-since-upload'?' · Estimated since upload':isHot&&v.growth?.sampleHours?` · Measured over ${v.growth.sampleHours}h`:''}</div></div>`;
+  const content = `<div class="video-copy">${titleLink(v.title,v.url,'video-title')}<div class="video-channel-row"><span class="video-channel">${esc(v.channelName||'YouTube creator')}</span>${v.officialSource?'<span class="source-chip official video-official-badge">Official Source</span>':''}</div><div class="video-bottom"><span class="video-number">${metric}</span>${saveButton(v,'video',data)}</div><div class="video-time">${age(v.publishedAt)} ${isHot&&v.growth?.kind==='estimated-since-upload'?' · Estimated since upload':isHot&&v.growth?.sampleHours?` · Measured over ${v.growth.sampleHours}h`:''}</div></div>`;
   return state.layout==='preview' ? `<article class="video-card">${thumbnail(v)}${content}</article>` : `<article class="video-item">${thumbnail(v)}${content}</article>`;
 }
 function videoBoard(title,sub,items,data) {
@@ -92,7 +92,7 @@ function watchlistSection(data) {
 }
 function channelsSection(data) {
   const ch=data.channels||[], status=data.sources||{}, official=data.officialSources||[];
-  const youtube=`<section class="panel"><div class="board-title"><h2>Connected YouTube sources</h2><span class="status-pill ${status.youtube==='error'?'error':status.youtube==='not_configured'?'off':''}">${esc(status.youtube||'Not configured')}</span></div>${ch.length?ch.map(c=>`<div class="channel-card"><div class="channel-avatar">▶</div><div class="channel-detail"><h3>${esc(c.title)}</h3><p>${esc(c.id)} · ${esc(c.handle||'')}</p></div><span class="status-pill">Tracked</span></div>`).join(''):empty('No channel configuration','YouTube is monitored by the independent GitHub scanner. Channels are configured through GitHub Actions secrets, not this browser.')}</section>`;
+  const youtube=`<section class="panel"><div class="board-title"><h2>Connected YouTube sources</h2><span class="status-pill ${status.youtube==='error'?'error':status.youtube==='not_configured'?'off':''}">${esc(status.youtube||'Not configured')}</span></div>${ch.length?ch.map(c=>`<div class="channel-card"><div class="channel-avatar ${c.official?'official-avatar':''}">▶</div><div class="channel-detail"><h3>${esc(c.title)}${c.official?' <span class="source-chip official video-official-badge">Official Source</span>':''}</h3><p>${esc(c.handle||c.id)} · ${esc(c.id)}</p></div><span class="status-pill">Tracked</span></div>`).join(''):empty('No channel configuration','YouTube is monitored by the independent GitHub scanner. Channels are configured through GitHub Actions secrets, not this browser.')}</section>`;
   const officialRows=official.map(src=>{
     const linked=safeURL(src.url);
     const label=src.status==='complete'?'TRACKING':src.status==='error'?'ERROR':'WAITING FOR FIRST SCAN';
