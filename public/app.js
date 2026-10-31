@@ -2,21 +2,24 @@
 const root = document.getElementById('main-view');
 const $ = s => document.querySelector(s);
 const preferences = { theme: 'azeroth-radar-theme' };
-const state = { section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new', searchTerm:'', viewWindow:'48', sortVideos:'views', researchStatus:'all',
+const state = { section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new', searchTerm:'', viewWindow:'48', hotSort:'velocity', popularSort:'views', researchStatus:'all',
   theme: 'default', demo: location.protocol === 'file:' || document.documentElement.dataset.preview === 'true', feed: null, expanded: new Set(), adminToken: '' };
 function esc(value = '') { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
 function safeURL(x) { try { const url = new URL(String(x || '')); return url.protocol === 'https:' ? url.href : ''; } catch { return ''; } }
 function fmt(n) { return Number.isFinite(Number(n)) ? Number(n).toLocaleString('en-US') : '—'; }
-function age(t) { const dt = Date.now() - Number(t); if (!Number.isFinite(dt) || dt < 0) return 'Recently'; const m = Math.floor(dt/60000); if(m<60) return `${Math.max(1,m)}m ago`; const h = Math.floor(m/60); return h<48 ? `${h}h ago` : `${Math.floor(h/24)}d ago`; }
+function age(t) { const dt = Date.now() - Number(t); if (!Number.isFinite(dt) || dt < 0) return 'Recently'; const m = Math.floor(dt/60000); if(m<60) return `${Math.max(1,m)}m ago`; const h = Math.floor(m/60); return h<24 ? `${h}h ago` : `${Math.floor(h/24)}d ago`; }
 function storyAge(t) { const dt = Date.now() - Number(t); if (Number.isFinite(dt) && dt >= 86400000) { const days=Math.floor(dt/86400000); return `${days} day${days===1?'':'s'} ago`; } return age(t); }
 function time(t) { return Number(t) ? new Date(Number(t)).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Not yet'; }
 function titleLink(t,url,cl) { const u=safeURL(url); return u ? `<a class="${cl}" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t)}</a>` : `<span class="${cl}">${esc(t)}</span>`; }
 function toast(message) { const t=$('#toast'); t.textContent=message; t.classList.add('visible'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>t.classList.remove('visible'),3200); }
-function btnSegment(options, selected, key) { return `<div class="segment" role="group">${options.map(o=>`<button data-${key}="${o.id}" class="${selected===o.id?'active':''}" aria-pressed="${selected===o.id}">${esc(o.text)}</button>`).join('')}</div>`; }
+function btnSegment(options, selected, key) {
+  const labels={kind:'Video format',layout:'Display layout',window:'Publication window','video-sort':'Sort videos','story-type':'Story sources','story-sort':'Sort stories','research-filter':'Research status'};
+  return `<div class="segment" role="group" aria-label="${esc(labels[key]||'View options')}">${options.map(o=>`<button type="button" data-${key}="${o.id}" class="${selected===o.id?'active':''}" aria-pressed="${selected===o.id}">${esc(o.text)}</button>`).join('')}</div>`;
+}
 function sectionTitle(kicker,title,description,pulse = '') { return `<div class="section-header"><div><div class="hero-kicker">${esc(kicker)}</div><h1>${title}</h1><p class="section-description">${esc(description)}</p></div>${pulse?`<div class="pulse">${pulse}</div>`:''}</div>`; }
 function statCards(data) {
   const x = data.summary || {};
-  const values = [ ['ELIGIBLE VIDEOS',fmt(x.eligibleVideos||0)], ['FRESH STORIES',fmt(x.freshStories||0)], ['CONTENT IDEAS',fmt(x.ideas||0)], ['LAST SCAN',x.lastScan ? age(x.lastScan) : 'Not yet'] ];
+  const values = [ ['QUALIFYING VIDEOS',fmt(x.eligibleVideos||0)], ['FRESH STORIES',fmt(x.freshStories||0)], ['RESEARCH ANGLES',fmt(x.ideas||0)], ['LAST SOURCE UPDATE',x.lastScan ? age(x.lastScan) : 'Not yet'] ];
   return `<div class="stats">${values.map(([label,value])=>`<div class="stat"><span class="stat-label">${label}</span><strong class="stat-value">${esc(value)}</strong></div>`).join('')}</div>`;
 }
 function empty(title,desc,tryDemo=true) { return `<div class="empty"><div class="empty-icon">◉</div><h3>${esc(title)}</h3><p>${esc(desc)}</p>${tryDemo && !state.demo?'<button class="empty-action" data-show-demo="1">Preview the layout with sample data</button>':''}</div>`; }
@@ -25,33 +28,35 @@ function saveButton(v, kind, data) {
   const saved = (data.saved || []).some(s=>String(s.id)===String(v.id));
   return `<button class="bookmark ${saved?'saved':''}" data-save="${esc(v.id)}" data-kind="${esc(kind)}" data-title="${esc(v.title)}" data-url="${esc(v.url||'')}" title="${saved?'Saved':'Save'}" aria-label="Save ${esc(v.title)}">${saved?'★':'☆'}</button>`;
 }
-function thumbnail(v) {
+function thumbnail(v,priority=false) {
   const u=safeURL(v.thumbnail);
-  return `<div class="thumb">${u?`<img src="${esc(u)}" loading="lazy" alt="Video thumbnail" referrerpolicy="no-referrer" />`:'<span class="thumb-glyph">WOW</span>'}</div>`;
+  return `<div class="thumb">${u?`<img src="${esc(u)}" width="320" height="180" loading="${priority?'eager':'lazy'}" ${priority?'fetchpriority="high"':''} decoding="async" alt="Thumbnail for ${esc(v.title||'YouTube video')}" referrerpolicy="no-referrer" />`:'<span class="thumb-glyph">WOW</span>'}</div>`;
 }
-function renderVideo(v, data) {
+function renderVideo(v, data, position=0) {
   const isHot=state.section==='hot';
   const metric = isHot ? `${fmt(v.growth?.perHour)}<small>views / hr</small>` : `${fmt(v.views)}<small>total views</small>`;
-  const content = `<div class="video-copy">${titleLink(v.title,v.url,'video-title')}<div class="video-channel-row"><span class="video-channel">${esc(v.channelName||'YouTube creator')}</span>${v.officialSource?'<span class="source-chip official video-official-badge">Official Source</span>':''}</div><div class="video-bottom"><span class="video-number">${metric}</span>${saveButton(v,'video',data)}${data.canManage?`<button class="small-action" data-hide-video="${esc(v.id)}" title="Hide this video from Radar">Hide</button>`:''}</div><div class="video-time">${age(v.publishedAt)} ${isHot&&v.growth?.kind==='estimated-since-upload'?' · Estimated since upload':isHot&&v.growth?.sampleHours?` · Measured over ${v.growth.sampleHours}h`:''}</div></div>`;
-  return state.layout==='preview' ? `<article class="video-card">${thumbnail(v)}${content}</article>` : `<article class="video-item">${thumbnail(v)}${content}</article>`;
+  const growthDetails=isHot?(v.growth?.kind==='estimated-since-upload'?'Estimated average since publication':'Based on recorded YouTube view-count snapshots'):'Lifetime video views, not growth';
+  const content = `<div class="video-copy">${titleLink(v.title,v.url,'video-title')}<div class="video-channel-row"><span class="video-channel">${esc(v.channelName||'YouTube creator')}</span>${v.officialSource?'<span class="source-chip official video-official-badge">Official Source</span>':''}</div><div class="video-bottom"><span class="video-number" title="${esc(growthDetails)}">${metric}</span>${saveButton(v,'video',data)}${data.canManage?`<button class="small-action" data-hide-video="${esc(v.id)}" title="Hide this video from Radar">Hide</button>`:''}</div><div class="video-time">${age(v.publishedAt)} ${isHot&&v.growth?.kind==='estimated-since-upload'?' · Estimated since upload':isHot&&v.growth?.sampleHours?` · Measured over ${v.growth.sampleHours}h`:''}</div></div>`;
+  return state.layout==='preview' ? `<article class="video-card">${thumbnail(v,position===0)}${content}</article>` : `<article class="video-item">${thumbnail(v,position===0)}${content}</article>`;
 }
 function videoBoard(title,sub,items,data) {
-  return `<section class="panel"><div class="board-title"><h2>${esc(title)}<small>${esc(sub)}</small></h2><span class="count">${items.length}</span></div>${items.length?`<div class="${state.layout==='preview'?'card-grid':'video-list'}" style="${state.layout==='preview'?'padding:12px':''}">${items.map(v=>renderVideo(v,data)).join('')}</div>`:empty(state.section==='hot'?'No HOT videos yet':'No qualifying videos yet',state.section==='hot'?'New uploads enter HOT using average views/hour since publication; later real observations update that rate.':'Connect YouTube sources or import a verified feed. Qualifying videos need at least 5,000 views.')}</section>`;
+  return `<section class="panel"><div class="board-title"><h2>${esc(title)}<small>${esc(sub)}</small></h2><span class="count">${items.length}</span></div>${items.length?`<div class="${state.layout==='preview'?'card-grid':'video-list'}" style="${state.layout==='preview'?'padding:12px':''}">${items.map((v,i)=>renderVideo(v,data,i)).join('')}</div>`:empty(state.section==='hot'?'No HOT videos yet':'No qualifying videos yet',state.section==='hot'?'New uploads enter HOT using average views/hour since publication; later real observations update that rate.':'Connect YouTube sources or import a verified feed. Qualifying videos need at least 5,000 views.')}</section>`;
 }
 function videoSection(data,mode) {
   const isHot=mode==='hot'; const source=data[mode]?.[state.kind]||[];
+  const sortMode=isHot?state.hotSort:state.popularSort;
   let pool=source.filter(v=>!state.searchTerm||(String(v.title||'')+' '+String(v.channelName||v.channel||'')).toLowerCase().includes(state.searchTerm.toLowerCase()));
   if(!isHot&&state.viewWindow==='24')pool=pool.filter(v=>Date.now()-Number(v.publishedAt)<24*3600000);
-  if(state.sortVideos==='newest')pool=[...pool].sort((a,b)=>b.publishedAt-a.publishedAt);
-  else if(state.sortVideos==='velocity')pool=[...pool].sort((a,b)=>(b.growth?.perHour||0)-(a.growth?.perHour||0));
-  else if(!isHot)pool=[...pool].sort((a,b)=>b.views-a.views);
+  if(sortMode==='newest')pool=[...pool].sort((a,b)=>b.publishedAt-a.publishedAt);
+  else if(sortMode==='velocity')pool=[...pool].sort((a,b)=>(b.growth?.perHour||0)-(a.growth?.perHour||0));
+  else pool=[...pool].sort((a,b)=>b.views-a.views);
   const fresh=pool.filter(v=>Date.now()-Number(v.publishedAt)<24*3600000);
   const tracked=pool.filter(v=>Date.now()-Number(v.publishedAt)>=24*3600000);
-  const desc=isHot?'New videos start with estimated views per hour since upload; later scans replace estimates with measured growth.':'Most-watched qualifying videos ranked by lifetime TOTAL views, not views gained. Minimum 5,000 views; archived livestreams are excluded.';
+  const desc=isHot?'Ranked by video momentum: initial estimates turn into measured growth as new YouTube snapshots arrive.':'Most-viewed recent videos ranked by total views. Only uploads with at least 5,000 views; livestream archives excluded.';
   return sectionTitle('YouTube Intelligence',isHot?'<span>HOT</span> RIGHT NOW':'WHAT’S <span>POPULAR</span>',desc,
     '<i class="status-dot"></i> LAST 48 HOURS')+
     statCards(data)+`<div class="toolbar"><div class="toolbar-left">${btnSegment([{id:'long',text:'Long Form'},{id:'shorts',text:'Shorts'}],state.kind,'kind')}<span class="toolbar-note">${pool.length} qualifying videos</span></div><div class="toolbar-right">${btnSegment([{id:'list',text:'☷ List'},{id:'preview',text:'▦ Preview'}],state.layout,'layout')}</div></div>`+
-    `<div class="toolbar" style="flex-wrap:wrap"><div class="toolbar-left"><input id="video-filter" aria-label="Search video titles and channels" placeholder="Search videos or channels" value="${esc(state.searchTerm)}" style="max-width:250px;background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px"><button class="subtle-btn" data-apply-search="1">Search</button><button class="subtle-btn" data-clear-search="1">Clear</button></div><div class="toolbar-right">${!isHot?btnSegment([{id:'24',text:'24h'},{id:'48',text:'48h'}],state.viewWindow,'window'):''}${btnSegment([{id:'views',text:'Views'},{id:'newest',text:'Newest'},{id:'velocity',text:'Growth'}],state.sortVideos,'video-sort')}</div></div>`+
+    `<div class="toolbar discovery-filters"><div class="toolbar-left filter-search"><label class="filter-search-label" for="video-filter">Find videos</label><div class="filter-search-control"><span aria-hidden="true">⌕</span><input id="video-filter" type="search" aria-label="Search video titles and channels" placeholder="Search titles or channels" autocomplete="off" value="${esc(state.searchTerm)}" /><kbd>/</kbd></div><button class="subtle-btn filter-apply" data-apply-search="1">Apply</button>${state.searchTerm?'<button class="subtle-btn filter-clear" data-clear-search="1">Clear</button>':''}</div><div class="toolbar-right">${!isHot?btnSegment([{id:'24',text:'24h'},{id:'48',text:'48h'}],state.viewWindow,'window'):''}${btnSegment([{id:'velocity',text:'Growth'},{id:'views',text:'Views'},{id:'newest',text:'Newest'}],sortMode,'video-sort')}</div></div><p class="result-summary" role="status">Showing <strong>${pool.length}</strong> ${state.kind==='shorts'?'Shorts':'long-form videos'}${state.searchTerm?` matching “${esc(state.searchTerm)}”`:''} · ${isHot?'Last 24 hours':state.viewWindow+'h window'}</p>`+
         (isHot?'<div class="info-note"><strong>HOT growth:</strong> Initial average since publication is labeled estimated; later snapshots produce measured views per hour. Last observation time matters.</div>':'')+
     `<div class="section-split">${videoBoard('New uploads','Published within the last 24 hours',fresh,data)}${(!isHot&&state.viewWindow==='48'?videoBoard('Tracked · 48 Hours','Published 24–48 hours ago',tracked,data):'')}</div>`;
 }
@@ -242,7 +247,7 @@ document.addEventListener('click',async e=>{
     if(button.dataset.section) return moveSection(button.dataset.section);
     if(button.dataset.kind) {state.kind=button.dataset.kind;return render();}
     if(button.dataset.window){state.viewWindow=button.dataset.window;return render();}
-    if(button.dataset.videoSort){state.sortVideos=button.dataset.videoSort;return render();}
+    if(button.dataset.videoSort){if(state.section==='hot')state.hotSort=button.dataset.videoSort;else state.popularSort=button.dataset.videoSort;return render();}
     if(button.dataset.applySearch){state.searchTerm=document.getElementById('video-filter')?.value.trim().slice(0,140)||'';return render();}
     if(button.dataset.clearSearch){state.searchTerm='';return render();}
     if(button.dataset.researchFilter){state.researchStatus=button.dataset.researchFilter;return render();}
