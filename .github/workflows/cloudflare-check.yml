@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - 'cloudflare/**'
+      - 'public/**'
+      - 'tests/ux-dashboard.test.mjs'
       - 'wrangler.jsonc'
       - '.github/workflows/cloudflare-check.yml'
   workflow_dispatch:
@@ -24,7 +26,7 @@ jobs:
           node --check cloudflare/transform.mjs
           node -e "const fs=require('node:fs'); const x=JSON.parse(fs.readFileSync('wrangler.jsonc','utf8')); if (!x.d1_databases || x.assets.directory!=='./public') throw Error('Invalid Cloudflare config')"
       - name: Test Cloudflare API, saved-data privacy and HOT growth
-        run: node --test cloudflare/tests/*.test.mjs site-integration/tests/hot-hourly.test.mjs tests/reddit-directory.test.mjs
+        run: node --test cloudflare/tests/*.test.mjs site-integration/tests/hot-hourly.test.mjs tests/reddit-directory.test.mjs tests/ux-dashboard.test.mjs
       - name: Probe live WoW Forever blue-post RSS (diagnostic only)
         continue-on-error: true
         run: |
