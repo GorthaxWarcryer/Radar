@@ -16,19 +16,23 @@ Replaces the old generic title template with a no-cost, evidence-linked creative
 
 `Save opportunity` creates a record in the pre-existing Cloudflare D1 saved table. Owners can assign New, Seen, Investigating, Planned, Published or Dismissed using the existing research-status table. Notes and CSV are available in Watchlist. Dismissal first saves the topic before updating status so it stays dismissed in future scans. No new database or migration required.
 
-## Optional on-demand paid AI
+## Fully automatic Cloudflare Workers AI (no ChatGPT credits)
 
-The model path is DISABLED by default and is never invoked by scanner jobs or normal browsing. To enable deliberately:
+The site uses Cloudflare's built-in AI binding, not a ChatGPT personal conversation, paid OpenAI API, Gemini account, Codex or Work credits.
 
-1. Configure the existing ADMIN_TOKEN in the Worker.
-2. In GitHub Actions repository secrets, store an OpenAI API key as RADAR_OPENAI_API_KEY. Do not put it in the frontend or a commit.
-3. In GitHub Actions repository variables, set RADAR_AI_IDEAS_ENABLED to the literal string true. Optionally set RADAR_OPENAI_MODEL (default: gpt-4.1-mini).
-4. The Cloudflare deploy workflow will securely install OPENAI_API_KEY, AI_IDEAS_ENABLED and optional OPENAI_MODEL as Worker secrets. The feature stays disabled without BOTH an explicit opt-in and a key.
-5. After deploying, the owner unlocks the dashboard and explicitly clicks Develop with AI.
+- Model: @cf/meta/llama-3.2-3b-instruct, a free-tier-compatible small text model.
+- The model runs only from the scheduled Cloudflare Worker event, after existing daytime YouTube source syncing. Visitors and dashboard refreshes never trigger inference.
+- On each hourly scheduled run, up to two new source-linked opportunities receive automatic creative briefs.
+- Maximum six AI inference attempts per UTC day, enforced by atomic, durable D1 counters (including failed requests). This per-application limit avoids burst traffic, although it cannot account for other Cloudflare projects using the same account.
+- D1 caches AI output by topic and source signature for up to 48h, so identical topics don't request AI again on subsequent scans.
+- Each brief includes three titles, thumbnail text, creative angles and a verification note. It is shown inline on the Content Opportunities card.
+- The existing code-generated three angles always remain available when AI is disabled, the model errors, returns invalid data, the daily cap is exhausted or no new topic requires generation.
+- The prior paid /api/content/develop endpoint and paid OpenAI deployment secrets have been removed.
+- Set Worker secret FREE_AI_DISABLED to string true to disable automatic AI immediately if needed. The AI binding can remain configured without generating requests.
 
-The authenticated /api/content/develop endpoint validates a current opportunity, sends a bounded set of source headlines/URLs (not invented transcripts) to a Chat Completions model, caps completion tokens, and caches each result in existing D1 settings for 24h. Each result includes 3 titles, 2 thumbnail texts, 3 optional angles and a verification note. Cached results cost no new model call. Usage is charged by the API provider for uncached requests, not by ordinary site refreshes.
+Cloudflare documents 10,000 daily no-cost neurons on its Workers Free plan; inference fails when the free quota is exceeded. Workers Paid can charge for account usage above that allocation. This code controls only Azeroth Radar's own inferences and cannot guarantee zero Cloudflare bills if another project consumes quota or the account is on a paid plan. To strictly avoid any Cloudflare AI overage charges, retain the Workers Free plan (or enforce a provider-side spend limit where available), and review the Cloudflare AI usage dashboard.
 
-To disable, set AI_IDEAS_ENABLED to false. The three free code-generated angles remain available.
+The prompt only contains bounded metadata and original source headlines, not scraped transcripts. Creative suggestions are research ideas, not verified facts.
 
 ## Trust and privacy
 
