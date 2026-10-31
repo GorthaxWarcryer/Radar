@@ -28,31 +28,44 @@ jobs:
         run: |
           node --check cloudflare/worker.mjs
           node --test cloudflare/tests/*.test.mjs
-      - name: Verify Cloudflare credentials
+      - name: Resolve Cloudflare account automatically from private API token
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT_ID_CONFIGURED: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
+        shell: python {0}
         run: |
-          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo 'Missing CLOUDFLARE_ACCOUNT_ID GitHub Actions secret'; exit 1; }
-          test -n "$CLOUDFLARE_API_TOKEN" || { echo 'Missing CLOUDFLARE_API_TOKEN GitHub Actions secret'; exit 1; }
+          import json,os,urllib.request,re
+          token=os.environ.get('CLOUDFLARE_API_TOKEN','')
+          if not token: raise SystemExit('Missing CLOUDFLARE_API_TOKEN GitHub Actions secret')
+          account=os.environ.get('ACCOUNT_ID_CONFIGURED','').strip()
+          if not account:
+            req=urllib.request.Request('https://api.cloudflare.com/client/v4/accounts?per_page=50',headers={
+              'Authorization':'Bearer '+token,'Accept':'application/json','User-Agent':'AzerothRadar-Deploy/1.0'})
+            with urllib.request.urlopen(req,timeout=25) as resp:
+              result=json.loads(resp.read().decode())
+            accounts=result.get('result',[])
+            if not result.get('success') or len(accounts)!=1:
+              raise SystemExit('Cannot auto-select Cloudflare account; set CLOUDFLARE_ACCOUNT_ID in GitHub Actions Secrets')
+            account=accounts[0].get('id','')
+          if not re.fullmatch(r'[0-9a-fA-F]{32}',account):
+            raise SystemExit('Cloudflare Account ID format is invalid')
+          print('::add-mask::'+account)
+          with open(os.environ['GITHUB_ENV'],'a') as f: f.write('CLOUDFLARE_ACCOUNT_ID='+account+'\n')
+          print('Cloudflare account identified; continuing to D1 setup and deployment.')
       - name: Find or create D1 database and bind its real Cloudflare ID
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: node cloudflare/bootstrap-d1.mjs
       - name: Initialize or upgrade remote D1 schema before publishing
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: npx --yes wrangler@4 d1 execute azeroth-radar-db --remote --file=./cloudflare/schema.sql --config wrangler.jsonc --yes
       - name: Deploy Worker and static website
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: npx --yes wrangler@4 deploy --config wrangler.jsonc
       - name: Verify deployed Worker D1 and public feed
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           npx --yes wrangler@4 d1 execute azeroth-radar-db --remote --command='SELECT COUNT(*) AS count FROM videos;' --config wrangler.jsonc --yes
