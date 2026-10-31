@@ -95,13 +95,16 @@ async function readRows(db,sql,params=[]) {
 }
 async function state(env,req,now=Date.now(),fetcher=fetch) {
   const isAdmin=await verifyAdmin(req,env);
-  const [videoRows,redditRows,officialRows,savedRows,scans,meta]=await Promise.all([
+  const [videoRows,redditRows,officialRows,savedRows,scans,meta,channels,settings,hiddenRows]=await Promise.all([
     readRows(env.DB,'SELECT payload FROM videos WHERE last_seen>=? ORDER BY last_seen DESC LIMIT 1500',[now-7*86400000]),
     readRows(env.DB,'SELECT payload FROM reddit WHERE last_seen>=? ORDER BY last_seen DESC LIMIT 400',[now-2*3600000]),
     readRows(env.DB,'SELECT payload FROM official ORDER BY last_seen DESC LIMIT 150'),
-    isAdmin?readRows(env.DB,'SELECT id,kind,title,url,note,saved_at AS savedAt FROM saved ORDER BY saved_at DESC LIMIT 1000'):[],
+    isAdmin?readRows(env.DB,"SELECT s.id,s.kind,s.title,s.url,s.note,s.saved_at AS savedAt, COALESCE(r.status,'New') AS status FROM saved s LEFT JOIN research r ON r.id=s.id ORDER BY s.saved_at DESC LIMIT 1000"):[],
     readRows(env.DB,'SELECT at,provider,status,count,error FROM scans ORDER BY id DESC LIMIT 50'),
-    readRows(env.DB,"SELECT key,value FROM meta WHERE key IN ('githubLastGeneratedAt','lastCloudflareSyncAt')")
+    readRows(env.DB,"SELECT key,value FROM meta WHERE key IN ('githubLastGeneratedAt','lastCloudflareSyncAt')"),
+    readRows(env.DB,'SELECT id,title,official,blocked,updated_at AS updatedAt FROM managed_channels ORDER BY updated_at DESC LIMIT 100'),
+    readRows(env.DB,'SELECT key,value,updated_at AS updatedAt FROM discovery_settings LIMIT 30'),
+    readRows(env.DB,'SELECT id FROM hidden_videos LIMIT 1000')
   ]);
   const metaObj=Object.fromEntries(meta.map(x=>[x.key,x.value]));
   let videos=parsePayload(videoRows);
@@ -121,10 +124,23 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
     error:blueScan?.status==='error'?String(blueScan.error||'Tracker unavailable'):'',
     posts48h:blueEntries.length,
     latestPostAt:blueEntries.length?Math.max(...blueEntries.map(p=>p.publishedAt)):null};
-  return buildFeed({videos,reddit:parsePayload(redditRows),official,
+  const hidden=new Set(hiddenRows.map(x=>x.id));
+  const blocked=new Set(channels.filter(x=>x.blocked).map(x=>x.id));
+  const visibleVideos=videos.filter(v=>!hidden.has(v.id)&&(!v.channelId||!blocked.has(v.channelId)));
+  const config=Object.fromEntries(settings.map(x=>{try{return [x.key,JSON.parse(x.value)];}catch{return [x.key,x.value];}}));
+  const base=buildFeed({videos:visibleVideos,reddit:parsePayload(redditRows),official,
     officialSources:[...officialSourceStatus(scans,recentOfficial),blueStatus],
     saved:savedRows,scans,privateSaved:isAdmin,
     now,githubAt:Number(metaObj.githubLastGeneratedAt)||null});
+  return {...base,channels:channels.filter(c=>!c.blocked).map(c=>({
+      id:c.id,title:c.title,official:!!c.official,handle:''})),
+    discoverySettings:{queries:config.queries||['WoW Forever','World of Warcraft Forever','WoW Classic'],
+      englishOnly:true,excludeRussian:true,channelCount:channels.filter(c=>!c.blocked).length},
+    researchStatuses:['New','Seen','Investigating','Planned','Published','Dismissed'],
+    canManage:isAdmin,
+    diagnostics:{lastSiteSyncAt:Number(metaObj.lastCloudflareSyncAt)||null,
+      lastGithubAt:Number(metaObj.githubLastGeneratedAt)||null,
+      sourceStatuses:base.sources,scanCount:scans.length,hiddenVideos:hidden.size}};
 }
 async function adminRequired(req,env) {
   return await verifyAdmin(req,env)?null:error(env.ADMIN_TOKEN?'Administrator authorization required':'Administrator secret not configured',env.ADMIN_TOKEN?401:503);
