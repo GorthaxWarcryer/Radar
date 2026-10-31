@@ -168,9 +168,15 @@ async function state(env,req,now=Date.now(),fetcher=fetch) {
   const daily=aiRows.find(r=>r.id==='daily:'+new Date(now).toISOString().slice(0,10));
   let aiDigest=null;
   if(daily)try{aiDigest=JSON.parse(daily.payload);}catch{}
-  return {...base,editorialDigest:{...base.editorialDigest,aiDigest},
+  const trendsById=new Map(ideas.map(x=>[x.id,x.trend]));
+  const digestTop=base.editorialDigest.top.map(x=>({
+    ...x,trend:trendsById.get(x.id)?.movement||x.trend
+  }));
+  return {...base,editorialDigest:{...base.editorialDigest,top:digestTop,aiDigest},
     contentCreation:{items:ideas,autoAIEnabled:autoAIEnabled(env),
     aiDailyCap:MAX_AI_PER_DAY,aiUsedToday:Number(aiUsage[0]?.used||0),
+    aiCachedBriefs:aiRows.filter(r=>r.id.startsWith('opportunity:')).length,
+    aiLastGeneratedAt:aiRows.reduce((m,r)=>Math.max(m,Number(r.generated_at)||0),0)||null,
     aiAvailable:false},channels:[...builtin,...managed],
     discoverySettings:{queries:config.queries||['WoW Forever','World of Warcraft Forever','WoW Classic'],
       englishOnly:true,excludeRussian:true,channelCount:channels.filter(c=>!c.blocked).length},
