@@ -31,3 +31,15 @@ CREATE TABLE IF NOT EXISTS hidden_videos (
  id TEXT PRIMARY KEY,
  updated_at INTEGER NOT NULL
 );
+
+-- Capped automatic free-tier AI research briefs, separate from owner-private notes.
+CREATE TABLE IF NOT EXISTS ai_briefs (
+ id TEXT PRIMARY KEY,
+ signature TEXT NOT NULL,
+ payload TEXT NOT NULL,
+ generated_at INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS ai_daily_usage (
+ day TEXT PRIMARY KEY,
+ used INTEGER NOT NULL CHECK (used>=0 AND used<=6)
+);

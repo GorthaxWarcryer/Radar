@@ -133,7 +133,7 @@ function ideaCard(item,i,data) {
   const status=saved?.status||'New';
   const sources=(item.sources||[]).slice(0,8);
   const angles=item.angles?.length?item.angles:[{type:item.format||'Analysis',title:item.proposedTitle||item.title,approach:item.angle||''}];
-  const brief=state.aiBriefs[item.id];
+  const brief=item.autoBrief||null;
   const score=Number.isFinite(item.opportunityScore)?item.opportunityScore:null;
   const sourceList=sources.map(s=>`<li><span class="source-kind">${esc(s.sourceType)}</span>
     ${titleLink(s.title,s.url,'idea-source-title')}
@@ -150,7 +150,7 @@ function ideaCard(item,i,data) {
     <div class="opportunity-metadata"><span>${age(item.publishedAt)}</span><span>${fmt(item.sourceCount||sources.length||1)} linked sources</span>
     ${saved?`<span class="status-pill">${esc(status)}</span>`:''}</div>
     <div class="opportunity-angles"><span class="eyebrow">DISTINCT CREATOR ANGLES</span>${angleList}</div>
-    ${brief?`<div class="ai-result"><strong>Optional AI creative brief</strong><p>Generated concepts—not verified gameplay claims.</p>
+    ${brief?`<div class="ai-result"><strong>Automatically generated · Cloudflare AI</strong><p>Cached creative concepts based on source headlines—not verified gameplay claims.</p>
       <span class="eyebrow">TITLES</span><ol>${(brief.titles||[]).map(t=>`<li>${esc(t)}</li>`).join('')}</ol>
       <span class="eyebrow">THUMBNAIL TEXT</span><ul>${(brief.thumbnails||[]).map(t=>`<li>${esc(t)}</li>`).join('')}</ul><p>${esc(brief.verification)}</p></div>`:''}
     <div class="idea-action-row">
@@ -159,7 +159,7 @@ function ideaCard(item,i,data) {
         <button class="small-action" data-idea-status-save="${esc(item.id)}">Update</button>`:
         `<button class="small-action idea-primary" data-idea-save="${esc(item.id)}">Save opportunity</button>`}
       ${status!=='Dismissed'?`<button class="small-action" data-idea-dismiss="${esc(item.id)}">Dismiss</button>`:''}
-      ${data.contentCreation?.aiAvailable?`<button class="small-action" data-idea-develop="${esc(item.id)}">✦ Develop with AI</button>`:''}
+
     </div>
     <div class="expand"><button data-expand="${esc(item.id)}">${expanded?'− Hide evidence':'+ Evidence, scoring & recording plan'}</button>
       ${safeURL(item.sourceUrl)?`<a class="small-link" href="${esc(safeURL(item.sourceUrl))}" target="_blank" rel="noopener noreferrer">PRIMARY SOURCE ↗</a>`:''}</div>
@@ -186,7 +186,7 @@ function ideasSection(data) {
     `<div class="opportunity-toolbar"><div class="toolbar-left">${btnSegment([{id:'all',text:'All topics'},{id:'high',text:'High opportunity'},{id:'saved',text:'Saved'}],state.ideaView,'idea-view')}
     <span class="toolbar-note">${visible.length} of ${all.length} topics</span></div>
     <button class="small-action" data-idea-dismissed="1">${state.showDismissed?'Hide dismissed':'Show dismissed'}</button></div>`+
-    `<div class="info-note"><strong>Evidence first:</strong> Topic grouping and scoring use recent source records, growth, independent coverage and official-source indicators. Scores estimate discovery opportunity, not factual confidence. Three angles require no paid AI. ${data.contentCreation?.aiAvailable?'Optional AI runs only when you click Develop with AI.':'Optional paid AI remains disabled.'}</div>`+
+    `<div class="info-note"><strong>Automatic free-tier AI:</strong> Topic scoring and clustering remain code-based. Cloudflare Workers AI develops new creative titles and thumbnail ideas after scheduled scans and caches the results. ${data.contentCreation?.autoAIEnabled?`Enabled · ${fmt(data.contentCreation.aiUsedToday||0)} of ${fmt(data.contentCreation.aiDailyCap||6)} daily generation slots used`:'AI unavailable; code-generated angles remain visible'}. AI suggests angles from source headlines, not independently verified gameplay facts. No ChatGPT or paid OpenAI API is used.</div>`+
     (visible.length?`<div class="ideas-grid">${visible.map((x,i)=>ideaCard(x,i,data)).join('')}</div>`:
       empty('No matching opportunities','Try All topics or check back after the next source scan.',false));
 }
@@ -357,11 +357,6 @@ document.addEventListener('click',async e=>{
       if(!status)return toast('Choose a research status');
       await adminFetch('/api/research/status',{method:'POST',body:JSON.stringify({id,status})});
       toast('Research status updated');return fetchFeed({manual:true});}
-    if(button.dataset.ideaDevelop){const id=button.dataset.ideaDevelop;
-      button.disabled=true;button.textContent='Developing…';
-      try {state.aiBriefs[id]=await adminFetch('/api/content/develop',{method:'POST',body:JSON.stringify({id})});
-        toast(state.aiBriefs[id].cached?'Cached brief loaded':'Creative brief generated');return render();}
-      finally {button.disabled=false;button.textContent='✦ Develop with AI';}}
     if(button.dataset.statusSave){const id=button.dataset.statusSave;
       const status=[...document.querySelectorAll('[data-research-pick]')].find(x=>x.dataset.researchPick===id)?.value;
       await adminFetch('/api/research/status',{method:'POST',body:JSON.stringify({id,status})});toast('Research status saved');return fetchFeed();}

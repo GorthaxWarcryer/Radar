@@ -96,12 +96,12 @@ test('all newly added research and channel mutations reject anonymous requests',
     assert.equal(r.status,401,path);
   }
 });
-test('creative AI endpoint never allows public users to invoke billable model calls',async()=>{
+test('former billable AI endpoint is removed completely',async()=>{
   const r=await worker.fetch(new Request('https://example.com/api/content/develop',{
     method:'POST',headers:{'content-type':'application/json'},
     body:JSON.stringify({id:'opportunity:forever:paladin'})
-  }),{DB:{},ADMIN_TOKEN:'x'.repeat(48),OPENAI_API_KEY:'fake-key'.repeat(6),AI_IDEAS_ENABLED:'true'});
-  assert.equal(r.status,401);
+  }),{DB:{},ADMIN_TOKEN:'x'.repeat(48),OPENAI_API_KEY:'unused'.repeat(20),AI_IDEAS_ENABLED:'true'});
+  assert.equal(r.status,404);
 });
 test('public discovery config is bounded and does not expose credentials',async()=>{
   const DB={prepare(sql){return {bind(){return {all:async()=>({results:[]})}}}}};
