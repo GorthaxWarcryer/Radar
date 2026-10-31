@@ -1,55 +1,54 @@
 {
   "schemaVersion": 2,
-  "generatedAt": 1793432059293,
+  "generatedAt": 1793434003103,
   "sourceLastScan": 1793427408479,
   "sourceFeed": "https://azeroth-radar-petro.gorthax.chatgpt.site/api/feed?view=dashboard",
   "youtubeApi": {
     "status": "connected",
     "requests": 3,
-    "observations": 112,
-    "attempted": 113,
-    "lastCheckedAt": 1793432059293
+    "observations": 108,
+    "attempted": 109,
+    "lastCheckedAt": 1793434003103
   },
   "disclaimer": "GitHub polls YouTube Data API directly for hourly view counts of videos already discovered by the original Site. Discovery remains on the Site schedule.",
   "counts": {
-    "tracked": 417,
-    "within24h": 113,
-    "eligible": 26,
+    "tracked": 413,
+    "within24h": 109,
+    "eligible": 25,
     "estimated": 0,
-    "measured": 26,
+    "measured": 25,
     "shorts": 11,
-    "longForm": 15
+    "longForm": 14
   },
   "rankings": {
     "hot": [
       "1GEmk7Fci2E",
       "LiMslP8HfWY",
       "RFohAIFM6z4",
-      "XtJskkJZTXw",
       "GZRZemt6owc",
-      "MdhZBttk3Bw",
+      "XtJskkJZTXw",
       "vUVmyAiqSnQ",
+      "MdhZBttk3Bw",
       "KqkbtdEpEFw",
-      "97b2MbM8lYU",
-      "5Guc0FIZ8yA",
-      "kiu2BtQWfrc",
       "TYsXxYB-PKM",
+      "kiu2BtQWfrc",
+      "97b2MbM8lYU",
       "OiSlEJ8x7T8",
       "MQGdDd10u-g",
       "NNHRQWoJoYo"
     ],
     "shortsHot": [
       "1JhKzviW1h8",
-      "B9IoL1xyym0",
-      "l9GwCosk91o",
       "E3zKDTo3jKg",
+      "FCkZqn93Xig",
+      "l9GwCosk91o",
+      "B9IoL1xyym0",
       "WJapDjuEdfA",
       "bny3G9X9OBA",
-      "FCkZqn93Xig",
       "YAgGcYEFtok",
       "wZX2_WZ9xCw",
-      "gq72Jg297IY",
-      "o6dDhrwCAL0"
+      "o6dDhrwCAL0",
+      "gq72Jg297IY"
     ]
   },
   "watchSamples": {
@@ -64,6 +63,12 @@
         "capturedAt": 1793432059089,
         "views": 7761,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "B9IoL1xyym0",
+        "capturedAt": 1793434002940,
+        "views": 8357,
+        "source": "youtube-data-api"
       }
     ],
     "XtJskkJZTXw": [
@@ -76,6 +81,12 @@
         "id": "XtJskkJZTXw",
         "capturedAt": 1793432059089,
         "views": 15384,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "XtJskkJZTXw",
+        "capturedAt": 1793434002940,
+        "views": 16232,
         "source": "youtube-data-api"
       }
     ],
@@ -90,6 +101,12 @@
         "capturedAt": 1793432059089,
         "views": 9287,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "l9GwCosk91o",
+        "capturedAt": 1793434002940,
+        "views": 9937,
+        "source": "youtube-data-api"
       }
     ],
     "1JhKzviW1h8": [
@@ -102,6 +119,12 @@
         "id": "1JhKzviW1h8",
         "capturedAt": 1793432059089,
         "views": 27999,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "1JhKzviW1h8",
+        "capturedAt": 1793434002940,
+        "views": 30057,
         "source": "youtube-data-api"
       }
     ],
@@ -116,6 +139,12 @@
         "capturedAt": 1793432059089,
         "views": 107508,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "1GEmk7Fci2E",
+        "capturedAt": 1793434002940,
+        "views": 112316,
+        "source": "youtube-data-api"
       }
     ],
     "GZRZemt6owc": [
@@ -128,6 +157,12 @@
         "id": "GZRZemt6owc",
         "capturedAt": 1793432059089,
         "views": 14749,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "GZRZemt6owc",
+        "capturedAt": 1793434002940,
+        "views": 15668,
         "source": "youtube-data-api"
       }
     ],
@@ -142,6 +177,12 @@
         "capturedAt": 1793432059089,
         "views": 12907,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "KqkbtdEpEFw",
+        "capturedAt": 1793434002940,
+        "views": 13429,
+        "source": "youtube-data-api"
       }
     ],
     "vUVmyAiqSnQ": [
@@ -154,6 +195,12 @@
         "id": "vUVmyAiqSnQ",
         "capturedAt": 1793432059089,
         "views": 35943,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "vUVmyAiqSnQ",
+        "capturedAt": 1793434002940,
+        "views": 36573,
         "source": "youtube-data-api"
       }
     ],
@@ -168,6 +215,12 @@
         "capturedAt": 1793432059089,
         "views": 8471,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "kiu2BtQWfrc",
+        "capturedAt": 1793434002940,
+        "views": 8761,
+        "source": "youtube-data-api"
       }
     ],
     "TYsXxYB-PKM": [
@@ -180,6 +233,12 @@
         "id": "TYsXxYB-PKM",
         "capturedAt": 1793432059089,
         "views": 13093,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "TYsXxYB-PKM",
+        "capturedAt": 1793434002940,
+        "views": 13519,
         "source": "youtube-data-api"
       }
     ],
@@ -194,6 +253,12 @@
         "capturedAt": 1793432059089,
         "views": 55271,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "RFohAIFM6z4",
+        "capturedAt": 1793434002940,
+        "views": 56191,
+        "source": "youtube-data-api"
       }
     ],
     "97b2MbM8lYU": [
@@ -206,6 +271,12 @@
         "id": "97b2MbM8lYU",
         "capturedAt": 1793432059089,
         "views": 23092,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "97b2MbM8lYU",
+        "capturedAt": 1793434002940,
+        "views": 23381,
         "source": "youtube-data-api"
       }
     ],
@@ -220,6 +291,12 @@
         "capturedAt": 1793432059089,
         "views": 15889,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "bny3G9X9OBA",
+        "capturedAt": 1793434002940,
+        "views": 16420,
+        "source": "youtube-data-api"
       }
     ],
     "YAgGcYEFtok": [
@@ -232,6 +309,12 @@
         "id": "YAgGcYEFtok",
         "capturedAt": 1793432059089,
         "views": 5865,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "YAgGcYEFtok",
+        "capturedAt": 1793434002940,
+        "views": 6098,
         "source": "youtube-data-api"
       }
     ],
@@ -246,6 +329,12 @@
         "capturedAt": 1793432059089,
         "views": 7800,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "MQGdDd10u-g",
+        "capturedAt": 1793434002940,
+        "views": 7928,
+        "source": "youtube-data-api"
       }
     ],
     "MdhZBttk3Bw": [
@@ -258,6 +347,12 @@
         "id": "MdhZBttk3Bw",
         "capturedAt": 1793432059089,
         "views": 52800,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "MdhZBttk3Bw",
+        "capturedAt": 1793434002940,
+        "views": 53355,
         "source": "youtube-data-api"
       }
     ],
@@ -272,6 +367,12 @@
         "capturedAt": 1793432059089,
         "views": 216065,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "LiMslP8HfWY",
+        "capturedAt": 1793434002940,
+        "views": 218187,
+        "source": "youtube-data-api"
       }
     ],
     "gq72Jg297IY": [
@@ -284,6 +385,12 @@
         "id": "gq72Jg297IY",
         "capturedAt": 1793432059089,
         "views": 6028,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "gq72Jg297IY",
+        "capturedAt": 1793434002940,
+        "views": 6069,
         "source": "youtube-data-api"
       }
     ],
@@ -298,6 +405,12 @@
         "capturedAt": 1793432059089,
         "views": 53701,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "WJapDjuEdfA",
+        "capturedAt": 1793434002940,
+        "views": 54262,
+        "source": "youtube-data-api"
       }
     ],
     "NNHRQWoJoYo": [
@@ -310,6 +423,12 @@
         "id": "NNHRQWoJoYo",
         "capturedAt": 1793432059089,
         "views": 18807,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "NNHRQWoJoYo",
+        "capturedAt": 1793434002940,
+        "views": 18849,
         "source": "youtube-data-api"
       }
     ],
@@ -324,6 +443,12 @@
         "capturedAt": 1793432059089,
         "views": 38742,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "OiSlEJ8x7T8",
+        "capturedAt": 1793434002940,
+        "views": 38938,
+        "source": "youtube-data-api"
       }
     ],
     "o6dDhrwCAL0": [
@@ -336,6 +461,12 @@
         "id": "o6dDhrwCAL0",
         "capturedAt": 1793432059089,
         "views": 5436,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "o6dDhrwCAL0",
+        "capturedAt": 1793434002940,
+        "views": 5484,
         "source": "youtube-data-api"
       }
     ],
@@ -350,18 +481,11 @@
         "capturedAt": 1793432059089,
         "views": 6578,
         "source": "youtube-data-api"
-      }
-    ],
-    "5Guc0FIZ8yA": [
-      {
-        "capturedAt": 1793427392408,
-        "views": 76930,
-        "source": "original-site"
       },
       {
-        "id": "5Guc0FIZ8yA",
-        "capturedAt": 1793432059089,
-        "views": 78233,
+        "id": "wZX2_WZ9xCw",
+        "capturedAt": 1793434002940,
+        "views": 6736,
         "source": "youtube-data-api"
       }
     ],
@@ -376,6 +500,12 @@
         "capturedAt": 1793432059089,
         "views": 431,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "H_rlr1JQ07c",
+        "capturedAt": 1793434002940,
+        "views": 612,
+        "source": "youtube-data-api"
       }
     ],
     "EncsznAZcgE": [
@@ -388,6 +518,12 @@
         "id": "EncsznAZcgE",
         "capturedAt": 1793432059089,
         "views": 1467,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "EncsznAZcgE",
+        "capturedAt": 1793434002940,
+        "views": 1907,
         "source": "youtube-data-api"
       }
     ],
@@ -402,6 +538,12 @@
         "capturedAt": 1793432059089,
         "views": 26,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "95zlPZ3Jdtc",
+        "capturedAt": 1793434002940,
+        "views": 28,
+        "source": "youtube-data-api"
       }
     ],
     "zjSnrF2Hneg": [
@@ -413,6 +555,12 @@
       {
         "id": "zjSnrF2Hneg",
         "capturedAt": 1793432059089,
+        "views": 1,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "zjSnrF2Hneg",
+        "capturedAt": 1793434002940,
         "views": 1,
         "source": "youtube-data-api"
       }
@@ -428,6 +576,12 @@
         "capturedAt": 1793432059089,
         "views": 692,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "sF-mGAIJfVQ",
+        "capturedAt": 1793434002940,
+        "views": 748,
+        "source": "youtube-data-api"
       }
     ],
     "tyblNAMWiBg": [
@@ -439,6 +593,12 @@
       {
         "id": "tyblNAMWiBg",
         "capturedAt": 1793432059089,
+        "views": 47,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "tyblNAMWiBg",
+        "capturedAt": 1793434002940,
         "views": 47,
         "source": "youtube-data-api"
       }
@@ -454,6 +614,12 @@
         "capturedAt": 1793432059089,
         "views": 2107,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "nQlEsgmsvnI",
+        "capturedAt": 1793434002940,
+        "views": 2271,
+        "source": "youtube-data-api"
       }
     ],
     "V7WyqbWcfVc": [
@@ -467,6 +633,12 @@
         "capturedAt": 1793432059089,
         "views": 724,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "V7WyqbWcfVc",
+        "capturedAt": 1793434002940,
+        "views": 831,
+        "source": "youtube-data-api"
       }
     ],
     "xpwAL6uXok4": [
@@ -478,6 +650,12 @@
       {
         "id": "xpwAL6uXok4",
         "capturedAt": 1793432059089,
+        "views": 1,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "xpwAL6uXok4",
+        "capturedAt": 1793434002940,
         "views": 1,
         "source": "youtube-data-api"
       }
@@ -493,6 +671,12 @@
         "capturedAt": 1793432059089,
         "views": 1378,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "9Id4acG-YV4",
+        "capturedAt": 1793434002940,
+        "views": 1414,
+        "source": "youtube-data-api"
       }
     ],
     "w38NeIwTVSc": [
@@ -505,6 +689,12 @@
         "id": "w38NeIwTVSc",
         "capturedAt": 1793432059089,
         "views": 337,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "w38NeIwTVSc",
+        "capturedAt": 1793434002940,
+        "views": 349,
         "source": "youtube-data-api"
       }
     ],
@@ -519,6 +709,12 @@
         "capturedAt": 1793432059089,
         "views": 2931,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "rR8RgyqRdQw",
+        "capturedAt": 1793434002940,
+        "views": 3093,
+        "source": "youtube-data-api"
       }
     ],
     "qM_bcoq7eGg": [
@@ -532,6 +728,12 @@
         "capturedAt": 1793432059089,
         "views": 1197,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "qM_bcoq7eGg",
+        "capturedAt": 1793434002940,
+        "views": 1254,
+        "source": "youtube-data-api"
       }
     ],
     "O6IfqvA3Kik": [
@@ -543,6 +745,12 @@
       {
         "id": "O6IfqvA3Kik",
         "capturedAt": 1793432059089,
+        "views": 3,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "O6IfqvA3Kik",
+        "capturedAt": 1793434002940,
         "views": 3,
         "source": "youtube-data-api"
       }
@@ -558,6 +766,12 @@
         "capturedAt": 1793432059089,
         "views": 924,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "nBaVElSyIYg",
+        "capturedAt": 1793434002940,
+        "views": 926,
+        "source": "youtube-data-api"
       }
     ],
     "8b7WTZZ1yL0": [
@@ -569,6 +783,12 @@
       {
         "id": "8b7WTZZ1yL0",
         "capturedAt": 1793432059089,
+        "views": 0,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "8b7WTZZ1yL0",
+        "capturedAt": 1793434002940,
         "views": 0,
         "source": "youtube-data-api"
       }
@@ -584,6 +804,12 @@
         "capturedAt": 1793432059089,
         "views": 9,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "qwI6BmcOAxQ",
+        "capturedAt": 1793434002940,
+        "views": 10,
+        "source": "youtube-data-api"
       }
     ],
     "D6Uvop7IGeY": [
@@ -596,6 +822,12 @@
         "id": "D6Uvop7IGeY",
         "capturedAt": 1793432059089,
         "views": 729,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "D6Uvop7IGeY",
+        "capturedAt": 1793434002940,
+        "views": 884,
         "source": "youtube-data-api"
       }
     ],
@@ -610,6 +842,12 @@
         "capturedAt": 1793432059089,
         "views": 2159,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "0iyAgdSpAnc",
+        "capturedAt": 1793434002940,
+        "views": 2379,
+        "source": "youtube-data-api"
       }
     ],
     "82SRyIN0Vxg": [
@@ -622,6 +860,12 @@
         "id": "82SRyIN0Vxg",
         "capturedAt": 1793432059089,
         "views": 1048,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "82SRyIN0Vxg",
+        "capturedAt": 1793434002940,
+        "views": 1050,
         "source": "youtube-data-api"
       }
     ],
@@ -636,6 +880,12 @@
         "capturedAt": 1793432059089,
         "views": 1153,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "TJFzhpBeLzA",
+        "capturedAt": 1793434002940,
+        "views": 1164,
+        "source": "youtube-data-api"
       }
     ],
     "BfP0NbAz2ho": [
@@ -647,6 +897,12 @@
       {
         "id": "BfP0NbAz2ho",
         "capturedAt": 1793432059089,
+        "views": 8,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "BfP0NbAz2ho",
+        "capturedAt": 1793434002940,
         "views": 8,
         "source": "youtube-data-api"
       }
@@ -662,6 +918,12 @@
         "capturedAt": 1793432059089,
         "views": 1123,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "1DIpgFlHl_8",
+        "capturedAt": 1793434002940,
+        "views": 1123,
+        "source": "youtube-data-api"
       }
     ],
     "pMzjX-ga2kY": [
@@ -673,6 +935,12 @@
       {
         "id": "pMzjX-ga2kY",
         "capturedAt": 1793432059089,
+        "views": 0,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "pMzjX-ga2kY",
+        "capturedAt": 1793434002940,
         "views": 0,
         "source": "youtube-data-api"
       }
@@ -688,6 +956,12 @@
         "capturedAt": 1793432059089,
         "views": 696,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "C39O51kA9PM",
+        "capturedAt": 1793434002940,
+        "views": 723,
+        "source": "youtube-data-api"
       }
     ],
     "EzpNMIwQZAk": [
@@ -699,6 +973,12 @@
       {
         "id": "EzpNMIwQZAk",
         "capturedAt": 1793432059089,
+        "views": 991,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "EzpNMIwQZAk",
+        "capturedAt": 1793434002940,
         "views": 991,
         "source": "youtube-data-api"
       }
@@ -714,6 +994,12 @@
         "capturedAt": 1793432059209,
         "views": 2027,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "PPTU4SjyRW4",
+        "capturedAt": 1793434002940,
+        "views": 2381,
+        "source": "youtube-data-api"
       }
     ],
     "LsqQO0-hDH4": [
@@ -727,6 +1013,12 @@
         "capturedAt": 1793432059209,
         "views": 43,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "LsqQO0-hDH4",
+        "capturedAt": 1793434003045,
+        "views": 50,
+        "source": "youtube-data-api"
       }
     ],
     "WFX3y_ksaLc": [
@@ -738,6 +1030,12 @@
       {
         "id": "WFX3y_ksaLc",
         "capturedAt": 1793432059209,
+        "views": 923,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "WFX3y_ksaLc",
+        "capturedAt": 1793434003045,
         "views": 923,
         "source": "youtube-data-api"
       }
@@ -753,6 +1051,12 @@
         "capturedAt": 1793432059209,
         "views": 756,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "6Ie3symBfu4",
+        "capturedAt": 1793434003045,
+        "views": 945,
+        "source": "youtube-data-api"
       }
     ],
     "qkT5LrBP1uA": [
@@ -765,6 +1069,12 @@
         "id": "qkT5LrBP1uA",
         "capturedAt": 1793432059209,
         "views": 748,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "qkT5LrBP1uA",
+        "capturedAt": 1793434003045,
+        "views": 790,
         "source": "youtube-data-api"
       }
     ],
@@ -779,6 +1089,12 @@
         "capturedAt": 1793432059209,
         "views": 5385,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "E3zKDTo3jKg",
+        "capturedAt": 1793434003045,
+        "views": 6168,
+        "source": "youtube-data-api"
       }
     ],
     "Sp9aAYwVk24": [
@@ -792,6 +1108,12 @@
         "capturedAt": 1793432059209,
         "views": 1653,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "Sp9aAYwVk24",
+        "capturedAt": 1793434003045,
+        "views": 1634,
+        "source": "youtube-data-api"
       }
     ],
     "OJxjqzv5O7Y": [
@@ -803,6 +1125,12 @@
       {
         "id": "OJxjqzv5O7Y",
         "capturedAt": 1793432059209,
+        "views": 9,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "OJxjqzv5O7Y",
+        "capturedAt": 1793434003045,
         "views": 9,
         "source": "youtube-data-api"
       }
@@ -818,6 +1146,12 @@
         "capturedAt": 1793432059209,
         "views": 68,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "XmbNKGGu2fQ",
+        "capturedAt": 1793434003045,
+        "views": 67,
+        "source": "youtube-data-api"
       }
     ],
     "FCkZqn93Xig": [
@@ -831,6 +1165,12 @@
         "capturedAt": 1793432059209,
         "views": 5633,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "FCkZqn93Xig",
+        "capturedAt": 1793434003045,
+        "views": 6391,
+        "source": "youtube-data-api"
       }
     ],
     "FJMz-vkOzlU": [
@@ -842,6 +1182,12 @@
       {
         "id": "FJMz-vkOzlU",
         "capturedAt": 1793432059209,
+        "views": 2,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "FJMz-vkOzlU",
+        "capturedAt": 1793434003045,
         "views": 2,
         "source": "youtube-data-api"
       }
@@ -857,6 +1203,12 @@
         "capturedAt": 1793432059209,
         "views": 333,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "WKOO4xLw3zg",
+        "capturedAt": 1793434003045,
+        "views": 334,
+        "source": "youtube-data-api"
       }
     ],
     "JXZ3UZyWKpU": [
@@ -869,6 +1221,12 @@
         "id": "JXZ3UZyWKpU",
         "capturedAt": 1793432059209,
         "views": 129,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "JXZ3UZyWKpU",
+        "capturedAt": 1793434003045,
+        "views": 98,
         "source": "youtube-data-api"
       }
     ],
@@ -883,6 +1241,12 @@
         "capturedAt": 1793432059209,
         "views": 1152,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "sZisazZHz-A",
+        "capturedAt": 1793434003045,
+        "views": 1154,
+        "source": "youtube-data-api"
       }
     ],
     "FOf2TD2P7Wo": [
@@ -895,6 +1259,12 @@
         "id": "FOf2TD2P7Wo",
         "capturedAt": 1793432059209,
         "views": 1375,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "FOf2TD2P7Wo",
+        "capturedAt": 1793434003045,
+        "views": 1347,
         "source": "youtube-data-api"
       }
     ],
@@ -909,6 +1279,12 @@
         "capturedAt": 1793432059209,
         "views": 1367,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "J3vkUsnzGXc",
+        "capturedAt": 1793434003045,
+        "views": 1396,
+        "source": "youtube-data-api"
       }
     ],
     "bmTcxKo7FQQ": [
@@ -920,6 +1296,12 @@
       {
         "id": "bmTcxKo7FQQ",
         "capturedAt": 1793432059209,
+        "views": 4,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "bmTcxKo7FQQ",
+        "capturedAt": 1793434003045,
         "views": 4,
         "source": "youtube-data-api"
       }
@@ -935,6 +1317,12 @@
         "capturedAt": 1793432059209,
         "views": 1228,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "LLskUiOYgio",
+        "capturedAt": 1793434003045,
+        "views": 1241,
+        "source": "youtube-data-api"
       }
     ],
     "Vp2G0_x0aw4": [
@@ -946,6 +1334,12 @@
       {
         "id": "Vp2G0_x0aw4",
         "capturedAt": 1793432059209,
+        "views": 1037,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "Vp2G0_x0aw4",
+        "capturedAt": 1793434003045,
         "views": 1037,
         "source": "youtube-data-api"
       }
@@ -961,6 +1355,12 @@
         "capturedAt": 1793432059209,
         "views": 32,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "uSHr3viLO3I",
+        "capturedAt": 1793434003045,
+        "views": 33,
+        "source": "youtube-data-api"
       }
     ],
     "I8XxVmt7LSA": [
@@ -972,6 +1372,12 @@
       {
         "id": "I8XxVmt7LSA",
         "capturedAt": 1793432059209,
+        "views": 2,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "I8XxVmt7LSA",
+        "capturedAt": 1793434003045,
         "views": 2,
         "source": "youtube-data-api"
       }
@@ -987,6 +1393,12 @@
         "capturedAt": 1793432059209,
         "views": 4128,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "DrGf1tWTAto",
+        "capturedAt": 1793434003045,
+        "views": 4318,
+        "source": "youtube-data-api"
       }
     ],
     "kNLpfDHmwuI": [
@@ -998,6 +1410,12 @@
       {
         "id": "kNLpfDHmwuI",
         "capturedAt": 1793432059209,
+        "views": 1173,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "kNLpfDHmwuI",
+        "capturedAt": 1793434003045,
         "views": 1173,
         "source": "youtube-data-api"
       }
@@ -1013,6 +1431,12 @@
         "capturedAt": 1793432059209,
         "views": 4226,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "0Ho3zKP_FxU",
+        "capturedAt": 1793434003045,
+        "views": 4316,
+        "source": "youtube-data-api"
       }
     ],
     "7QJgSW89LFs": [
@@ -1024,6 +1448,12 @@
       {
         "id": "7QJgSW89LFs",
         "capturedAt": 1793432059209,
+        "views": 9,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "7QJgSW89LFs",
+        "capturedAt": 1793434003045,
         "views": 9,
         "source": "youtube-data-api"
       }
@@ -1039,6 +1469,12 @@
         "capturedAt": 1793432059209,
         "views": 6,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "v0Bcp5qMdT0",
+        "capturedAt": 1793434003045,
+        "views": 6,
+        "source": "youtube-data-api"
       }
     ],
     "4uYP4BYXJ7Y": [
@@ -1051,6 +1487,12 @@
         "id": "4uYP4BYXJ7Y",
         "capturedAt": 1793432059209,
         "views": 1067,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "4uYP4BYXJ7Y",
+        "capturedAt": 1793434003045,
+        "views": 1069,
         "source": "youtube-data-api"
       }
     ],
@@ -1065,6 +1507,12 @@
         "capturedAt": 1793432059209,
         "views": 278,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "71F1DPm7w_A",
+        "capturedAt": 1793434003045,
+        "views": 284,
+        "source": "youtube-data-api"
       }
     ],
     "2mr3SW9VZt8": [
@@ -1077,6 +1525,12 @@
         "id": "2mr3SW9VZt8",
         "capturedAt": 1793432059209,
         "views": 629,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "2mr3SW9VZt8",
+        "capturedAt": 1793434003045,
+        "views": 678,
         "source": "youtube-data-api"
       }
     ],
@@ -1091,6 +1545,12 @@
         "capturedAt": 1793432059209,
         "views": 2433,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "BTMuq80ieX0",
+        "capturedAt": 1793434003045,
+        "views": 2435,
+        "source": "youtube-data-api"
       }
     ],
     "Xf0JQuzLjO8": [
@@ -1102,6 +1562,12 @@
       {
         "id": "Xf0JQuzLjO8",
         "capturedAt": 1793432059209,
+        "views": 5,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "Xf0JQuzLjO8",
+        "capturedAt": 1793434003045,
         "views": 5,
         "source": "youtube-data-api"
       }
@@ -1117,6 +1583,12 @@
         "capturedAt": 1793432059209,
         "views": 222,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "ITxs7TUZLg0",
+        "capturedAt": 1793434003045,
+        "views": 222,
+        "source": "youtube-data-api"
       }
     ],
     "8pxSsU4aqqE": [
@@ -1130,6 +1602,12 @@
         "capturedAt": 1793432059209,
         "views": 51,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "8pxSsU4aqqE",
+        "capturedAt": 1793434003045,
+        "views": 52,
+        "source": "youtube-data-api"
       }
     ],
     "yxLYjnJYIAM": [
@@ -1141,6 +1619,12 @@
       {
         "id": "yxLYjnJYIAM",
         "capturedAt": 1793432059209,
+        "views": 79,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "yxLYjnJYIAM",
+        "capturedAt": 1793434003045,
         "views": 79,
         "source": "youtube-data-api"
       }
@@ -1156,6 +1640,12 @@
         "capturedAt": 1793432059209,
         "views": 1463,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "EtiKEsOCyZE",
+        "capturedAt": 1793434003045,
+        "views": 1465,
+        "source": "youtube-data-api"
       }
     ],
     "Nl734IGUSEs": [
@@ -1168,6 +1658,12 @@
         "id": "Nl734IGUSEs",
         "capturedAt": 1793432059209,
         "views": 1408,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "Nl734IGUSEs",
+        "capturedAt": 1793434003045,
+        "views": 1426,
         "source": "youtube-data-api"
       }
     ],
@@ -1189,6 +1685,12 @@
         "capturedAt": 1793432059209,
         "views": 1350,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "Yh8b-eSeFgw",
+        "capturedAt": 1793434003045,
+        "views": 1350,
+        "source": "youtube-data-api"
       }
     ],
     "zV3CBMNikJI": [
@@ -1200,6 +1702,12 @@
       {
         "id": "zV3CBMNikJI",
         "capturedAt": 1793432059209,
+        "views": 1248,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "zV3CBMNikJI",
+        "capturedAt": 1793434003045,
         "views": 1248,
         "source": "youtube-data-api"
       }
@@ -1215,6 +1723,12 @@
         "capturedAt": 1793432059209,
         "views": 0,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "9pSAKWD1WJM",
+        "capturedAt": 1793434003045,
+        "views": 1,
+        "source": "youtube-data-api"
       }
     ],
     "HlbSECxFmss": [
@@ -1226,6 +1740,12 @@
       {
         "id": "HlbSECxFmss",
         "capturedAt": 1793432059209,
+        "views": 45,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "HlbSECxFmss",
+        "capturedAt": 1793434003045,
         "views": 45,
         "source": "youtube-data-api"
       }
@@ -1241,6 +1761,12 @@
         "capturedAt": 1793432059209,
         "views": 1593,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "Hb5rCKG1B-o",
+        "capturedAt": 1793434003045,
+        "views": 1617,
+        "source": "youtube-data-api"
       }
     ],
     "ngJKl7pJeXE": [
@@ -1254,6 +1780,12 @@
         "capturedAt": 1793432059209,
         "views": 113,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "ngJKl7pJeXE",
+        "capturedAt": 1793434003045,
+        "views": 122,
+        "source": "youtube-data-api"
       }
     ],
     "Q5FdnLXsbVw": [
@@ -1265,6 +1797,12 @@
       {
         "id": "Q5FdnLXsbVw",
         "capturedAt": 1793432059209,
+        "views": 33,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "Q5FdnLXsbVw",
+        "capturedAt": 1793434003045,
         "views": 33,
         "source": "youtube-data-api"
       }
@@ -1280,6 +1818,12 @@
         "capturedAt": 1793432059209,
         "views": 1420,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "MHNwmnroqgY",
+        "capturedAt": 1793434003045,
+        "views": 1413,
+        "source": "youtube-data-api"
       }
     ],
     "OYfhpmBCcbA": [
@@ -1292,6 +1836,12 @@
         "id": "OYfhpmBCcbA",
         "capturedAt": 1793432059209,
         "views": 1241,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "OYfhpmBCcbA",
+        "capturedAt": 1793434003045,
+        "views": 1242,
         "source": "youtube-data-api"
       }
     ],
@@ -1306,6 +1856,12 @@
         "capturedAt": 1793432059209,
         "views": 173,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "0bNtHMiKYDY",
+        "capturedAt": 1793434003045,
+        "views": 175,
+        "source": "youtube-data-api"
       }
     ],
     "6fZxeCrM-ys": [
@@ -1319,6 +1875,12 @@
         "capturedAt": 1793432059209,
         "views": 2372,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "6fZxeCrM-ys",
+        "capturedAt": 1793434003045,
+        "views": 2369,
+        "source": "youtube-data-api"
       }
     ],
     "CrCHqWIkQI8": [
@@ -1330,6 +1892,12 @@
       {
         "id": "CrCHqWIkQI8",
         "capturedAt": 1793432059209,
+        "views": 15,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "CrCHqWIkQI8",
+        "capturedAt": 1793434003045,
         "views": 15,
         "source": "youtube-data-api"
       }
@@ -1345,6 +1913,12 @@
         "capturedAt": 1793432059209,
         "views": 1260,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "5o-Nqa2bUbs",
+        "capturedAt": 1793434003045,
+        "views": 1281,
+        "source": "youtube-data-api"
       }
     ],
     "c17JXtU-H04": [
@@ -1358,6 +1932,12 @@
         "capturedAt": 1793432059293,
         "views": 72,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "c17JXtU-H04",
+        "capturedAt": 1793434003045,
+        "views": 67,
+        "source": "youtube-data-api"
       }
     ],
     "YxjBVfvvv8Y": [
@@ -1369,6 +1949,12 @@
       {
         "id": "YxjBVfvvv8Y",
         "capturedAt": 1793432059293,
+        "views": 1204,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "YxjBVfvvv8Y",
+        "capturedAt": 1793434003103,
         "views": 1204,
         "source": "youtube-data-api"
       }
@@ -1384,6 +1970,12 @@
         "capturedAt": 1793432059293,
         "views": 1262,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "FEZ6KyD8vAY",
+        "capturedAt": 1793434003103,
+        "views": 1260,
+        "source": "youtube-data-api"
       }
     ],
     "T9toKcrmsdc": [
@@ -1395,6 +1987,12 @@
       {
         "id": "T9toKcrmsdc",
         "capturedAt": 1793432059293,
+        "views": 1316,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "T9toKcrmsdc",
+        "capturedAt": 1793434003103,
         "views": 1316,
         "source": "youtube-data-api"
       }
@@ -1410,6 +2008,12 @@
         "capturedAt": 1793432059293,
         "views": 2499,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "MMdys0qdgug",
+        "capturedAt": 1793434003103,
+        "views": 2553,
+        "source": "youtube-data-api"
       }
     ],
     "GjaiPNYUqsM": [
@@ -1421,6 +2025,12 @@
       {
         "id": "GjaiPNYUqsM",
         "capturedAt": 1793432059293,
+        "views": 1267,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "GjaiPNYUqsM",
+        "capturedAt": 1793434003103,
         "views": 1267,
         "source": "youtube-data-api"
       }
@@ -1436,6 +2046,12 @@
         "capturedAt": 1793432059293,
         "views": 487,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "mHWB_j0gxmo",
+        "capturedAt": 1793434003103,
+        "views": 487,
+        "source": "youtube-data-api"
       }
     ],
     "BkFO3usnbRU": [
@@ -1447,6 +2063,12 @@
       {
         "id": "BkFO3usnbRU",
         "capturedAt": 1793432059293,
+        "views": 1097,
+        "source": "youtube-data-api"
+      },
+      {
+        "id": "BkFO3usnbRU",
+        "capturedAt": 1793434003103,
         "views": 1097,
         "source": "youtube-data-api"
       }
@@ -1462,6 +2084,12 @@
         "capturedAt": 1793432059293,
         "views": 252,
         "source": "youtube-data-api"
+      },
+      {
+        "id": "6jecavKviAY",
+        "capturedAt": 1793434003103,
+        "views": 237,
+        "source": "youtube-data-api"
       }
     ],
     "woG_qXVb50Y": [
@@ -1475,44 +2103,11 @@
         "capturedAt": 1793432059293,
         "views": 1210,
         "source": "youtube-data-api"
-      }
-    ],
-    "T2JTNLlSQaE": [
-      {
-        "capturedAt": 1793427392408,
-        "views": 2763,
-        "source": "original-site"
       },
       {
-        "id": "T2JTNLlSQaE",
-        "capturedAt": 1793432059293,
-        "views": 2850,
-        "source": "youtube-data-api"
-      }
-    ],
-    "3IRW-WeNZz0": [
-      {
-        "capturedAt": 1793427392408,
-        "views": 395,
-        "source": "original-site"
-      },
-      {
-        "id": "3IRW-WeNZz0",
-        "capturedAt": 1793432059293,
-        "views": 393,
-        "source": "youtube-data-api"
-      }
-    ],
-    "y-eC2J_Tsgo": [
-      {
-        "capturedAt": 1793427392408,
-        "views": 216,
-        "source": "original-site"
-      },
-      {
-        "id": "y-eC2J_Tsgo",
-        "capturedAt": 1793432059293,
-        "views": 216,
+        "id": "woG_qXVb50Y",
+        "capturedAt": 1793434003103,
+        "views": 1210,
         "source": "youtube-data-api"
       }
     ]
@@ -1523,15 +2118,15 @@
       "title": "You Only Need a Few Addons for WoW Forever",
       "channel": "Bellular Warcraft",
       "publishedAt": 1793403896000,
-      "views": 107508,
+      "views": 112316,
       "url": "https://www.youtube.com/watch?v=1GEmk7Fci2E",
       "thumbnail": "https://i.ytimg.com/vi/1GEmk7Fci2E/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 13071,
+      "vph": 8904,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -1543,6 +2138,12 @@
           "capturedAt": 1793432059089,
           "views": 107508,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "1GEmk7Fci2E",
+          "capturedAt": 1793434002940,
+          "views": 112316,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -1551,15 +2152,15 @@
       "title": "World of Warcraft: Forever | Planet Azeroth EP. 2 (ft. Bill Bailey)",
       "channel": "IGN",
       "publishedAt": 1793376006000,
-      "views": 216065,
+      "views": 218187,
       "url": "https://www.youtube.com/watch?v=LiMslP8HfWY",
       "thumbnail": "https://i.ytimg.com/vi/LiMslP8HfWY/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 5220,
+      "vph": 3930,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427398707,
@@ -1571,6 +2172,12 @@
           "capturedAt": 1793432059089,
           "views": 216065,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "LiMslP8HfWY",
+          "capturedAt": 1793434002940,
+          "views": 218187,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -1579,15 +2186,15 @@
       "title": "Which One Do You Like More?!...🤔| WoW Forever",
       "channel": "Esfand",
       "publishedAt": 1793404242000,
-      "views": 27999,
+      "views": 30057,
       "url": "https://www.youtube.com/watch?v=1JhKzviW1h8",
       "thumbnail": "https://i.ytimg.com/vi/1JhKzviW1h8/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 4705,
+      "vph": 3811,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -1599,6 +2206,12 @@
           "capturedAt": 1793432059089,
           "views": 27999,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "1JhKzviW1h8",
+          "capturedAt": 1793434002940,
+          "views": 30057,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -1607,15 +2220,15 @@
       "title": "Troll Warrior Is 100% BROKEN in WoW Forever... I'm Rerolling",
       "channel": "Kargoz",
       "publishedAt": 1793393132000,
-      "views": 55271,
+      "views": 56191,
       "url": "https://www.youtube.com/watch?v=RFohAIFM6z4",
       "thumbnail": "https://i.ytimg.com/vi/RFohAIFM6z4/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 2439,
+      "vph": 1704,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427398707,
@@ -1627,33 +2240,11 @@
           "capturedAt": 1793432059089,
           "views": 55271,
           "source": "youtube-data-api"
-        }
-      ]
-    },
-    {
-      "id": "XtJskkJZTXw",
-      "title": "Major Class Changes Last Minute WoW Forever",
-      "channel": "Supatease",
-      "publishedAt": 1793408543000,
-      "views": 15384,
-      "url": "https://www.youtube.com/watch?v=XtJskkJZTXw",
-      "thumbnail": "https://i.ytimg.com/vi/XtJskkJZTXw/mqdefault.jpg",
-      "isShort": false,
-      "velocityType": "measured-hourly",
-      "vph": 2376,
-      "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
-      "samples": [
-        {
-          "capturedAt": 1793427398291,
-          "views": 12308,
-          "source": "original-site"
         },
         {
-          "id": "XtJskkJZTXw",
-          "capturedAt": 1793432059089,
-          "views": 15384,
+          "id": "RFohAIFM6z4",
+          "capturedAt": 1793434002940,
+          "views": 56191,
           "source": "youtube-data-api"
         }
       ]
@@ -1663,15 +2254,15 @@
       "title": "Don't Pick a Profession in WoW Forever Until You Watch This",
       "channel": "Mobalytics",
       "publishedAt": 1793402255000,
-      "views": 14749,
+      "views": 15668,
       "url": "https://www.youtube.com/watch?v=GZRZemt6owc",
       "thumbnail": "https://i.ytimg.com/vi/GZRZemt6owc/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 1987,
+      "vph": 1702,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -1683,117 +2274,45 @@
           "capturedAt": 1793432059089,
           "views": 14749,
           "source": "youtube-data-api"
-        }
-      ]
-    },
-    {
-      "id": "MdhZBttk3Bw",
-      "title": "This Profession BREAKS WoW Forever",
-      "channel": "NOHITJEROME",
-      "publishedAt": 1793388349000,
-      "views": 52800,
-      "url": "https://www.youtube.com/watch?v=MdhZBttk3Bw",
-      "thumbnail": "https://i.ytimg.com/vi/MdhZBttk3Bw/mqdefault.jpg",
-      "isShort": false,
-      "velocityType": "measured-hourly",
-      "vph": 1675,
-      "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
-      "samples": [
-        {
-          "capturedAt": 1793427398707,
-          "views": 50632,
-          "source": "original-site"
         },
         {
-          "id": "MdhZBttk3Bw",
-          "capturedAt": 1793432059089,
-          "views": 52800,
+          "id": "GZRZemt6owc",
+          "capturedAt": 1793434002940,
+          "views": 15668,
           "source": "youtube-data-api"
         }
       ]
     },
     {
-      "id": "vUVmyAiqSnQ",
-      "title": "More Changes For Mage & Druid In WoW Forever Were Just Datamined",
-      "channel": "Venruki",
-      "publishedAt": 1793398140000,
-      "views": 35943,
-      "url": "https://www.youtube.com/watch?v=vUVmyAiqSnQ",
-      "thumbnail": "https://i.ytimg.com/vi/vUVmyAiqSnQ/mqdefault.jpg",
+      "id": "XtJskkJZTXw",
+      "title": "Major Class Changes Last Minute WoW Forever",
+      "channel": "Supatease",
+      "publishedAt": 1793408543000,
+      "views": 16232,
+      "url": "https://www.youtube.com/watch?v=XtJskkJZTXw",
+      "thumbnail": "https://i.ytimg.com/vi/XtJskkJZTXw/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 1574,
+      "vph": 1570,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427398291,
-          "views": 33905,
+          "views": 12308,
           "source": "original-site"
         },
         {
-          "id": "vUVmyAiqSnQ",
+          "id": "XtJskkJZTXw",
           "capturedAt": 1793432059089,
-          "views": 35943,
+          "views": 15384,
           "source": "youtube-data-api"
-        }
-      ]
-    },
-    {
-      "id": "B9IoL1xyym0",
-      "title": "Hey @VivaLaDirtLeague! Why does this feel so familiar…?",
-      "channel": "World of Warcraft",
-      "publishedAt": 1793411341000,
-      "views": 7761,
-      "url": "https://www.youtube.com/watch?v=B9IoL1xyym0",
-      "thumbnail": "https://i.ytimg.com/vi/B9IoL1xyym0/mqdefault.jpg",
-      "isShort": true,
-      "velocityType": "measured-hourly",
-      "vph": 1530,
-      "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
-      "samples": [
-        {
-          "capturedAt": 1793427401474,
-          "views": 5781,
-          "source": "original-site"
         },
         {
-          "id": "B9IoL1xyym0",
-          "capturedAt": 1793432059089,
-          "views": 7761,
-          "source": "youtube-data-api"
-        }
-      ]
-    },
-    {
-      "id": "l9GwCosk91o",
-      "title": "Love learning about the tech that powers games?",
-      "channel": "World of Warcraft",
-      "publishedAt": 1793404952000,
-      "views": 9287,
-      "url": "https://www.youtube.com/watch?v=l9GwCosk91o",
-      "thumbnail": "https://i.ytimg.com/vi/l9GwCosk91o/mqdefault.jpg",
-      "isShort": true,
-      "velocityType": "measured-hourly",
-      "vph": 1491,
-      "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
-      "samples": [
-        {
-          "capturedAt": 1793427401474,
-          "views": 7358,
-          "source": "original-site"
-        },
-        {
-          "id": "l9GwCosk91o",
-          "capturedAt": 1793432059089,
-          "views": 9287,
+          "id": "XtJskkJZTXw",
+          "capturedAt": 1793434002940,
+          "views": 16232,
           "source": "youtube-data-api"
         }
       ]
@@ -1803,15 +2322,15 @@
       "title": "NEW CLASSES IN WORLD OF WARCRAFT FOREVER",
       "channel": "WOW-Timesaver",
       "publishedAt": 1793397880000,
-      "views": 5385,
+      "views": 6168,
       "url": "https://www.youtube.com/watch?v=E3zKDTo3jKg",
       "thumbnail": "https://i.ytimg.com/vi/E3zKDTo3jKg/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 1491,
+      "vph": 1450,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059209,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434003045,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -1823,89 +2342,11 @@
           "capturedAt": 1793432059209,
           "views": 5385,
           "source": "youtube-data-api"
-        }
-      ]
-    },
-    {
-      "id": "WJapDjuEdfA",
-      "title": "World of Warcraft Forever Taurens Getting The VIP Treatment?! #wowforever #memes #lythp",
-      "channel": "Lythp",
-      "publishedAt": 1793368944000,
-      "views": 53701,
-      "url": "https://www.youtube.com/watch?v=WJapDjuEdfA",
-      "thumbnail": "https://i.ytimg.com/vi/WJapDjuEdfA/mqdefault.jpg",
-      "isShort": true,
-      "velocityType": "measured-hourly",
-      "vph": 1405,
-      "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
-      "samples": [
-        {
-          "capturedAt": 1793427395082,
-          "views": 51881,
-          "source": "original-site"
         },
         {
-          "id": "WJapDjuEdfA",
-          "capturedAt": 1793432059089,
-          "views": 53701,
-          "source": "youtube-data-api"
-        }
-      ]
-    },
-    {
-      "id": "bny3G9X9OBA",
-      "title": "trying to sell my cooking profession in wow forever #wow #worldofwarcraft #warcraft",
-      "channel": "Shax",
-      "publishedAt": 1793391828000,
-      "views": 15889,
-      "url": "https://www.youtube.com/watch?v=bny3G9X9OBA",
-      "thumbnail": "https://i.ytimg.com/vi/bny3G9X9OBA/mqdefault.jpg",
-      "isShort": true,
-      "velocityType": "measured-hourly",
-      "vph": 1386,
-      "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
-      "samples": [
-        {
-          "capturedAt": 1793427398707,
-          "views": 14095,
-          "source": "original-site"
-        },
-        {
-          "id": "bny3G9X9OBA",
-          "capturedAt": 1793432059089,
-          "views": 15889,
-          "source": "youtube-data-api"
-        }
-      ]
-    },
-    {
-      "id": "KqkbtdEpEFw",
-      "title": "What's Going On With WoW Forever's Racials?",
-      "channel": "wowcrendor",
-      "publishedAt": 1793400693000,
-      "views": 12907,
-      "url": "https://www.youtube.com/watch?v=KqkbtdEpEFw",
-      "thumbnail": "https://i.ytimg.com/vi/KqkbtdEpEFw/mqdefault.jpg",
-      "isShort": false,
-      "velocityType": "measured-hourly",
-      "vph": 1318,
-      "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
-      "samples": [
-        {
-          "capturedAt": 1793427398291,
-          "views": 11201,
-          "source": "original-site"
-        },
-        {
-          "id": "KqkbtdEpEFw",
-          "capturedAt": 1793432059089,
-          "views": 12907,
+          "id": "E3zKDTo3jKg",
+          "capturedAt": 1793434003045,
+          "views": 6168,
           "source": "youtube-data-api"
         }
       ]
@@ -1915,15 +2356,15 @@
       "title": "World Of Warcraft Forever",
       "channel": "Galaxy Streams",
       "publishedAt": 1793397081000,
-      "views": 5633,
+      "views": 6391,
       "url": "https://www.youtube.com/watch?v=FCkZqn93Xig",
       "thumbnail": "https://i.ytimg.com/vi/FCkZqn93Xig/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 1312,
+      "vph": 1404,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059209,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434003045,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -1935,89 +2376,249 @@
           "capturedAt": 1793432059209,
           "views": 5633,
           "source": "youtube-data-api"
-        }
-      ]
-    },
-    {
-      "id": "97b2MbM8lYU",
-      "title": "WoW Forever: Best Pet for Every Single Family",
-      "channel": "Gladius Gaming",
-      "publishedAt": 1793392005000,
-      "views": 23092,
-      "url": "https://www.youtube.com/watch?v=97b2MbM8lYU",
-      "thumbnail": "https://i.ytimg.com/vi/97b2MbM8lYU/mqdefault.jpg",
-      "isShort": false,
-      "velocityType": "measured-hourly",
-      "vph": 1180,
-      "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
-      "samples": [
-        {
-          "capturedAt": 1793427398707,
-          "views": 21565,
-          "source": "original-site"
         },
         {
-          "id": "97b2MbM8lYU",
-          "capturedAt": 1793432059089,
-          "views": 23092,
+          "id": "FCkZqn93Xig",
+          "capturedAt": 1793434003045,
+          "views": 6391,
           "source": "youtube-data-api"
         }
       ]
     },
     {
-      "id": "5Guc0FIZ8yA",
-      "title": "PRIEST: EVERYTHING You NEED To Know In WoW Forever | WOW FOREVER",
-      "channel": "WillE",
-      "publishedAt": 1793345811000,
-      "views": 78233,
-      "url": "https://www.youtube.com/watch?v=5Guc0FIZ8yA",
-      "thumbnail": "https://i.ytimg.com/vi/5Guc0FIZ8yA/mqdefault.jpg",
-      "isShort": false,
+      "id": "l9GwCosk91o",
+      "title": "Love learning about the tech that powers games?",
+      "channel": "World of Warcraft",
+      "publishedAt": 1793404952000,
+      "views": 9937,
+      "url": "https://www.youtube.com/watch?v=l9GwCosk91o",
+      "thumbnail": "https://i.ytimg.com/vi/l9GwCosk91o/mqdefault.jpg",
+      "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 1005,
+      "vph": 1204,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
-          "capturedAt": 1793427392408,
-          "views": 76930,
+          "capturedAt": 1793427401474,
+          "views": 7358,
           "source": "original-site"
         },
         {
-          "id": "5Guc0FIZ8yA",
+          "id": "l9GwCosk91o",
           "capturedAt": 1793432059089,
-          "views": 78233,
+          "views": 9287,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "l9GwCosk91o",
+          "capturedAt": 1793434002940,
+          "views": 9937,
           "source": "youtube-data-api"
         }
       ]
     },
     {
-      "id": "kiu2BtQWfrc",
-      "title": "Blizzard Just Revealed So Much NEW Content For WoW:Forever",
-      "channel": "Doronsmovies",
-      "publishedAt": 1793397377000,
-      "views": 8471,
-      "url": "https://www.youtube.com/watch?v=kiu2BtQWfrc",
-      "thumbnail": "https://i.ytimg.com/vi/kiu2BtQWfrc/mqdefault.jpg",
+      "id": "vUVmyAiqSnQ",
+      "title": "More Changes For Mage & Druid In WoW Forever Were Just Datamined",
+      "channel": "Venruki",
+      "publishedAt": 1793398140000,
+      "views": 36573,
+      "url": "https://www.youtube.com/watch?v=vUVmyAiqSnQ",
+      "thumbnail": "https://i.ytimg.com/vi/vUVmyAiqSnQ/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 825,
+      "vph": 1167,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427398291,
-          "views": 7403,
+          "views": 33905,
           "source": "original-site"
         },
         {
-          "id": "kiu2BtQWfrc",
+          "id": "vUVmyAiqSnQ",
           "capturedAt": 1793432059089,
-          "views": 8471,
+          "views": 35943,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "vUVmyAiqSnQ",
+          "capturedAt": 1793434002940,
+          "views": 36573,
+          "source": "youtube-data-api"
+        }
+      ]
+    },
+    {
+      "id": "B9IoL1xyym0",
+      "title": "Hey @VivaLaDirtLeague! Why does this feel so familiar…?",
+      "channel": "World of Warcraft",
+      "publishedAt": 1793411341000,
+      "views": 8357,
+      "url": "https://www.youtube.com/watch?v=B9IoL1xyym0",
+      "thumbnail": "https://i.ytimg.com/vi/B9IoL1xyym0/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "measured-hourly",
+      "vph": 1104,
+      "estimate": false,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
+      "samples": [
+        {
+          "capturedAt": 1793427401474,
+          "views": 5781,
+          "source": "original-site"
+        },
+        {
+          "id": "B9IoL1xyym0",
+          "capturedAt": 1793432059089,
+          "views": 7761,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "B9IoL1xyym0",
+          "capturedAt": 1793434002940,
+          "views": 8357,
+          "source": "youtube-data-api"
+        }
+      ]
+    },
+    {
+      "id": "WJapDjuEdfA",
+      "title": "World of Warcraft Forever Taurens Getting The VIP Treatment?! #wowforever #memes #lythp",
+      "channel": "Lythp",
+      "publishedAt": 1793368944000,
+      "views": 54262,
+      "url": "https://www.youtube.com/watch?v=WJapDjuEdfA",
+      "thumbnail": "https://i.ytimg.com/vi/WJapDjuEdfA/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "measured-hourly",
+      "vph": 1039,
+      "estimate": false,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
+      "samples": [
+        {
+          "capturedAt": 1793427395082,
+          "views": 51881,
+          "source": "original-site"
+        },
+        {
+          "id": "WJapDjuEdfA",
+          "capturedAt": 1793432059089,
+          "views": 53701,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "WJapDjuEdfA",
+          "capturedAt": 1793434002940,
+          "views": 54262,
+          "source": "youtube-data-api"
+        }
+      ]
+    },
+    {
+      "id": "MdhZBttk3Bw",
+      "title": "This Profession BREAKS WoW Forever",
+      "channel": "NOHITJEROME",
+      "publishedAt": 1793388349000,
+      "views": 53355,
+      "url": "https://www.youtube.com/watch?v=MdhZBttk3Bw",
+      "thumbnail": "https://i.ytimg.com/vi/MdhZBttk3Bw/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "measured-hourly",
+      "vph": 1028,
+      "estimate": false,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
+      "samples": [
+        {
+          "capturedAt": 1793427398707,
+          "views": 50632,
+          "source": "original-site"
+        },
+        {
+          "id": "MdhZBttk3Bw",
+          "capturedAt": 1793432059089,
+          "views": 52800,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "MdhZBttk3Bw",
+          "capturedAt": 1793434002940,
+          "views": 53355,
+          "source": "youtube-data-api"
+        }
+      ]
+    },
+    {
+      "id": "bny3G9X9OBA",
+      "title": "trying to sell my cooking profession in wow forever #wow #worldofwarcraft #warcraft",
+      "channel": "Shax",
+      "publishedAt": 1793391828000,
+      "views": 16420,
+      "url": "https://www.youtube.com/watch?v=bny3G9X9OBA",
+      "thumbnail": "https://i.ytimg.com/vi/bny3G9X9OBA/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "measured-hourly",
+      "vph": 983,
+      "estimate": false,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
+      "samples": [
+        {
+          "capturedAt": 1793427398707,
+          "views": 14095,
+          "source": "original-site"
+        },
+        {
+          "id": "bny3G9X9OBA",
+          "capturedAt": 1793432059089,
+          "views": 15889,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "bny3G9X9OBA",
+          "capturedAt": 1793434002940,
+          "views": 16420,
+          "source": "youtube-data-api"
+        }
+      ]
+    },
+    {
+      "id": "KqkbtdEpEFw",
+      "title": "What's Going On With WoW Forever's Racials?",
+      "channel": "wowcrendor",
+      "publishedAt": 1793400693000,
+      "views": 13429,
+      "url": "https://www.youtube.com/watch?v=KqkbtdEpEFw",
+      "thumbnail": "https://i.ytimg.com/vi/KqkbtdEpEFw/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "measured-hourly",
+      "vph": 967,
+      "estimate": false,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
+      "samples": [
+        {
+          "capturedAt": 1793427398291,
+          "views": 11201,
+          "source": "original-site"
+        },
+        {
+          "id": "KqkbtdEpEFw",
+          "capturedAt": 1793432059089,
+          "views": 12907,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "KqkbtdEpEFw",
+          "capturedAt": 1793434002940,
+          "views": 13429,
           "source": "youtube-data-api"
         }
       ]
@@ -2027,15 +2628,15 @@
       "title": "You Might Want to RETHINK Your WoW Forever Main...",
       "channel": "PILAV TV",
       "publishedAt": 1793394004000,
-      "views": 13093,
+      "views": 13519,
       "url": "https://www.youtube.com/watch?v=TYsXxYB-PKM",
       "thumbnail": "https://i.ytimg.com/vi/TYsXxYB-PKM/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 692,
+      "vph": 789,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427398291,
@@ -2047,6 +2648,80 @@
           "capturedAt": 1793432059089,
           "views": 13093,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "TYsXxYB-PKM",
+          "capturedAt": 1793434002940,
+          "views": 13519,
+          "source": "youtube-data-api"
+        }
+      ]
+    },
+    {
+      "id": "kiu2BtQWfrc",
+      "title": "Blizzard Just Revealed So Much NEW Content For WoW:Forever",
+      "channel": "Doronsmovies",
+      "publishedAt": 1793397377000,
+      "views": 8761,
+      "url": "https://www.youtube.com/watch?v=kiu2BtQWfrc",
+      "thumbnail": "https://i.ytimg.com/vi/kiu2BtQWfrc/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "measured-hourly",
+      "vph": 537,
+      "estimate": false,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
+      "samples": [
+        {
+          "capturedAt": 1793427398291,
+          "views": 7403,
+          "source": "original-site"
+        },
+        {
+          "id": "kiu2BtQWfrc",
+          "capturedAt": 1793432059089,
+          "views": 8471,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "kiu2BtQWfrc",
+          "capturedAt": 1793434002940,
+          "views": 8761,
+          "source": "youtube-data-api"
+        }
+      ]
+    },
+    {
+      "id": "97b2MbM8lYU",
+      "title": "WoW Forever: Best Pet for Every Single Family",
+      "channel": "Gladius Gaming",
+      "publishedAt": 1793392005000,
+      "views": 23381,
+      "url": "https://www.youtube.com/watch?v=97b2MbM8lYU",
+      "thumbnail": "https://i.ytimg.com/vi/97b2MbM8lYU/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "measured-hourly",
+      "vph": 535,
+      "estimate": false,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
+      "samples": [
+        {
+          "capturedAt": 1793427398707,
+          "views": 21565,
+          "source": "original-site"
+        },
+        {
+          "id": "97b2MbM8lYU",
+          "capturedAt": 1793432059089,
+          "views": 23092,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "97b2MbM8lYU",
+          "capturedAt": 1793434002940,
+          "views": 23381,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -2055,15 +2730,15 @@
       "title": "blizzard on November 4th #wow #worldofwarcraft #warcraft",
       "channel": "Shax",
       "publishedAt": 1793391695000,
-      "views": 5865,
+      "views": 6098,
       "url": "https://www.youtube.com/watch?v=YAgGcYEFtok",
       "thumbnail": "https://i.ytimg.com/vi/YAgGcYEFtok/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 485,
+      "vph": 432,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427401474,
@@ -2075,6 +2750,12 @@
           "capturedAt": 1793432059089,
           "views": 5865,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "YAgGcYEFtok",
+          "capturedAt": 1793434002940,
+          "views": 6098,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -2083,15 +2764,15 @@
       "title": "I Tried WoW Forever as a New Player — Is It Worth It?",
       "channel": "Zilla",
       "publishedAt": 1793361638000,
-      "views": 38742,
+      "views": 38938,
       "url": "https://www.youtube.com/watch?v=OiSlEJ8x7T8",
       "thumbnail": "https://i.ytimg.com/vi/OiSlEJ8x7T8/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 474,
+      "vph": 363,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427395082,
@@ -2103,33 +2784,11 @@
           "capturedAt": 1793432059089,
           "views": 38742,
           "source": "youtube-data-api"
-        }
-      ]
-    },
-    {
-      "id": "MQGdDd10u-g",
-      "title": "Warcraft: Talebound Rewards MYTHIC GEAR And Tons of Cosmetics! Live Reactions",
-      "channel": "SoulSoBreezy",
-      "publishedAt": 1793389629000,
-      "views": 7800,
-      "url": "https://www.youtube.com/watch?v=MQGdDd10u-g",
-      "thumbnail": "https://i.ytimg.com/vi/MQGdDd10u-g/mqdefault.jpg",
-      "isShort": false,
-      "velocityType": "measured-hourly",
-      "vph": 375,
-      "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
-      "samples": [
-        {
-          "capturedAt": 1793427401474,
-          "views": 7315,
-          "source": "original-site"
         },
         {
-          "id": "MQGdDd10u-g",
-          "capturedAt": 1793432059089,
-          "views": 7800,
+          "id": "OiSlEJ8x7T8",
+          "capturedAt": 1793434002940,
+          "views": 38938,
           "source": "youtube-data-api"
         }
       ]
@@ -2139,15 +2798,15 @@
       "title": "It’s always the hunters fault in World Of Warcraft Forever #worldofwarcraft #wowforever",
       "channel": "The Dirty Casual",
       "publishedAt": 1793358021000,
-      "views": 6578,
+      "views": 6736,
       "url": "https://www.youtube.com/watch?v=wZX2_WZ9xCw",
       "thumbnail": "https://i.ytimg.com/vi/wZX2_WZ9xCw/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 280,
+      "vph": 293,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427395574,
@@ -2159,6 +2818,80 @@
           "capturedAt": 1793432059089,
           "views": 6578,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "wZX2_WZ9xCw",
+          "capturedAt": 1793434002940,
+          "views": 6736,
+          "source": "youtube-data-api"
+        }
+      ]
+    },
+    {
+      "id": "MQGdDd10u-g",
+      "title": "Warcraft: Talebound Rewards MYTHIC GEAR And Tons of Cosmetics! Live Reactions",
+      "channel": "SoulSoBreezy",
+      "publishedAt": 1793389629000,
+      "views": 7928,
+      "url": "https://www.youtube.com/watch?v=MQGdDd10u-g",
+      "thumbnail": "https://i.ytimg.com/vi/MQGdDd10u-g/mqdefault.jpg",
+      "isShort": false,
+      "velocityType": "measured-hourly",
+      "vph": 237,
+      "estimate": false,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
+      "samples": [
+        {
+          "capturedAt": 1793427401474,
+          "views": 7315,
+          "source": "original-site"
+        },
+        {
+          "id": "MQGdDd10u-g",
+          "capturedAt": 1793432059089,
+          "views": 7800,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "MQGdDd10u-g",
+          "capturedAt": 1793434002940,
+          "views": 7928,
+          "source": "youtube-data-api"
+        }
+      ]
+    },
+    {
+      "id": "o6dDhrwCAL0",
+      "title": "Tanking in World Of Warcraft Forever Be Like #worldofwarcraft #wowforever",
+      "channel": "The Dirty Casual",
+      "publishedAt": 1793361632000,
+      "views": 5484,
+      "url": "https://www.youtube.com/watch?v=o6dDhrwCAL0",
+      "thumbnail": "https://i.ytimg.com/vi/o6dDhrwCAL0/mqdefault.jpg",
+      "isShort": true,
+      "velocityType": "measured-hourly",
+      "vph": 89,
+      "estimate": false,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
+      "samples": [
+        {
+          "capturedAt": 1793427395082,
+          "views": 5332,
+          "source": "original-site"
+        },
+        {
+          "id": "o6dDhrwCAL0",
+          "capturedAt": 1793432059089,
+          "views": 5436,
+          "source": "youtube-data-api"
+        },
+        {
+          "id": "o6dDhrwCAL0",
+          "capturedAt": 1793434002940,
+          "views": 5484,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -2167,15 +2900,15 @@
       "title": "Helpful Druid Macros in WoW Forever",
       "channel": "Psybear_tv",
       "publishedAt": 1793367783000,
-      "views": 18807,
+      "views": 18849,
       "url": "https://www.youtube.com/watch?v=NNHRQWoJoYo",
       "thumbnail": "https://i.ytimg.com/vi/NNHRQWoJoYo/mqdefault.jpg",
       "isShort": false,
       "velocityType": "measured-hourly",
-      "vph": 115,
+      "vph": 78,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427395082,
@@ -2187,6 +2920,12 @@
           "capturedAt": 1793432059089,
           "views": 18807,
           "source": "youtube-data-api"
+        },
+        {
+          "id": "NNHRQWoJoYo",
+          "capturedAt": 1793434002940,
+          "views": 18849,
+          "source": "youtube-data-api"
         }
       ]
     },
@@ -2195,15 +2934,15 @@
       "title": "WOW MEME REWIND 7 #worldofwarcraft #warcraft #wowclassic #wowforever #wowmemes  #gamingmemes",
       "channel": "Eternian77",
       "publishedAt": 1793373046000,
-      "views": 6028,
+      "views": 6069,
       "url": "https://www.youtube.com/watch?v=gq72Jg297IY",
       "thumbnail": "https://i.ytimg.com/vi/gq72Jg297IY/mqdefault.jpg",
       "isShort": true,
       "velocityType": "measured-hourly",
-      "vph": 113,
+      "vph": 76,
       "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
+      "intervalMinutes": 32,
+      "latestObservedAt": 1793434002940,
       "samples": [
         {
           "capturedAt": 1793427395574,
@@ -2215,33 +2954,11 @@
           "capturedAt": 1793432059089,
           "views": 6028,
           "source": "youtube-data-api"
-        }
-      ]
-    },
-    {
-      "id": "o6dDhrwCAL0",
-      "title": "Tanking in World Of Warcraft Forever Be Like #worldofwarcraft #wowforever",
-      "channel": "The Dirty Casual",
-      "publishedAt": 1793361632000,
-      "views": 5436,
-      "url": "https://www.youtube.com/watch?v=o6dDhrwCAL0",
-      "thumbnail": "https://i.ytimg.com/vi/o6dDhrwCAL0/mqdefault.jpg",
-      "isShort": true,
-      "velocityType": "measured-hourly",
-      "vph": 80,
-      "estimate": false,
-      "intervalMinutes": 78,
-      "latestObservedAt": 1793432059089,
-      "samples": [
-        {
-          "capturedAt": 1793427395082,
-          "views": 5332,
-          "source": "original-site"
         },
         {
-          "id": "o6dDhrwCAL0",
-          "capturedAt": 1793432059089,
-          "views": 5436,
+          "id": "gq72Jg297IY",
+          "capturedAt": 1793434002940,
+          "views": 6069,
           "source": "youtube-data-api"
         }
       ]
