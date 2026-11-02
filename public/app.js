@@ -141,16 +141,18 @@ function ideaCard(item,i,data) {
     <small>${esc(s.channelName||'')} · ${age(s.publishedAt)}${Number.isFinite(s.views)?' · '+fmt(s.views)+' views':''}${Number.isFinite(s.growthPerHour)?' · '+fmt(s.growthPerHour)+' views/hour':''}</small>${s.description?`<p class="source-excerpt">${esc(s.description.slice(0,210))}</p>`:''}</li>`).join('');
   const angleList=angles.map((a,j)=>`<div class="idea-angle"><span class="idea-angle-number">${j+1}</span>
     <div><span class="idea-angle-type">${esc(a.type||'Creator angle')}</span><strong>${esc(a.title)}</strong><p>${esc(a.approach||'')}</p></div></div>`).join('');
-  return `<article class="idea-card opportunity-card">
-    <div class="idea-top"><span class="idea-index">${String(i+1).padStart(2,'0')}</span>
-    <span class="idea-format">${esc(item.category||item.format||'Discussion')}</span>
-    <span class="priority ${item.priority==='High'?'':'watch'}">${esc(item.priority||'Watch')}</span></div>
-    <div class="opportunity-heading"><h2 class="idea-title">${esc(item.title)}</h2>
-    ${score!==null?`<div class="opportunity-score" title="Discovery opportunity, not fact-check confidence"><strong>${score}</strong><small>/100 · Opportunity</small></div>`:''}</div>
-    <p class="idea-summary">${esc(item.summary||'Recent source, not yet verified.')}</p>
-    <div class="opportunity-metadata"><span>${age(item.publishedAt)}</span><span>${fmt(item.sourceCount||sources.length||1)} linked sources</span>
-    ${saved?`<span class="status-pill">${esc(status)}</span>`:''}</div>
-    <div class="opportunity-angles"><span class="eyebrow">DISTINCT CREATOR ANGLES</span>${angleList}</div>
+  return `<article class="idea-card opportunity-card ${expanded?'is-open':''}">
+    <button type="button" class="opportunity-trigger" data-expand="${esc(item.id)}" aria-expanded="${expanded}">
+      <span class="opportunity-row-index" aria-hidden="true">${String(i+1).padStart(2,'0')}</span>
+      <span class="opportunity-row-main"><span class="opportunity-row-title">${esc(item.title)}</span>
+      <span class="opportunity-row-meta">${esc(item.category||item.format||'Discussion')} · ${age(item.publishedAt)} · ${fmt(item.sourceCount||sources.length||1)} linked sources${saved?' · '+esc(status):''}</span></span>
+      ${item.priority==='High'?'<span class="opportunity-row-priority">High</span>':''}
+      ${score!==null?`<span class="opportunity-row-score" title="Discovery opportunity, not fact-check confidence">${score}<small>/100</small></span>`:''}
+      <span class="opportunity-chevron" aria-hidden="true"></span>
+    </button>
+    ${expanded?`<div class="opportunity-content">
+      <p class="idea-summary">${esc(item.summary||'Recent source, not yet verified.')}</p>
+      <div class="opportunity-angles"><span class="eyebrow">CREATOR ANGLES</span>${angleList}</div>
     ${brief?`<div class="ai-result"><strong>Automatically generated · Cloudflare AI</strong><p>Cached creative concepts based on source headlines—not verified gameplay claims.</p>
       <span class="eyebrow">TITLES</span><ol>${(brief.titles||[]).map(t=>`<li>${esc(t)}</li>`).join('')}</ol>
       <span class="eyebrow">THUMBNAIL TEXT</span><ul>${(brief.thumbnails||[]).map(t=>`<li>${esc(t)}</li>`).join('')}</ul>
@@ -165,16 +167,16 @@ function ideaCard(item,i,data) {
       ${status!=='Dismissed'?`<button class="small-action" data-idea-dismiss="${esc(item.id)}">Dismiss</button>`:''}
 
     </div>
-    <div class="expand"><button data-expand="${esc(item.id)}">${expanded?'− Hide evidence':'+ Evidence, scoring & recording plan'}</button>
-      ${safeURL(item.sourceUrl)?`<a class="small-link" href="${esc(safeURL(item.sourceUrl))}" target="_blank" rel="noopener noreferrer">PRIMARY SOURCE ↗</a>`:''}</div>
-    ${expanded?`<div class="idea-details"><strong>Why now</strong><p>${esc(item.whyNow||'')}</p>
+    <div class="opportunity-source-link">${safeURL(item.sourceUrl)?`<a class="small-link" href="${esc(safeURL(item.sourceUrl))}" target="_blank" rel="noopener noreferrer">View primary source ↗</a>`:''}</div>
+    <div class="idea-details"><strong>Why now</strong><p>${esc(item.whyNow||'')}</p>
       ${score!==null?`<strong>Discovery score breakdown (not factual certainty)</strong><p>${Object.entries(item.scoreBreakdown||{}).map(([k,v])=>esc(k.replace(/([A-Z])/g,' $1'))+': '+fmt(v)).join(' · ')}</p>`:''}
       <strong>Original source links</strong><ul class="idea-sources">${sourceList||`<li>${titleLink(item.sourceTitle||item.title,item.sourceUrl,'idea-source-title')}</li>`}</ul>
       <strong>Viewer payoff</strong><p>${esc(item.viewerPayoff||'')}</p>
       <strong>Research outline</strong><ol>${(item.outline||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
       <strong>Recording plan</strong><ol>${(item.recordingPlan||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
-      <p class="opportunity-disclaimer">${esc(item.coverage?.note||'Verify every claim from primary sources before publication.')}</p></div>`:''}
+      <p class="opportunity-disclaimer">${esc(item.coverage?.note||'Verify every claim from primary sources before publication.')}</p></div>
     ${window.RadarIntelligence.extra(item,state.ideaView==='for-you')}
+    </div>`:''}
   </article>`;
 }
 function ideasSection(data) {
@@ -192,7 +194,7 @@ function ideasSection(data) {
     `<div class="opportunity-toolbar"><div class="toolbar-left">${btnSegment([{id:'all',text:'All topics'},{id:'for-you',text:'For You'},{id:'high',text:'High opportunity'},{id:'saved',text:'Saved'}],state.ideaView,'idea-view')}
     <span class="toolbar-note">${visible.length} of ${all.length} topics</span></div>
     <button class="small-action" data-idea-dismissed="1">${state.showDismissed?'Hide dismissed':'Show dismissed'}</button></div>`+
-    `<div class="info-note"><strong>Automatic free-tier AI:</strong> Topic scoring and clustering remain code-based. Cloudflare Workers AI develops new creative titles and thumbnail ideas after scheduled scans and caches the results. ${data.contentCreation?.autoAIEnabled?`Enabled · ${fmt(data.contentCreation.aiUsedToday||0)} of ${fmt(data.contentCreation.aiDailyCap||6)} daily generation slots used`:'AI unavailable; code-generated angles remain visible'}. AI suggests angles from source headlines, not independently verified gameplay facts. No ChatGPT or paid OpenAI API is used.</div>`+
+    `<details class="opportunity-explainer"><summary>How opportunities and AI suggestions work</summary><div class="opportunity-explainer-body"><strong>Automatic free-tier AI:</strong> Topic scoring and clustering remain code-based. Cloudflare Workers AI develops new creative titles and thumbnail ideas after scheduled scans and caches the results. ${data.contentCreation?.autoAIEnabled?`Enabled · ${fmt(data.contentCreation.aiUsedToday||0)} of ${fmt(data.contentCreation.aiDailyCap||6)} daily generation slots used`:'AI unavailable; code-generated angles remain visible'}. AI suggests angles from source headlines, not independently verified gameplay facts. No ChatGPT or paid OpenAI API is used.</div></details>`+
     (visible.length?`<div class="ideas-grid">${visible.map((x,i)=>ideaCard(x,i,data)).join('')}</div>`:
       empty('No matching opportunities','Try All topics or check back after the next source scan.',false));
 }
@@ -376,7 +378,7 @@ document.addEventListener('click',async e=>{
     if(button.dataset.layout) {state.layout=button.dataset.layout;return render();}
     if(button.dataset.storyType) {state.storyType=button.dataset.storyType;return render();}
     if(button.dataset.storySort) {state.storySort=button.dataset.storySort;return render();}
-    if(button.dataset.expand) {const id=button.dataset.expand; if(state.expanded.has(id))state.expanded.delete(id);else state.expanded.add(id);return render();}
+    if(button.dataset.expand) {const id=button.dataset.expand; if(state.expanded.has(id))state.expanded.delete(id);else state.expanded.add(id);render();[...root.querySelectorAll('[data-expand]')].find(el=>el.dataset.expand===id)?.focus({preventScroll:true});return;}
     if(button.dataset.showDemo||button.id==='demo-toggle'||button.id==='exit-demo') {state.demo=button.id==='exit-demo'?false:!state.demo; return render();}
     if(button.dataset.unlock) {const token=window.prompt('Enter the rebuild ADMIN_TOKEN:'); if(token){state.adminToken=token;await fetchFeed();} return;}
     if(button.dataset.redditRemove!==undefined) {const idx=Number(button.dataset.redditRemove),items=redditSaved();if(!Number.isInteger(idx)||idx<0||idx>=items.length)return;items.splice(idx,1);try{localStorage.setItem(REDDIT_LOCAL_KEY,JSON.stringify(items));}catch{toast('Browser storage unavailable');return;}toast('Discussion removed');return render();}
