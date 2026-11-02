@@ -108,11 +108,14 @@ jobs:
               if response.status!=200:raise RuntimeError(path+' HTTP '+str(response.status))
               return response.read().decode('utf-8')
           html=get('/')
-          assert 'class="skip-link"' in html and 'id="refresh-feed"' in html and 'data-section="emerging"' in html, 'Creator navigation missing'
+          assert 'class="skip-link"' in html and 'id="refresh-feed"' in html, 'Accessible shell missing'
+          assert all('data-section="'+page+'"' in html for page in ('hot','stories','ideas','watchlist')), 'Primary navigation missing'
+          assert 'data-section="brief"' in html and 'data-section="settings"' in html, 'More menu missing'
           intelligence=get('/intelligence.js')
           assert 'RadarIntelligence' in intelligence, 'Creator research tools not deployed'
           js=get('/app.js')
           assert "hotSort:'velocity', popularSort:'views'" in js, 'Mode-specific sorting missing'
+          assert 'function videoTabs()' in js and 'class="advanced-filters"' in js, 'Focused video navigation missing'
           assert "event.key==='/'" in js and 'function redditDirectory()' in js, 'Search/Reddit UI missing'
           css=get('/style.css')
           assert 'Azeroth Radar 2026 interface refinement' in css, 'Refreshed stylesheet not deployed'
