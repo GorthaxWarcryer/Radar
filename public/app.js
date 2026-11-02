@@ -56,7 +56,7 @@ function videoBoard(title,sub,items,data) {
   return `<section class="panel"><div class="board-title"><h2>${esc(title)}<small>${esc(sub)}</small></h2><span class="count">${items.length}</span></div>${items.length?`<div class="${state.layout==='preview'?'card-grid':'video-list'}" style="${state.layout==='preview'?'padding:12px':''}">${items.map((v,i)=>renderVideo(v,data,i)).join('')}</div>`:empty(missingTitle,missingDetail,!searching)}</section>`;
 }
 function videoTabs() {
-  // A compact, consistent visual cue for each feed. Labels remain accessible text.
+  // Compact, consistent icons identify each feed without replacing accessible text labels.
   const icons={
     hot:'<path d="M12 22c4.97 0 9-4.03 9-9 0-3.17-1.63-5.47-3.17-7.06-.76 2.17-2.29 3.35-4.13 3.75.64-2.6-.24-5.88-2.46-7.69-1.1 3.36-2.54 5.51-5.62 8.18C4.03 11.56 3 13.42 3 15c0 3.87 4.03 7 9 7Z"/>',
     popular:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
