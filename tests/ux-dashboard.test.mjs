@@ -161,3 +161,25 @@ test('Ideas hide AI briefing and secondary choices until requested',()=>{
   assert.match(ideas,/class="opportunity-explainer"/);
   assert.ok(app.indexOf('opportunity-expanded-score')>app.indexOf('function ideaCard'));
 });
+
+test('HOT, Popular and Emerging have visible distinct accessible icons',()=>{
+  const code=extract('function videoTabs()', '\nfunction videoSection');
+  const ctx={state:{section:'hot'}};
+  vm.runInNewContext(code+'\nthis.videoTabs=videoTabs;',ctx);
+  const hot=ctx.videoTabs();
+  assert.match(hot,/role="group" aria-label="Video feed"/);
+  assert.equal((hot.match(/class="video-feed-tab /g)||[]).length,3);
+  for(const [id,label] of [['hot','HOT'],['popular','Popular'],['emerging','Emerging']]){
+    assert.match(hot,new RegExp('data-video-tab="'+id+'"'));
+    assert.match(hot,new RegExp('video-feed-tab-'+id));
+    assert.match(hot,new RegExp('<span>'+label+'</span>'));
+  }
+  assert.equal((hot.match(/class="video-tab-icon"/g)||[]).length,3);
+  assert.equal((hot.match(/aria-hidden="true" focusable="false"/g)||[]).length,3);
+  assert.match(hot,/data-video-tab="hot" aria-pressed="true"/);
+  ctx.state.section='emerging';
+  assert.match(ctx.videoTabs(),/data-video-tab="emerging" aria-pressed="true"/);
+  assert.match(css,/\.primary-feed-tabs \.video-feed-tab-hot \.video-tab-icon/);
+  assert.match(css,/\.primary-feed-tabs \.video-feed-tab-popular \.video-tab-icon/);
+  assert.match(css,/\.primary-feed-tabs \.video-feed-tab-emerging \.video-tab-icon/);
+});
