@@ -79,3 +79,26 @@ test('reduced motion and stable skeleton are available',()=>{
   assert.match(css,/\.loading-shell/);
   assert.ok(app.includes('Loading the latest collected signals'));
 });
+
+test('Blue Posts lead Stories ahead of other official updates and Reddit',()=>{
+  const code=extract('function storiesSection(data)', '\nfunction ideaCard');
+  const ctx={
+    state:{storyType:'all',storySort:'new'},
+    sectionTitle:()=>'',btnSegment:()=>'',
+    redditDirectory:()=>'<div>REDDIT DIRECTORY</div>',
+    renderStory:s=>`[${s.id}]`,empty:()=>'',Date,Number
+  };
+  vm.runInNewContext(code+'\nthis.storiesSection=storiesSection;',ctx);
+  const data={stories:[
+    {id:'reddit',source:'Reddit',publishedAt:300},
+    {id:'official',source:'Official',sourceId:'news',publishedAt:200},
+    {id:'blue',source:'Official',sourceId:'blue',publishedAt:100}
+  ]};
+  const output=ctx.storiesSection(data);
+  assert.ok(output.indexOf('[blue]')<output.indexOf('[official]'));
+  assert.ok(output.indexOf('[official]')<output.indexOf('REDDIT DIRECTORY'));
+  ctx.state.storyType='official';
+  assert.ok(!ctx.storiesSection(data).includes('REDDIT DIRECTORY'));
+  ctx.state.storyType='reddit';
+  assert.ok(!ctx.storiesSection(data).includes('[blue]'));
+});
