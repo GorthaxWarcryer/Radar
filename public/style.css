@@ -734,3 +734,29 @@ footer { font-weight:500; opacity:.7; }
 }
 .saved-filter-panel .segment { flex-wrap:wrap; }
 .saved-filter-panel .subtle-btn { align-self:flex-start; }
+
+
+/* Recognizable, restrained icons for the three discovery feeds. */
+.primary-feed-tabs .video-feed-tab {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-height:42px;
+  white-space:nowrap;
+}
+.primary-feed-tabs .video-tab-icon {
+  display:block;
+  flex:0 0 16px;
+  width:16px;
+  height:16px;
+  transition:transform .15s ease;
+}
+.primary-feed-tabs .video-feed-tab-hot .video-tab-icon { color:#ed8d51; }
+.primary-feed-tabs .video-feed-tab-popular .video-tab-icon { color:#dab46b; }
+.primary-feed-tabs .video-feed-tab-emerging .video-tab-icon { color:#5cbda9; }
+.primary-feed-tabs .video-feed-tab.active .video-tab-icon { transform:translateY(-1px); }
+@media(max-width:420px) {
+  .primary-feed-tabs .video-feed-tab { gap:5px; }
+  .primary-feed-tabs .video-tab-icon { width:15px; height:15px; flex-basis:15px; }
+}
