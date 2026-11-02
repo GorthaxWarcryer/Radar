@@ -226,9 +226,11 @@ function researchStatusPicker(item) {
 }
 function watchlistSection(data) {
   const saved=(data.saved||[]).filter(x=>state.researchStatus==='all'||(x.status||'New')===state.researchStatus);
-  if(data.savedPrivate) return sectionTitle('Your workspace','SAVED <span>WATCHLIST</span>','Private bookmarks and notes require the dashboard administrator token.')+`<section class="panel">${empty('Private watchlist locked','Unlock your saved notes with the rebuild’s administrator token.',false)}<div style="text-align:center;padding-bottom:27px"><button class="subtle-btn" data-unlock="1">Unlock watchlist</button></div></section>`;
-  return sectionTitle('Your workspace','SAVED <span>WATCHLIST</span>','Keep references and editorial notes in the rebuild’s local SQLite database. Original Sites bookmarks have not been transferred.') +
-    `<div class="toolbar" style="flex-wrap:wrap;gap:9px"><div class="toolbar-left">${btnSegment([{id:'all',text:'All'},{id:'New',text:'New'},{id:'Seen',text:'Seen'},{id:'Investigating',text:'Investigating'},{id:'Planned',text:'Planned'},{id:'Published',text:'Published'},{id:'Dismissed',text:'Dismissed'}],state.researchStatus,'research-filter')}</div><button class="subtle-btn" data-export-csv="1">Export CSV</button></div>`+
+  if(data.savedPrivate) return sectionTitle('','SAVED','')+`<section class="panel">${empty('Private watchlist locked','Unlock your saved notes with the rebuild’s administrator token.',false)}<div style="text-align:center;padding-bottom:27px"><button class="subtle-btn" data-unlock="1">Unlock watchlist</button></div></section>`;
+  return sectionTitle('','SAVED','') +
+    `<div class="toolbar compact-saved-toolbar"><span class="saved-count">${saved.length} saved items${state.researchStatus!=='all'?' · '+esc(state.researchStatus):''}</span>
+      <details class="secondary-filters"><summary>Filters & export</summary><div class="saved-filter-panel">${btnSegment([{id:'all',text:'All'},{id:'New',text:'New'},{id:'Seen',text:'Seen'},{id:'Investigating',text:'Investigating'},{id:'Planned',text:'Planned'},{id:'Published',text:'Published'},{id:'Dismissed',text:'Dismissed'}],state.researchStatus,'research-filter')}
+        <button class="subtle-btn" data-export-csv="1">Export CSV</button></div></details></div>`+
     (saved.length?`<section class="panel"><table class="saved-table"><thead><tr><th>Saved source</th><th>Status</th><th>Note</th><th>Actions</th></tr></thead><tbody>${saved.map(s=>`<tr><td>${titleLink(s.title,s.url,'')}<div class="video-time">${esc(s.kind)} · ${time(s.savedAt)}</div></td><td>${researchStatusPicker(s)}</td><td><textarea aria-label="Note for ${esc(s.title)}" id="note-${esc(s.id)}" data-note="${esc(s.id)}">${esc(s.note||'')}</textarea></td><td><button class="small-action" data-note-save="${esc(s.id)}">Save note</button> <button class="small-action" data-remove="${esc(s.id)}">Remove</button></td></tr>`).join('')}</tbody></table></section>`:empty('No saved sources','Save a qualifying video, Reddit discussion, or official post to build your research watchlist.'));
 }
 function channelsSection(data) {
@@ -465,6 +467,8 @@ document.addEventListener('keydown',event=>{
   }
   if(event.key==='/'&&!event.ctrlKey&&!event.metaKey&&!event.altKey&&!isEditing()&&['hot','popular'].includes(state.section)){
     event.preventDefault();
+    const panel=root.querySelector('.advanced-filters');
+    if(panel){panel.open=true;state.filtersOpen=true;}
     $('#video-filter')?.focus();
   }
 });
