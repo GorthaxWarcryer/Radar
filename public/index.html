@@ -22,22 +22,13 @@
       <div class="brand-mark" aria-hidden="true"><span class="brand-core"></span></div>
       <div><strong>AZEROTH<span>RADAR</span></strong><small>CREATOR INTELLIGENCE</small></div>
     </a>
-    <div class="sidebar-label">DISCOVER</div>
-    <nav class="side-nav" id="side-nav" aria-label="Sections">
-      <button class="nav-link active" data-section="hot"><span class="nav-ico">↗</span>HOT <span class="mini-hot">HOURLY</span></button>
-      <button class="nav-link" data-section="popular"><span class="nav-ico">▦</span>Popular</button>
-      <button class="nav-link" data-section="emerging"><span class="nav-ico">◈</span>Emerging</button>
-      <button class="nav-link" data-section="stories"><span class="nav-ico">▤</span>Stories</button>
-      <button class="nav-link" data-section="ideas"><span class="nav-ico">✦</span>Content Creation</button>
+    <nav class="side-nav primary-nav" id="side-nav" aria-label="Main sections">
+      <button class="nav-link active" data-section="hot"><span class="nav-ico" aria-hidden="true">↗</span> Videos</button>
+      <button class="nav-link" data-section="stories"><span class="nav-ico" aria-hidden="true">▤</span> Updates</button>
+      <button class="nav-link" data-section="ideas"><span class="nav-ico" aria-hidden="true">✦</span> Ideas</button>
+      <button class="nav-link" data-section="watchlist"><span class="nav-ico" aria-hidden="true">☆</span> Saved</button>
     </nav>
-    <div class="sidebar-label second-label">YOUR WORKSPACE</div>
-    <nav class="side-nav" aria-label="Workspace sections">
-      <button class="nav-link" data-section="brief"><span class="nav-ico">☷</span>Daily Brief</button>
-      <button class="nav-link" data-section="watchlist"><span class="nav-ico">☆</span>Watchlist</button>
-      <button class="nav-link" data-section="channels"><span class="nav-ico">◉</span>Channels</button>
-      <button class="nav-link" data-section="activity"><span class="nav-ico">◷</span>Scan Activity</button>
-      <button class="nav-link" data-section="settings"><span class="nav-ico">⚙</span>Settings</button>
-    </nav>
+    <div class="sidebar-secondary-note">Video discovery · Official sources · Creator research</div>
     <div class="side-bottom">
       <div class="status-dot-label"><i class="status-dot"></i><span id="connection-label">Checking sources…</span></div>
       <span class="side-version">AZEROTH RADAR · CREATOR DASHBOARD</span>
@@ -46,21 +37,32 @@
   <div class="main-area">
     <header class="topbar">
       <div class="mobile-brand"><div class="brand-mark small" aria-hidden="true"><span class="brand-core"></span></div><b>AZEROTH <em>RADAR</em></b></div>
-      <div class="crumb"><span>DISCOVER</span><span class="slash">/</span><strong id="crumb-section">HOT</strong></div>
+      <div class="crumb"><strong id="crumb-section">Videos</strong></div>
       <div class="top-actions">
         <div class="sync-label" role="status" aria-live="polite"><i class="status-dot"></i><span id="sync-label">Waiting for feed</span></div>
         <button class="subtle-btn refresh-btn" id="refresh-feed" type="button" title="Refresh the latest collected data" aria-label="Refresh the latest collected data"><span aria-hidden="true">↻</span> <span class="refresh-label">Refresh</span></button>
-        <button class="subtle-btn demo-btn" id="demo-toggle" type="button" title="Preview sample layout">Demo</button>
+        <details class="more-menu"><summary aria-label="More sections">More <span aria-hidden="true">⌄</span></summary>
+          <div class="more-menu-panel" role="group" aria-label="More sections">
+            <button type="button" data-section="brief">Daily Brief</button>
+            <button type="button" data-section="channels">Channels</button>
+            <button type="button" data-section="activity">Scan Activity</button>
+            <button type="button" data-section="settings">Settings</button>
+            <button type="button" id="demo-toggle" class="more-demo-toggle">Demo preview</button>
+          </div>
+        </details>
         
       </div>
     </header>
-    <nav class="mobile-nav" aria-label="Mobile sections" id="mobile-nav">
-      <button class="active" data-section="hot">HOT</button><button data-section="popular">Popular</button><button data-section="emerging">Emerging</button><button data-section="stories">Stories</button><button data-section="ideas">Creation</button><button data-section="brief">Brief</button><button data-section="watchlist">Saved</button><button data-section="channels">Channels</button><button data-section="activity">Activity</button><button data-section="settings">Settings</button>
+    <nav class="mobile-nav" aria-label="Main sections" id="mobile-nav">
+      <button class="active" data-section="hot">Videos</button>
+      <button data-section="stories">Updates</button>
+      <button data-section="ideas">Ideas</button>
+      <button data-section="watchlist">Saved</button>
     </nav>
     <main class="main-content" id="main-content" tabindex="-1">
       <div id="demo-warning" class="demo-warning hidden"><span>PREVIEW MODE</span> Sample cards and metrics are illustrative, not live YouTube/Reddit data. <button id="exit-demo">Use live feed</button></div>
       <div id="main-view" aria-label="Azeroth Radar dashboard"></div>
-      <footer><span>AZEROTH RADAR · CONTENT INTELLIGENCE</span><span>Source-backed signals. Never confuse total views with measured growth.</span></footer>
+      <footer><span>AZEROTH RADAR</span><span>Source-backed creator research</span></footer>
     </main>
   </div>
 </div>
