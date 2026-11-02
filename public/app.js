@@ -1,4 +1,5 @@
 'use strict';
+// Focus UI: four primary sections; historical page links and research controls remain supported.
 const root = document.getElementById('main-view');
 const $ = s => document.querySelector(s);
 const preferences = { theme: 'azeroth-radar-theme' };
