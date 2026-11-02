@@ -139,12 +139,12 @@ function storiesSection(data) {
   const official=showOfficial?order(all.filter(s=>s.source==="Official")).sort((a,b)=>Number(b.sourceId==="blue")-Number(a.sourceId==="blue")):[];
   const storyTool=btnSegment([{id:"all",text:"All"},{id:"reddit",text:"Reddit"},{id:"official",text:"Official"}],state.storyType,"story-type");
   const sortTool=(previous.length||official.length)?btnSegment([{id:"new",text:"Newest"},{id:"score",text:"Top score"},{id:"comments",text:"Most comments"}],state.storySort,"story-sort"):"";
-  const sectionLabel=state.storyType==="official"?"Official Blizzard announcements and WoW blue posts published in the past 48 hours.":"Browse active WoW conversations directly on Reddit, save interesting links locally, and see official Blizzard posts in Stories. No Reddit API or scraping.";
-  return sectionTitle("Community & Official","LATEST <span>STORIES</span>",sectionLabel)+
-    `<div class="toolbar"><div class="toolbar-left">${storyTool}</div><div class="toolbar-right">${sortTool}</div></div>`+
-    (showOfficial?`<section class="reddit-official"><h2>OFFICIAL <span>UPDATES</span></h2>${official.length?`<div class="stories-grid">${official.map(s=>renderStory(s,data)).join("")}</div>`:empty("No recent official updates","Blizzard news and blue posts appear here when the official source collector finds qualifying posts.",false)}</section>`:"")+
-    (showReddit?redditDirectory():"")+
-    (previous.length?`<section class="reddit-previous"><h2>Previously imported Reddit discussions</h2><div class="stories-grid">${previous.map(s=>renderStory(s,data)).join("")}</div></section>`:"");
+  return sectionTitle("","UPDATES","")+
+    `<div class="toolbar compact-update-toolbar"><div class="toolbar-left">${storyTool}</div><div class="toolbar-right">${sortTool?`<details class="secondary-filters"><summary>Sort</summary>${sortTool}</details>`:''}</div></div>`+
+    (showOfficial?`<section class="reddit-official"><h2>BLUE POSTS & <span>OFFICIAL UPDATES</span></h2>${official.length?`<div class="stories-grid">${official.map(s=>renderStory(s,data)).join("")}</div>`:empty("No recent official updates","New posts will appear here when the collector finds them.",false)}</section>`:"")+
+    (showReddit?(state.storyType==="reddit"?redditDirectory():`<details class="reddit-discovery"><summary>Explore Reddit discussions</summary>${redditDirectory()}</details>`):"")+
+    (previous.length?`<section class="reddit-previous"><h2>Community discussions</h2><div class="stories-grid">${previous.map(s=>renderStory(s,data)).join("")}</div></section>`:"");
+
 }
 
 function ideaCard(item,i,data) {
@@ -165,12 +165,11 @@ function ideaCard(item,i,data) {
       <span class="opportunity-row-index" aria-hidden="true">${String(i+1).padStart(2,'0')}</span>
       <span class="opportunity-row-main"><span class="opportunity-row-title">${esc(item.title)}</span>
       <span class="opportunity-row-meta">${esc(item.category||item.format||'Discussion')} · ${age(item.publishedAt)} · ${fmt(item.sourceCount||sources.length||1)} linked sources${saved?' · '+esc(status):''}</span></span>
-      ${item.priority==='High'?'<span class="opportunity-row-priority">High</span>':''}
-      ${score!==null?`<span class="opportunity-row-score" title="Discovery opportunity, not fact-check confidence">${score}<small>/100</small></span>`:''}
-      <span class="opportunity-chevron" aria-hidden="true"></span>
+        <span class="opportunity-chevron" aria-hidden="true"></span>
     </button>
     ${expanded?`<div class="opportunity-content">
       <p class="idea-summary">${esc(item.summary||'Recent source, not yet verified.')}</p>
+      ${score!==null?`<div class="opportunity-expanded-score">Opportunity score: <strong>${score}/100</strong> · ${esc(item.priority||'Watch')}</div>`:''}
       <div class="opportunity-angles"><span class="eyebrow">CREATOR ANGLES</span>${angleList}</div>
     ${brief?`<div class="ai-result"><strong>Automatically generated · Cloudflare AI</strong><p>Cached creative concepts based on source headlines—not verified gameplay claims.</p>
       <span class="eyebrow">TITLES</span><ol>${(brief.titles||[]).map(t=>`<li>${esc(t)}</li>`).join('')}</ol>
@@ -208,14 +207,18 @@ function ideasSection(data) {
     if(state.ideaView==='for-you'&&window.RadarIntelligence.votes()[x.id]==='not-relevant')return false;
     return true;
   }).sort((a,b)=>state.ideaView==='for-you'?window.RadarIntelligence.score(b)-window.RadarIntelligence.score(a):0);
-  return sectionTitle('Signals to original stories','CONTENT <span>OPPORTUNITIES</span>',
-    'Scan the headlines. Expand a topic to view angles, AI ideas, sources and recording plans.')+
-    `<div class="opportunity-toolbar"><div class="toolbar-left">${btnSegment([{id:'all',text:'All topics'},{id:'for-you',text:'For You'},{id:'high',text:'High opportunity'},{id:'saved',text:'Saved'}],state.ideaView,'idea-view')}
-    <span class="toolbar-note">${visible.length} of ${all.length} topics</span></div>
-    <button class="small-action" data-idea-dismissed="1">${state.showDismissed?'Hide dismissed':'Show dismissed'}</button></div>`+
-    `<details class="opportunity-explainer"><summary>How opportunities and AI suggestions work</summary><div class="opportunity-explainer-body"><strong>Automatic free-tier AI:</strong> Topic scoring and clustering remain code-based. Cloudflare Workers AI develops new creative titles and thumbnail ideas after scheduled scans and caches the results. ${data.contentCreation?.autoAIEnabled?`Enabled · ${fmt(data.contentCreation.aiUsedToday||0)} of ${fmt(data.contentCreation.aiDailyCap||6)} daily generation slots used`:'AI unavailable; code-generated angles remain visible'}. AI suggests angles from source headlines, not independently verified gameplay facts. No ChatGPT or paid OpenAI API is used.</div></details>`+
+  return sectionTitle('','IDEAS','')+
+    `<div class="opportunity-toolbar"><div class="toolbar-left">${btnSegment([{id:'all',text:'All'},{id:'for-you',text:'For You'}],state.ideaView,'idea-view')}
+      ${['high','saved'].includes(state.ideaView)?`<span class="active-idea-filter">${state.ideaView==='high'?'High opportunity':'Saved'}</span>`:''}</div>
+      <details class="secondary-filters"><summary>Filters</summary>
+        <div class="idea-filter-options">${btnSegment([{id:'all',text:'All'},{id:'high',text:'High opportunity'},{id:'saved',text:'Saved'}],state.ideaView,'idea-view')}
+          <button class="small-action" data-idea-dismissed="1">${state.showDismissed?'Hide dismissed':'Show dismissed'}</button></div>
+      </details></div>`+
     (visible.length?`<div class="ideas-grid">${visible.map((x,i)=>ideaCard(x,i,data)).join('')}</div>`:
-      empty('No matching opportunities','Try All topics or check back after the next source scan.',false));
+      empty('No matching opportunities','Try All or check back after the next source scan.',false))+
+    `<details class="idea-brief"><summary>Daily editorial brief</summary><div class="idea-brief-body">${window.RadarIntelligence.digest(data)}</div></details>`+
+    `<details class="opportunity-explainer"><summary>How suggestions work</summary><div class="opportunity-explainer-body">Topic scoring and clustering remain code-based. Cloudflare Workers AI creates cached ideas from source headlines when enabled, within its free-tier allowance. Verify gameplay claims against original sources. No paid OpenAI API is used.</div></details>`;
+
 }
 function researchStatusPicker(item) {
   const statuses=state.feed?.researchStatuses||['New','Seen','Investigating','Planned','Published','Dismissed'];
