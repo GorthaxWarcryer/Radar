@@ -44,7 +44,7 @@ test('HOT defaults to measured growth, Popular defaults to lifetime views',()=>{
   const ctx={
     state:{kind:'long',layout:'list',hotSort:'velocity',popularSort:'views',
       searchTerm:'',viewWindow:'48',section:'hot'},
-    sectionTitle:()=>'',statCards:()=>'',btnSegment:()=>'',esc:x=>String(x),
+    sectionTitle:()=>'',statCards:()=>'',btnSegment:()=>'',videoTabs:()=>'',esc:x=>String(x),
     videoBoard:(title,sub,items)=>title+':'+items.map(v=>v.id).join(',')+';',
     Date,Number
   };
@@ -136,4 +136,28 @@ test('Content Creation opportunities collapse to headlines and expand all origin
   assert.match(opened,/Personal relevance tools/);
   assert.match(css,/\.ideas-grid\s*\{\s*grid-template-columns:minmax\(0,1fr\)/);
   assert.match(app,/<details class="opportunity-explainer">/);
+});
+
+test('four primary sections are visible and secondary tools remain available under More',()=>{
+  const primary=html.slice(html.indexOf('<nav class="side-nav primary-nav"'),html.indexOf('</nav>',html.indexOf('<nav class="side-nav primary-nav"')));
+  assert.deepEqual([...primary.matchAll(/data-section="([^"]+)"/g)].map(m=>m[1]),['hot','stories','ideas','watchlist']);
+  const mobile=html.slice(html.indexOf('<nav class="mobile-nav"'),html.indexOf('</nav>',html.indexOf('<nav class="mobile-nav"')));
+  assert.equal([...mobile.matchAll(/data-section="/g)].length,4);
+  for(const section of ['brief','channels','activity','settings'])assert.match(html,new RegExp('data-section="'+section+'"'));
+  assert.match(app,/videoPages=\['hot','popular','emerging'\]/);
+  assert.match(app,/button\.dataset\.videoTab/);
+});
+test('video tabs show essential format toggle and collapse extra filters and statistics',()=>{
+  assert.match(app,/function videoTabs\(\)/);
+  assert.match(app,/class="advanced-filters"/);
+  assert.match(app,/class="filter-methodology"/);
+  assert.match(app,/class="video-metrics"/);
+  assert.doesNotMatch(app.slice(app.indexOf('function videoSection'),app.indexOf('const REDDIT_LOCAL_KEY')),/\+\s*statCards\(data\)\+/);
+});
+test('Ideas hide AI briefing and secondary choices until requested',()=>{
+  const ideas=extract('function ideasSection(data)', '\nfunction researchStatusPicker');
+  assert.match(ideas,/class="idea-brief"/);
+  assert.match(ideas,/class="secondary-filters"/);
+  assert.match(ideas,/class="opportunity-explainer"/);
+  assert.ok(app.indexOf('opportunity-expanded-score')>app.indexOf('function ideaCard'));
 });
