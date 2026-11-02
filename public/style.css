@@ -608,3 +608,114 @@ footer { color:var(--muted2); font-size:10px; line-height:1.7; }
   .opportunity-chevron { flex-basis:26px; width:26px; height:26px; }
   .opportunity-content { padding:17px 14px 20px; }
 }
+
+
+/* Azeroth Radar Focus UI — simplify the default reading path without removing controls */
+.site-shell { grid-template-columns:200px minmax(0,1fr); }
+.sidebar { padding:24px 12px 18px; }
+.sidebar .brand { padding-bottom:29px; }
+.sidebar .brand strong { font-size:20px; }
+.sidebar .brand small,.sidebar-secondary-note,.sidebar .side-version { display:none; }
+.primary-nav { gap:3px; }
+.primary-nav .nav-link { min-height:47px; padding:12px 13px; font-size:13px; border:0; }
+.primary-nav .nav-link.active { background:var(--panel2); color:var(--accent); }
+.primary-nav .nav-ico { font-size:17px; width:20px; }
+.main-content { width:min(100%,1260px); padding:27px clamp(18px,3vw,45px) 50px; }
+.section-header { margin-bottom:17px; }
+.section-header h1 { font-family:'DM Sans',sans-serif; font-size:clamp(25px,2.7vw,34px); letter-spacing:-.7px; text-transform:none; margin:0; line-height:1.22; }
+.section-header h1 span { color:inherit; }
+.section-header .hero-kicker:empty,.section-header .section-description:empty { display:none; }
+.section-header .hero-kicker { font-size:9px; letter-spacing:.6px; }
+.section-header .hero-kicker:before { display:none; }
+.section-header .section-description { font-size:12px; }
+.topbar .crumb > span { display:none; }
+.topbar .crumb strong { font-size:12px; }
+.top-actions { gap:9px; }
+.more-menu { position:relative; font-size:12px; }
+.more-menu > summary,.advanced-filters > summary,.secondary-filters > summary {
+  list-style:none; cursor:pointer; color:var(--muted); font-weight:700;
+  border:1px solid var(--border); background:var(--panel); border-radius:7px;
+  padding:9px 12px; min-height:36px; display:flex; align-items:center; gap:7px;
+}
+.more-menu > summary::-webkit-details-marker,.advanced-filters > summary::-webkit-details-marker,.secondary-filters > summary::-webkit-details-marker { display:none; }
+.more-menu > summary:hover,.advanced-filters > summary:hover,.secondary-filters > summary:hover { color:var(--text); border-color:var(--accent); }
+.more-menu > summary:focus-visible,.advanced-filters > summary:focus-visible,.secondary-filters > summary:focus-visible,.reddit-discovery > summary:focus-visible,.idea-brief > summary:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+.more-menu-panel { position:absolute; right:0; top:calc(100% + 6px); z-index:30; width:190px; border:1px solid var(--border); background:var(--panel); box-shadow:var(--shadow); border-radius:8px; padding:6px; }
+.more-menu-panel button { display:block; width:100%; border:0; background:none; color:var(--text); text-align:left; font-size:12px; padding:11px; border-radius:5px; cursor:pointer; }
+.more-menu-panel button:hover,.more-menu-panel button.active { background:var(--panel2); color:var(--accent); }
+.primary-feed-tabs { margin:0 0 15px; }
+.primary-feed-tabs .segment { background:transparent; border:0; border-bottom:1px solid var(--border); border-radius:0; width:100%; padding:0; gap:4px; }
+.primary-feed-tabs .segment button { font-size:13px; padding:12px 17px; border-radius:0; border-bottom:2px solid transparent; }
+.primary-feed-tabs .segment button.active { background:transparent; box-shadow:none; border-bottom-color:var(--accent); color:var(--text); }
+.compact-video-toolbar,.compact-update-toolbar,.opportunity-toolbar { margin-bottom:14px; }
+.compact-video-toolbar .segment button,.compact-update-toolbar .segment button,.opportunity-toolbar .segment button { padding:8px 13px; font-size:11px; }
+.advanced-filters,.secondary-filters { position:relative; }
+.advanced-filters .filter-panel { position:absolute; right:0; top:calc(100% + 7px); width:min(480px,calc(100vw - 36px)); background:var(--panel); border:1px solid var(--border); border-radius:9px; box-shadow:var(--shadow); z-index:9; padding:18px; display:grid; gap:14px; }
+.filter-panel .filter-search { display:flex; gap:7px; align-items:center; flex-wrap:wrap; }
+.filter-panel .filter-search label { font-size:11px; width:100%; }
+.filter-panel .filter-search-control { flex:1; min-width:180px; }
+.filter-panel .filter-options { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; }
+.filter-panel .filter-options > span { font-size:11px; color:var(--muted); }
+.filter-panel .filter-methodology { border-top:1px solid var(--border-soft); padding-top:12px; font-size:11px; color:var(--muted); }
+.filter-panel .filter-methodology summary { cursor:pointer; }
+.filter-panel .filter-methodology .stats { margin:12px 0; grid-template-columns:repeat(2,minmax(0,1fr)); }
+.filter-panel .filter-methodology .stat { min-height:72px; padding:10px; }
+.filter-panel .filter-methodology .stat-value { font-size:22px; }
+.minimal-video-board.section-split { display:grid; grid-template-columns:1fr; gap:18px; }
+.minimal-video-board .panel { border:1px solid var(--border-soft); }
+.minimal-video-board .board-title { padding:13px 18px; border-bottom:1px solid var(--border-soft); }
+.minimal-video-board .board-title h2 { font-family:'DM Sans',sans-serif; font-size:13px; text-transform:none; letter-spacing:0; }
+.minimal-video-board .board-title h2 small { font-size:10px; }
+.minimal-video-board .video-list { padding:5px 10px; }
+.minimal-video-board .video-item { grid-template-columns:142px minmax(0,1fr); gap:15px; padding:12px 8px; border-bottom:1px solid var(--border-soft); border-radius:0; }
+.minimal-video-board .video-item:last-child { border-bottom:0; }
+.minimal-video-board .video-title { font-size:14px; line-height:1.38; font-weight:700; margin:0 0 5px; }
+.minimal-video-board .video-channel { font-size:11px; }
+.minimal-video-board .video-bottom { justify-content:flex-start; gap:9px; margin-top:7px; }
+.minimal-video-board .video-number { font-size:20px; }
+.minimal-video-board .video-number small { text-transform:none; letter-spacing:0; font-size:10px; }
+.minimal-video-board .bookmark { margin-left:6px; }
+.video-metrics,.video-row-more { font-size:10px; color:var(--muted2); }
+.video-metrics > summary { cursor:pointer; font-size:10px; padding:5px 0; }
+.video-metrics > span { display:block; padding:5px 0; }
+.video-row-more > summary { cursor:pointer; padding:7px; list-style:none; }
+.video-row-more > summary::-webkit-details-marker { display:none; }
+.video-row-actions { padding:8px 0; }
+.reddit-official > h2,.reddit-previous > h2 { font-family:'DM Sans',sans-serif; text-transform:none; font-size:15px; letter-spacing:0; margin:12px 0; }
+.reddit-official > h2 span { color:var(--text); }
+.reddit-official .stories-grid,.reddit-previous .stories-grid { grid-template-columns:1fr; gap:6px; }
+.reddit-official .story-card,.reddit-previous .story-card { padding:14px 17px; border-color:var(--border-soft); gap:7px; }
+.reddit-official .story-title,.reddit-previous .story-title { font-size:14px; }
+.reddit-official .story-summary,.reddit-previous .story-summary { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; font-size:11px; margin:0; }
+.reddit-discovery,.idea-brief { margin:16px 0; border:1px solid var(--border-soft); background:var(--panel); border-radius:8px; }
+.reddit-discovery > summary,.idea-brief > summary { padding:14px 16px; cursor:pointer; font-size:13px; font-weight:700; }
+.reddit-discovery .reddit-hub { margin:0 12px 15px; }
+.reddit-discovery .reddit-manual { margin:0 12px 15px; }
+.reddit-hub-header p,.reddit-fineprint,.reddit-noapi,.reddit-community-head p,.reddit-manual > p { display:none; }
+.reddit-community { padding:10px; }
+.reddit-community-grid { gap:8px; }
+.idea-brief-body { padding:14px; border-top:1px solid var(--border-soft); }
+.opportunity-expanded-score { margin:2px 0 13px; font-size:11px; color:var(--muted); }
+.opportunity-row-meta { font-size:10px; }
+.idea-filter-options { position:absolute; top:calc(100% + 7px); right:0; z-index:9; display:grid; gap:11px; min-width:270px; max-width:calc(100vw - 36px); padding:13px; border:1px solid var(--border); border-radius:8px; background:var(--panel); box-shadow:var(--shadow); }
+.idea-filter-options .segment { flex-wrap:wrap; }
+.active-idea-filter { font-size:11px; color:var(--accent); font-weight:700; }
+.opportunity-explainer { margin-top:10px; }
+footer { font-weight:500; opacity:.7; }
+@media(max-width:900px) {
+  .site-shell { display:block; }
+  .more-menu-panel { right:0; }
+}
+@media(max-width:650px) {
+  .main-content { padding:20px 12px 36px; }
+  .section-header h1 { font-size:25px; }
+  .topbar .sync-label { display:none; }
+  .mobile-nav { gap:8px; justify-content:space-between; }
+  .mobile-nav button { padding:12px 7px; font-size:11px; }
+  .primary-feed-tabs .segment button { flex:1; padding:11px 6px; }
+  .minimal-video-board .video-item { grid-template-columns:112px minmax(0,1fr); gap:10px; padding:10px 4px; }
+  .minimal-video-board .video-title { font-size:12px; }
+  .minimal-video-board .video-number { font-size:18px; }
+  .compact-video-toolbar { align-items:center; }
+  .more-menu > summary { padding:7px 9px; }
+}
