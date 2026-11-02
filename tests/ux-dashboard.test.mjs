@@ -183,3 +183,10 @@ test('HOT, Popular and Emerging have visible distinct accessible icons',()=>{
   assert.match(css,/\.primary-feed-tabs \.video-feed-tab-popular \.video-tab-icon/);
   assert.match(css,/\.primary-feed-tabs \.video-feed-tab-emerging \.video-tab-icon/);
 });
+
+test('Videos open as cards by default while List remains selectable',()=>{
+  assert.match(app,/section: 'hot', kind: 'long', layout: 'preview'/);
+  assert.match(app,/\{id:'list',text:'List'\},\{id:'preview',text:'Cards'\}/);
+  assert.match(app,/state\.layout==='preview'\?'card-grid':'video-list'/);
+  assert.match(app,/if\(button\.dataset\.layout\) \{state\.layout=button\.dataset\.layout;return render\(\);\}/);
+});
