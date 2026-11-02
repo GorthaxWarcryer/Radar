@@ -102,3 +102,38 @@ test('Blue Posts lead Stories ahead of other official updates and Reddit',()=>{
   ctx.state.storyType='reddit';
   assert.ok(!ctx.storiesSection(data).includes('[blue]'));
 });
+
+test('Content Creation opportunities collapse to headlines and expand all original research details',()=>{
+  const code=extract('function ideaCard(item,i,data)', '\nfunction ideasSection');
+  const ctx={
+    state:{expanded:new Set(),ideaView:'all'},
+    window:{RadarIntelligence:{extra:()=>'<div>Personal relevance tools</div>'}},
+    esc:x=>String(x),fmt:x=>String(x),age:()=> '2h ago',safeURL:()=>'',titleLink:x=>x,Number,Object,String
+  };
+  vm.runInNewContext(code+'\nthis.ideaCard=ideaCard;',ctx);
+  const idea={
+    id:'creator-1',title:'Paladin talent changes in WoW Forever',
+    summary:'New class balance discussion',category:'Class changes',priority:'High',
+    publishedAt:123,opportunityScore:82,
+    sources:[{sourceType:'Official',title:'Blizzard patch notes',publishedAt:123}],
+    angles:[{type:'Analysis',title:'What changed?',approach:'Compare official details'}],
+    outline:['Explain changes'],recordingPlan:['Show original notes'],
+    viewerPayoff:'Understand the patch',coverage:{note:'Verify original source'}
+  };
+  const collapsed=ctx.ideaCard(idea,0,{saved:[]});
+  assert.match(collapsed,/class="opportunity-trigger"/);
+  assert.match(collapsed,/aria-expanded="false"/);
+  assert.match(collapsed,/Paladin talent changes in WoW Forever/);
+  assert.doesNotMatch(collapsed,/New class balance discussion/);
+  assert.doesNotMatch(collapsed,/Recording plan/);
+  assert.doesNotMatch(collapsed,/Personal relevance tools/);
+  ctx.state.expanded.add(idea.id);
+  const opened=ctx.ideaCard(idea,0,{saved:[]});
+  assert.match(opened,/aria-expanded="true"/);
+  assert.match(opened,/New class balance discussion/);
+  assert.match(opened,/Recording plan/);
+  assert.match(opened,/Blizzard patch notes/);
+  assert.match(opened,/Personal relevance tools/);
+  assert.match(css,/\.ideas-grid\s*\{\s*grid-template-columns:minmax\(0,1fr\)/);
+  assert.match(app,/<details class="opportunity-explainer">/);
+});
