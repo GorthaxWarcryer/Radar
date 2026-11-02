@@ -7,7 +7,8 @@ const source=readFileSync(new URL('../public/app.js',import.meta.url),'utf8');
 test('Reddit discovery is reachable from Stories without needing login or an API',()=>{
   assert.match(source,/function redditDirectory\(\)/);
   assert.match(source,/function storiesSection\(data\)/);
-  assert.match(source,/showReddit\?redditDirectory\(\)/);
+  assert.ok(source.includes('state.storyType==="reddit"?redditDirectory()'));
+  assert.ok(source.includes('class="reddit-discovery"'));
   assert.match(source,/\{id:"reddit",text:"Reddit"\}/);
 });
 test('Every Reddit community gets direct Top Today and Hot ranking links',()=>{
