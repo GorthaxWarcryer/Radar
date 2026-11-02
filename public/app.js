@@ -295,17 +295,27 @@ function demoData() {
 }
 function updateTheme() { document.body.dataset.theme='default'; }
 function updateNav() {
-  document.querySelectorAll('[data-section]').forEach(el=>{ const selected=el.dataset.section===state.section; el.classList.toggle('active',selected); if(el.tagName==='BUTTON') el.setAttribute('aria-current',selected?'page':'false'); });
-  const names={popular:'Popular',hot:'HOT',emerging:'Emerging',stories:'Stories',ideas:'Content Creation',brief:'Daily Brief',watchlist:'Watchlist',channels:'Channels',activity:'Scan Activity',settings:'Settings'};
-  $('#crumb-section').textContent=names[state.section]; document.title=`${names[state.section]} · Azeroth Radar`;
+  const videoPages=['hot','popular','emerging'];
+  document.querySelectorAll('[data-section]').forEach(el=>{
+    const page=el.dataset.section;
+    const primary=Boolean(el.closest('.primary-nav,.mobile-nav'));
+    const selected=page===state.section || (primary && page==='hot' && videoPages.includes(state.section)) || (primary && page==='ideas' && state.section==='brief');
+    el.classList.toggle('active',selected);
+    if(el.tagName==='BUTTON')el.setAttribute('aria-current',selected?'page':'false');
+  });
+  const names={popular:'Videos',hot:'Videos',emerging:'Videos',stories:'Updates',ideas:'Ideas',brief:'Daily Brief',watchlist:'Saved',channels:'Channels',activity:'Scan Activity',settings:'Settings'};
+  $('#crumb-section').textContent=names[state.section]||'Azeroth Radar';
+  document.title=`${names[state.section]||'Azeroth Radar'} · Azeroth Radar`;
 }
 function render() {
+  const filterPanel=root.querySelector('.advanced-filters');
+  if(filterPanel)state.filtersOpen=filterPanel.open;
   updateTheme();updateNav();
   const data=state.demo?demoData():state.feed;
   $('#demo-warning').classList.toggle('hidden',!state.demo);
   $('#demo-toggle').textContent=state.demo?'Live feed':'Demo';
   if(!data) {root.innerHTML='<div class="loading-shell" role="status" aria-label="Loading source data"><div class="loading-bar"></div><div class="loading-row"></div><div class="loading-row"></div><p>Loading the latest collected signals…</p></div>';return;}
-  const renderers={popular:()=>videoSection(data,'popular'),hot:()=>videoSection(data,'hot'),emerging:()=>sectionTitle('Signals before 5,000 views','EMERGING <span>VIDEOS</span>','Experimental early momentum for qualifying recent uploads.')+window.RadarIntelligence.emerging(data,state.kind),brief:()=>sectionTitle('Your creator news desk','DAILY <span>EDITORIAL BRIEF</span>','Source-linked research priorities, changes and emerging opportunities.')+window.RadarIntelligence.digest(data),stories:()=>storiesSection(data),ideas:()=>ideasSection(data),watchlist:()=>watchlistSection(data),channels:()=>channelsSection(data),activity:()=>activitySection(data),settings:()=>settingsSection(data)};
+  const renderers={popular:()=>videoSection(data,'popular'),hot:()=>videoSection(data,'hot'),emerging:()=>sectionTitle('','VIDEOS','')+videoTabs()+`<div class="toolbar compact-video-toolbar">${btnSegment([{id:'long',text:'Long Form'},{id:'shorts',text:'Shorts'}],state.kind,'kind')}</div>`+window.RadarIntelligence.emerging(data,state.kind),brief:()=>sectionTitle('Your creator news desk','DAILY <span>EDITORIAL BRIEF</span>','Source-linked research priorities, changes and emerging opportunities.')+window.RadarIntelligence.digest(data),stories:()=>storiesSection(data),ideas:()=>ideasSection(data),watchlist:()=>watchlistSection(data),channels:()=>channelsSection(data),activity:()=>activitySection(data),settings:()=>settingsSection(data)};
   root.innerHTML=renderers[state.section]();
 }
 let feedRequestInProgress=false;
@@ -357,6 +367,7 @@ async function adminFetch(url, options={}) {
   const response=await res.json(); if(!res.ok) throw new Error(response.error||`HTTP ${res.status}`); return response;
 }
 function moveSection(section) {
+  document.querySelector('.more-menu')?.removeAttribute('open');
   state.section=section;
   window.location.hash=section;
   render();
@@ -367,6 +378,7 @@ document.addEventListener('click',async e=>{
   const button=e.target.closest('button'); if(!button) return;
   try {
     if(button.dataset.section) return moveSection(button.dataset.section);
+    if(button.dataset.videoTab)return moveSection(button.dataset.videoTab);
     if(button.id==='refresh-feed')return fetchFeed({manual:true});
     if(button.dataset.kind) {state.kind=button.dataset.kind;return render();}
     if(button.dataset.window){state.viewWindow=button.dataset.window;return render();}
@@ -374,7 +386,7 @@ document.addEventListener('click',async e=>{
     if(button.dataset.applySearch){state.searchTerm=document.getElementById('video-filter')?.value.trim().slice(0,140)||'';return render();}
     if(button.dataset.clearSearch){state.searchTerm='';return render();}
     if(button.dataset.researchFilter){state.researchStatus=button.dataset.researchFilter;return render();}
-    if(button.dataset.ideaView){state.ideaView=button.dataset.ideaView;return render();}
+    if(button.dataset.ideaView){state.ideaView=button.dataset.ideaView;state.ideaFiltersOpen=true;return render();}
     if(button.dataset.ideaFeedback){const ok=window.RadarIntelligence.storeVote(button.dataset.ideaFeedback,button.dataset.value);
       toast(ok?'Preference saved on this device':'Could not save preference');return render();}
     if(button.dataset.saveProfile){const ok=window.RadarIntelligence.storeProfile();
@@ -401,7 +413,7 @@ document.addEventListener('click',async e=>{
     if(button.dataset.storyType) {state.storyType=button.dataset.storyType;return render();}
     if(button.dataset.storySort) {state.storySort=button.dataset.storySort;return render();}
     if(button.dataset.expand) {const id=button.dataset.expand; if(state.expanded.has(id))state.expanded.delete(id);else state.expanded.add(id);render();[...root.querySelectorAll('[data-expand]')].find(el=>el.dataset.expand===id)?.focus({preventScroll:true});return;}
-    if(button.dataset.showDemo||button.id==='demo-toggle'||button.id==='exit-demo') {state.demo=button.id==='exit-demo'?false:!state.demo; return render();}
+    if(button.dataset.showDemo||button.id==='demo-toggle'||button.id==='exit-demo') {state.demo=button.id==='exit-demo'?false:!state.demo;document.querySelector('.more-menu')?.removeAttribute('open'); return render();}
     if(button.dataset.unlock) {const token=window.prompt('Enter the rebuild ADMIN_TOKEN:'); if(token){state.adminToken=token;await fetchFeed();} return;}
     if(button.dataset.redditRemove!==undefined) {const idx=Number(button.dataset.redditRemove),items=redditSaved();if(!Number.isInteger(idx)||idx<0||idx>=items.length)return;items.splice(idx,1);try{localStorage.setItem(REDDIT_LOCAL_KEY,JSON.stringify(items));}catch{toast('Browser storage unavailable');return;}toast('Discussion removed');return render();}
     if(button.dataset.save) {await adminFetch('/api/save',{method:'POST',body:JSON.stringify({id:button.dataset.save,kind:button.dataset.kind,title:button.dataset.title,url:button.dataset.url})});toast('Saved to watchlist');return fetchFeed();}
