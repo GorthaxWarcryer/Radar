@@ -190,7 +190,7 @@ function ideasSection(data) {
     return true;
   }).sort((a,b)=>state.ideaView==='for-you'?window.RadarIntelligence.score(b)-window.RadarIntelligence.score(a):0);
   return sectionTitle('Signals to original stories','CONTENT <span>OPPORTUNITIES</span>',
-    'Connected sources, transparent momentum signals and distinct creative angles—not recycled video titles.')+
+    'Scan the headlines. Expand a topic to view angles, AI ideas, sources and recording plans.')+
     `<div class="opportunity-toolbar"><div class="toolbar-left">${btnSegment([{id:'all',text:'All topics'},{id:'for-you',text:'For You'},{id:'high',text:'High opportunity'},{id:'saved',text:'Saved'}],state.ideaView,'idea-view')}
     <span class="toolbar-note">${visible.length} of ${all.length} topics</span></div>
     <button class="small-action" data-idea-dismissed="1">${state.showDismissed?'Hide dismissed':'Show dismissed'}</button></div>`+
