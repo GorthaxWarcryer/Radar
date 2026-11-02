@@ -116,7 +116,7 @@ function storiesSection(data) {
     return items;
   };
   const previous=showReddit?order(all.filter(s=>s.source!=="Official")):[];
-  const official=showOfficial?order(all.filter(s=>s.source==="Official")).sort((a,b)=>Number(b.sourceId==="blue")-Number(a.sourceId==="blue")):[];
+  // Prioritize Blizzard blue posts before other official updates, then render Reddit below.\n  const official=showOfficial?order(all.filter(s=>s.source==="Official")).sort((a,b)=>Number(b.sourceId==="blue")-Number(a.sourceId==="blue")):[];
   const storyTool=btnSegment([{id:"all",text:"All"},{id:"reddit",text:"Reddit"},{id:"official",text:"Official"}],state.storyType,"story-type");
   const sortTool=(previous.length||official.length)?btnSegment([{id:"new",text:"Newest"},{id:"score",text:"Top score"},{id:"comments",text:"Most comments"}],state.storySort,"story-sort"):"";
   const sectionLabel=state.storyType==="official"?"Official Blizzard announcements and WoW blue posts published in the past 48 hours.":"Browse active WoW conversations directly on Reddit, save interesting links locally, and see official Blizzard posts in Stories. No Reddit API or scraping.";
