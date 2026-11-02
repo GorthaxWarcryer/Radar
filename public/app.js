@@ -2,7 +2,7 @@
 const root = document.getElementById('main-view');
 const $ = s => document.querySelector(s);
 const preferences = { theme: 'azeroth-radar-theme' };
-const state = { filtersOpen:false, section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new', searchTerm:'', viewWindow:'48', hotSort:'velocity', popularSort:'views', researchStatus:'all',
+const state = { filtersOpen:false, redditOpen:false, briefOpen:false, ideaFiltersOpen:false, savedFiltersOpen:false, storySortOpen:false, section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new', searchTerm:'', viewWindow:'48', hotSort:'velocity', popularSort:'views', researchStatus:'all',
   theme: 'default', demo: location.protocol === 'file:' || document.documentElement.dataset.preview === 'true', feed: null, expanded: new Set(), adminToken: '', ideaView:'all', showDismissed:false, aiBriefs:{} };
 function esc(value = '') { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
 function safeURL(x) { try { const url = new URL(String(x || '')); return url.protocol === 'https:' ? url.href : ''; } catch { return ''; } }
@@ -140,9 +140,9 @@ function storiesSection(data) {
   const storyTool=btnSegment([{id:"all",text:"All"},{id:"reddit",text:"Reddit"},{id:"official",text:"Official"}],state.storyType,"story-type");
   const sortTool=(previous.length||official.length)?btnSegment([{id:"new",text:"Newest"},{id:"score",text:"Top score"},{id:"comments",text:"Most comments"}],state.storySort,"story-sort"):"";
   return sectionTitle("","UPDATES","")+
-    `<div class="toolbar compact-update-toolbar"><div class="toolbar-left">${storyTool}</div><div class="toolbar-right">${sortTool?`<details class="secondary-filters"><summary>Sort</summary>${sortTool}</details>`:''}</div></div>`+
+    `<div class="toolbar compact-update-toolbar"><div class="toolbar-left">${storyTool}</div><div class="toolbar-right">${sortTool?`<details class="secondary-filters" ${state.storySortOpen?'open':''}><summary>Sort</summary>${sortTool}</details>`:''}</div></div>`+
     (showOfficial?`<section class="reddit-official"><h2>BLUE POSTS & <span>OFFICIAL UPDATES</span></h2>${official.length?`<div class="stories-grid">${official.map(s=>renderStory(s,data)).join("")}</div>`:empty("No recent official updates","New posts will appear here when the collector finds them.",false)}</section>`:"")+
-    (showReddit?(state.storyType==="reddit"?redditDirectory():`<details class="reddit-discovery"><summary>Explore Reddit discussions</summary>${redditDirectory()}</details>`):"")+
+    (showReddit?(state.storyType==="reddit"?redditDirectory():`<details class="reddit-discovery" ${state.redditOpen?'open':''}><summary>Explore Reddit discussions</summary>${redditDirectory()}</details>`):"")+
     (previous.length?`<section class="reddit-previous"><h2>Community discussions</h2><div class="stories-grid">${previous.map(s=>renderStory(s,data)).join("")}</div></section>`:"");
 
 }
@@ -210,13 +210,13 @@ function ideasSection(data) {
   return sectionTitle('','IDEAS','')+
     `<div class="opportunity-toolbar"><div class="toolbar-left">${btnSegment([{id:'all',text:'All'},{id:'for-you',text:'For You'}],state.ideaView,'idea-view')}
       ${['high','saved'].includes(state.ideaView)?`<span class="active-idea-filter">${state.ideaView==='high'?'High opportunity':'Saved'}</span>`:''}</div>
-      <details class="secondary-filters"><summary>Filters</summary>
+      <details class="secondary-filters" ${state.ideaFiltersOpen?'open':''}><summary>Filters</summary>
         <div class="idea-filter-options">${btnSegment([{id:'all',text:'All'},{id:'high',text:'High opportunity'},{id:'saved',text:'Saved'}],state.ideaView,'idea-view')}
           <button class="small-action" data-idea-dismissed="1">${state.showDismissed?'Hide dismissed':'Show dismissed'}</button></div>
       </details></div>`+
     (visible.length?`<div class="ideas-grid">${visible.map((x,i)=>ideaCard(x,i,data)).join('')}</div>`:
       empty('No matching opportunities','Try All or check back after the next source scan.',false))+
-    `<details class="idea-brief"><summary>Daily editorial brief</summary><div class="idea-brief-body">${window.RadarIntelligence.digest(data)}</div></details>`+
+    `<details class="idea-brief" ${state.briefOpen?'open':''}><summary>Daily editorial brief</summary><div class="idea-brief-body">${window.RadarIntelligence.digest(data)}</div></details>`+
     `<details class="opportunity-explainer"><summary>How suggestions work</summary><div class="opportunity-explainer-body">Topic scoring and clustering remain code-based. Cloudflare Workers AI creates cached ideas from source headlines when enabled, within its free-tier allowance. Verify gameplay claims against original sources. No paid OpenAI API is used.</div></details>`;
 
 }
@@ -229,7 +229,7 @@ function watchlistSection(data) {
   if(data.savedPrivate) return sectionTitle('','SAVED','')+`<section class="panel">${empty('Private watchlist locked','Unlock your saved notes with the rebuild’s administrator token.',false)}<div style="text-align:center;padding-bottom:27px"><button class="subtle-btn" data-unlock="1">Unlock watchlist</button></div></section>`;
   return sectionTitle('','SAVED','') +
     `<div class="toolbar compact-saved-toolbar"><span class="saved-count">${saved.length} saved items${state.researchStatus!=='all'?' · '+esc(state.researchStatus):''}</span>
-      <details class="secondary-filters"><summary>Filters & export</summary><div class="saved-filter-panel">${btnSegment([{id:'all',text:'All'},{id:'New',text:'New'},{id:'Seen',text:'Seen'},{id:'Investigating',text:'Investigating'},{id:'Planned',text:'Planned'},{id:'Published',text:'Published'},{id:'Dismissed',text:'Dismissed'}],state.researchStatus,'research-filter')}
+      <details class="secondary-filters" ${state.savedFiltersOpen?'open':''}><summary>Filters & export</summary><div class="saved-filter-panel">${btnSegment([{id:'all',text:'All'},{id:'New',text:'New'},{id:'Seen',text:'Seen'},{id:'Investigating',text:'Investigating'},{id:'Planned',text:'Planned'},{id:'Published',text:'Published'},{id:'Dismissed',text:'Dismissed'}],state.researchStatus,'research-filter')}
         <button class="subtle-btn" data-export-csv="1">Export CSV</button></div></details></div>`+
     (saved.length?`<section class="panel"><table class="saved-table"><thead><tr><th>Saved source</th><th>Status</th><th>Note</th><th>Actions</th></tr></thead><tbody>${saved.map(s=>`<tr><td>${titleLink(s.title,s.url,'')}<div class="video-time">${esc(s.kind)} · ${time(s.savedAt)}</div></td><td>${researchStatusPicker(s)}</td><td><textarea aria-label="Note for ${esc(s.title)}" id="note-${esc(s.id)}" data-note="${esc(s.id)}">${esc(s.note||'')}</textarea></td><td><button class="small-action" data-note-save="${esc(s.id)}">Save note</button> <button class="small-action" data-remove="${esc(s.id)}">Remove</button></td></tr>`).join('')}</tbody></table></section>`:empty('No saved sources','Save a qualifying video, Reddit discussion, or official post to build your research watchlist.'));
 }
@@ -310,8 +310,14 @@ function updateNav() {
   document.title=`${names[state.section]||'Azeroth Radar'} · Azeroth Radar`;
 }
 function render() {
-  const filterPanel=root.querySelector('.advanced-filters');
-  if(filterPanel)state.filtersOpen=filterPanel.open;
+  for(const [selector,key] of [
+    ['.advanced-filters','filtersOpen'],
+    ['.reddit-discovery','redditOpen'],
+    ['.idea-brief','briefOpen'],
+    ['.opportunity-toolbar .secondary-filters','ideaFiltersOpen'],
+    ['.compact-saved-toolbar .secondary-filters','savedFiltersOpen'],
+    ['.compact-update-toolbar .secondary-filters','storySortOpen']
+  ]) {const panel=root.querySelector(selector);if(panel)state[key]=panel.open;}
   updateTheme();updateNav();
   const data=state.demo?demoData():state.feed;
   $('#demo-warning').classList.toggle('hidden',!state.demo);
