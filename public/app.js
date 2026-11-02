@@ -3,7 +3,7 @@
 const root = document.getElementById('main-view');
 const $ = s => document.querySelector(s);
 const preferences = { theme: 'azeroth-radar-theme' };
-const state = { filtersOpen:false, redditOpen:false, briefOpen:false, ideaFiltersOpen:false, savedFiltersOpen:false, storySortOpen:false, section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new', searchTerm:'', viewWindow:'48', hotSort:'velocity', popularSort:'views', researchStatus:'all',
+const state = { filtersOpen:false, redditOpen:false, briefOpen:false, ideaFiltersOpen:false, savedFiltersOpen:false, storySortOpen:false, section: 'hot', kind: 'long', layout: 'preview', storyType: 'all', storySort: 'new', searchTerm:'', viewWindow:'48', hotSort:'velocity', popularSort:'views', researchStatus:'all',
   theme: 'default', demo: location.protocol === 'file:' || document.documentElement.dataset.preview === 'true', feed: null, expanded: new Set(), adminToken: '', ideaView:'all', showDismissed:false, aiBriefs:{} };
 function esc(value = '') { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
 function safeURL(x) { try { const url = new URL(String(x || '')); return url.protocol === 'https:' ? url.href : ''; } catch { return ''; } }
