@@ -116,15 +116,15 @@ function storiesSection(data) {
     return items;
   };
   const previous=showReddit?order(all.filter(s=>s.source!=="Official")):[];
-  const official=showOfficial?order(all.filter(s=>s.source==="Official")):[];
+  const official=showOfficial?order(all.filter(s=>s.source==="Official")).sort((a,b)=>Number(b.sourceId==="blue")-Number(a.sourceId==="blue")):[];
   const storyTool=btnSegment([{id:"all",text:"All"},{id:"reddit",text:"Reddit"},{id:"official",text:"Official"}],state.storyType,"story-type");
   const sortTool=(previous.length||official.length)?btnSegment([{id:"new",text:"Newest"},{id:"score",text:"Top score"},{id:"comments",text:"Most comments"}],state.storySort,"story-sort"):"";
   const sectionLabel=state.storyType==="official"?"Official Blizzard announcements and WoW blue posts published in the past 48 hours.":"Browse active WoW conversations directly on Reddit, save interesting links locally, and see official Blizzard posts in Stories. No Reddit API or scraping.";
   return sectionTitle("Community & Official","LATEST <span>STORIES</span>",sectionLabel)+
     `<div class="toolbar"><div class="toolbar-left">${storyTool}</div><div class="toolbar-right">${sortTool}</div></div>`+
+    (showOfficial?`<section class="reddit-official"><h2>OFFICIAL <span>UPDATES</span></h2>${official.length?`<div class="stories-grid">${official.map(s=>renderStory(s,data)).join("")}</div>`:empty("No recent official updates","Blizzard news and blue posts appear here when the official source collector finds qualifying posts.",false)}</section>`:"")+
     (showReddit?redditDirectory():"")+
-    (previous.length?`<section class="reddit-previous"><h2>Previously imported Reddit discussions</h2><div class="stories-grid">${previous.map(s=>renderStory(s,data)).join("")}</div></section>`:"")+
-    (showOfficial?`<section class="reddit-official"><h2>OFFICIAL <span>UPDATES</span></h2>${official.length?`<div class="stories-grid">${official.map(s=>renderStory(s,data)).join("")}</div>`:empty("No recent official updates","Blizzard news and blue posts appear here when the official source collector finds qualifying posts.",false)}</section>`:"");
+    (previous.length?`<section class="reddit-previous"><h2>Previously imported Reddit discussions</h2><div class="stories-grid">${previous.map(s=>renderStory(s,data)).join("")}</div></section>`:"");
 }
 
 function ideaCard(item,i,data) {
