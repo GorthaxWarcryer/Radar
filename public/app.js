@@ -2,7 +2,7 @@
 const root = document.getElementById('main-view');
 const $ = s => document.querySelector(s);
 const preferences = { theme: 'azeroth-radar-theme' };
-const state = { section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new', searchTerm:'', viewWindow:'48', hotSort:'velocity', popularSort:'views', researchStatus:'all',
+const state = { filtersOpen:false, section: 'hot', kind: 'long', layout: 'list', storyType: 'all', storySort: 'new', searchTerm:'', viewWindow:'48', hotSort:'velocity', popularSort:'views', researchStatus:'all',
   theme: 'default', demo: location.protocol === 'file:' || document.documentElement.dataset.preview === 'true', feed: null, expanded: new Set(), adminToken: '', ideaView:'all', showDismissed:false, aiBriefs:{} };
 function esc(value = '') { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
 function safeURL(x) { try { const url = new URL(String(x || '')); return url.protocol === 'https:' ? url.href : ''; } catch { return ''; } }
@@ -13,7 +13,7 @@ function time(t) { return Number(t) ? new Date(Number(t)).toLocaleString(undefin
 function titleLink(t,url,cl) { const u=safeURL(url); return u ? `<a class="${cl}" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t)}</a>` : `<span class="${cl}">${esc(t)}</span>`; }
 function toast(message) { const t=$('#toast'); t.textContent=message; t.classList.add('visible'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>t.classList.remove('visible'),3200); }
 function btnSegment(options, selected, key) {
-  const labels={kind:'Video format',layout:'Display layout',window:'Publication window','video-sort':'Sort videos','story-type':'Story sources','story-sort':'Sort stories','research-filter':'Research status'};
+  const labels={kind:'Video format',layout:'Display layout',window:'Publication window','video-sort':'Sort videos','story-type':'Story sources','story-sort':'Sort stories','video-tab':'Video feed','research-filter':'Research status'};
   return `<div class="segment" role="group" aria-label="${esc(labels[key]||'View options')}">${options.map(o=>`<button type="button" data-${key}="${o.id}" class="${selected===o.id?'active':''}" aria-pressed="${selected===o.id}">${esc(o.text)}</button>`).join('')}</div>`;
 }
 function sectionTitle(kicker,title,description,pulse = '') { return `<div class="section-header"><div><div class="hero-kicker">${esc(kicker)}</div><h1>${title}</h1><p class="section-description">${esc(description)}</p></div>${pulse?`<div class="pulse">${pulse}</div>`:''}</div>`; }
@@ -34,9 +34,16 @@ function thumbnail(v,priority=false) {
 }
 function renderVideo(v, data, position=0) {
   const isHot=state.section==='hot';
-  const metric = isHot ? `${fmt(v.growth?.perHour)}<small>views / hr</small>` : `${fmt(v.views)}<small>total views</small>`;
-  const growthDetails=isHot?(v.growth?.kind==='estimated-since-upload'?'Estimated average since publication':'Based on recorded YouTube view-count snapshots'):'Lifetime video views, not growth';
-  const content = `<div class="video-copy">${titleLink(v.title,v.url,'video-title')}<div class="video-channel-row"><span class="video-channel">${esc(v.channelName||'YouTube creator')}</span>${v.officialSource?'<span class="source-chip official video-official-badge">Official Source</span>':''}</div><div class="video-bottom"><span class="video-number" title="${esc(growthDetails)}">${metric}</span>${saveButton(v,'video',data)}${data.canManage?`<button class="small-action" data-hide-video="${esc(v.id)}" title="Hide this video from Radar">Hide</button>`:''}</div><div class="video-time">${age(v.publishedAt)} ${isHot&&v.growth?.kind==='estimated-since-upload'?' · Estimated since upload':isHot&&v.growth?.sampleHours?` · Measured over ${v.growth.sampleHours}h`:''}${Number.isFinite(v.likes)?' · '+fmt(v.likes)+' likes':''}${Number.isFinite(v.comments)?' · '+fmt(v.comments)+' comments':''}</div></div>`;
+  const growthDetails=isHot?(v.growth?.kind==='estimated-since-upload'?'Estimated average since upload':'Based on recorded YouTube view-count snapshots'):'Lifetime total views';
+  const metric=isHot?`${fmt(v.growth?.perHour)} <small>views/hr</small>`:`${fmt(v.views)} <small>views</small>`;
+  const stats=[isHot&&v.growth?.sampleHours?`Measured over ${v.growth.sampleHours}h`:'',Number.isFinite(v.likes)?fmt(v.likes)+' likes':'',Number.isFinite(v.comments)?fmt(v.comments)+' comments':''].filter(Boolean).join(' · ');
+  const content=`<div class="video-copy">
+    ${titleLink(v.title,v.url,'video-title')}
+    <div class="video-channel-row"><span class="video-channel">${esc(v.channelName||'YouTube creator')} · ${age(v.publishedAt)}</span>${v.officialSource?'<span class="source-chip official video-official-badge">Official Source</span>':''}</div>
+    <div class="video-bottom"><span class="video-number" title="${esc(growthDetails)}">${metric}</span>${saveButton(v,'video',data)}
+      ${data.canManage?`<details class="video-row-more"><summary aria-label="More actions for ${esc(v.title)}">•••</summary><div class="video-row-actions"><button class="small-action" data-hide-video="${esc(v.id)}">Hide video</button></div></details>`:''}</div>
+    ${stats?`<details class="video-metrics"><summary>More details</summary><span>${esc(stats)}</span></details>`:''}
+  </div>`;
   return state.layout==='preview' ? `<article class="video-card">${thumbnail(v,position===0)}${content}</article>` : `<article class="video-item">${thumbnail(v,position===0)}${content}</article>`;
 }
 function videoBoard(title,sub,items,data) {
@@ -46,6 +53,9 @@ function videoBoard(title,sub,items,data) {
     'New uploads enter HOT using estimated views/hour, then real measurements as new snapshots arrive.':
     'Only qualifying videos with 5,000+ views appear here.';
   return `<section class="panel"><div class="board-title"><h2>${esc(title)}<small>${esc(sub)}</small></h2><span class="count">${items.length}</span></div>${items.length?`<div class="${state.layout==='preview'?'card-grid':'video-list'}" style="${state.layout==='preview'?'padding:12px':''}">${items.map((v,i)=>renderVideo(v,data,i)).join('')}</div>`:empty(missingTitle,missingDetail,!searching)}</section>`;
+}
+function videoTabs() {
+  return `<div class="primary-feed-tabs">${btnSegment([{id:'hot',text:'HOT'},{id:'popular',text:'Popular'},{id:'emerging',text:'Emerging'}],state.section,'video-tab')}</div>`;
 }
 function videoSection(data,mode) {
   const isHot=mode==='hot'; const source=data[mode]?.[state.kind]||[];
@@ -57,13 +67,22 @@ function videoSection(data,mode) {
   else pool=[...pool].sort((a,b)=>b.views-a.views);
   const fresh=pool.filter(v=>Date.now()-Number(v.publishedAt)<24*3600000);
   const tracked=pool.filter(v=>Date.now()-Number(v.publishedAt)>=24*3600000);
-  const desc=isHot?'Ranked by video momentum: initial estimates turn into measured growth as new YouTube snapshots arrive.':'Most-viewed recent videos ranked by total views. Only uploads with at least 5,000 views; livestream archives excluded.';
-  return sectionTitle('YouTube Intelligence',isHot?'<span>HOT</span> RIGHT NOW':'WHAT’S <span>POPULAR</span>',desc,
-    '<i class="status-dot"></i> LAST 48 HOURS')+
-    statCards(data)+`<div class="toolbar"><div class="toolbar-left">${btnSegment([{id:'long',text:'Long Form'},{id:'shorts',text:'Shorts'}],state.kind,'kind')}<span class="toolbar-note">${pool.length} qualifying videos</span></div><div class="toolbar-right">${btnSegment([{id:'list',text:'☷ List'},{id:'preview',text:'▦ Preview'}],state.layout,'layout')}</div></div>`+
-    `<div class="toolbar discovery-filters"><div class="toolbar-left filter-search"><label class="filter-search-label" for="video-filter">Find videos</label><div class="filter-search-control"><span aria-hidden="true">⌕</span><input id="video-filter" type="search" aria-label="Search video titles and channels" placeholder="Search titles or channels" autocomplete="off" value="${esc(state.searchTerm)}" /><kbd>/</kbd></div><button class="subtle-btn filter-apply" data-apply-search="1">Apply</button>${state.searchTerm?'<button class="subtle-btn filter-clear" data-clear-search="1">Clear</button>':''}</div><div class="toolbar-right">${!isHot?btnSegment([{id:'24',text:'24h'},{id:'48',text:'48h'}],state.viewWindow,'window'):''}${btnSegment([{id:'velocity',text:'Growth'},{id:'views',text:'Views'},{id:'newest',text:'Newest'}],sortMode,'video-sort')}</div></div><p class="result-summary" role="status">Showing <strong>${pool.length}</strong> ${state.kind==='shorts'?'Shorts':'long-form videos'}${state.searchTerm?` matching “${esc(state.searchTerm)}”`:''} · ${isHot?'Last 24 hours':state.viewWindow+'h window'}</p>`+
-        (isHot?'<div class="info-note"><strong>HOT growth:</strong> Initial average since publication is labeled estimated; later snapshots produce measured views per hour. Last observation time matters.</div>':'')+
-    `<div class="section-split">${videoBoard('New uploads','Published within the last 24 hours',fresh,data)}${(!isHot&&state.viewWindow==='48'?videoBoard('Tracked · 48 Hours','Published 24–48 hours ago',tracked,data):'')}</div>`;
+  return sectionTitle('','VIDEOS','')+
+    videoTabs()+
+    `<div class="toolbar compact-video-toolbar"><div class="toolbar-left">${btnSegment([{id:'long',text:'Long Form'},{id:'shorts',text:'Shorts'}],state.kind,'kind')}</div>
+      <div class="toolbar-right"><details class="advanced-filters" ${state.filtersOpen?'open':''}><summary>Filters ${state.searchTerm?'· Active':''}</summary>
+        <div class="filter-panel">
+          <div class="filter-search"><label for="video-filter">Find videos</label><div class="filter-search-control"><span aria-hidden="true">⌕</span><input id="video-filter" type="search" aria-label="Search video titles and channels" placeholder="Search titles or channels" autocomplete="off" value="${esc(state.searchTerm)}"/><kbd>/</kbd></div>
+            <button class="subtle-btn filter-apply" data-apply-search="1">Apply</button>${state.searchTerm?'<button class="subtle-btn filter-clear" data-clear-search="1">Clear</button>':''}</div>
+          <div class="filter-options"><span>Sort</span>${btnSegment([{id:'velocity',text:'Growth'},{id:'views',text:'Views'},{id:'newest',text:'Newest'}],sortMode,'video-sort')}</div>
+          <div class="filter-options"><span>Layout</span>${btnSegment([{id:'list',text:'List'},{id:'preview',text:'Cards'}],state.layout,'layout')}</div>
+          ${!isHot?`<div class="filter-options"><span>Window</span>${btnSegment([{id:'24',text:'24h'},{id:'48',text:'48h'}],state.viewWindow,'window')}</div>`:''}
+          <details class="filter-methodology"><summary>Statistics & methodology</summary>
+            ${statCards(data)}<p>${isHot?'HOT uses estimated average velocity for initial uploads and measured views per hour when snapshots are available.':'Popular ranks eligible videos by lifetime views; the 5,000-view threshold remains unchanged.'}</p></details>
+        </div>
+      </details></div></div>`+
+    `<div class="section-split minimal-video-board">${videoBoard('New uploads','Published within the last 24 hours',fresh,data)}${(!isHot&&state.viewWindow==='48'?videoBoard('Tracked · 48 Hours','Published 24–48 hours ago',tracked,data):'')}</div>`;
+
 }
 const REDDIT_LOCAL_KEY="azeroth-radar-reddit-picks-v1";
 const REDDIT_COMMUNITIES=[{"slug":"wowforever","label":"WoW Forever","note":"Forever beta, class balance, launches and community reaction"},{"slug":"classicwow","label":"WoW Classic","note":"Classic and Forever discussions, gameplay and community news"},{"slug":"wow","label":"World of Warcraft","note":"Broader WoW announcements, reactions and player discussions"},{"slug":"wowhardcore","label":"WoW Hardcore","note":"Hardcore experiences, challenges and community debate"},{"slug":"worldofpvp","label":"WoW PvP","note":"Arena meta, PvP balance and competitive discussion"}];
