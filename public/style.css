@@ -719,3 +719,18 @@ footer { font-weight:500; opacity:.7; }
   .compact-video-toolbar { align-items:center; }
   .more-menu > summary { padding:7px 9px; }
 }
+
+
+/* Saved workspace keeps sorting and export controls available on demand */
+.topbar { z-index:12; }
+.compact-saved-toolbar { display:flex; justify-content:space-between; align-items:center; padding:0 0 2px; }
+.saved-count { color:var(--muted); font-size:12px; }
+.saved-filter-panel {
+  position:absolute; right:0; top:calc(100% + 7px); z-index:9;
+  width:min(420px,calc(100vw - 36px)); padding:14px;
+  border:1px solid var(--border); border-radius:8px;
+  background:var(--panel); box-shadow:var(--shadow);
+  display:flex; flex-direction:column; gap:14px;
+}
+.saved-filter-panel .segment { flex-wrap:wrap; }
+.saved-filter-panel .subtle-btn { align-self:flex-start; }
