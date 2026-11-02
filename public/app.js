@@ -56,7 +56,19 @@ function videoBoard(title,sub,items,data) {
   return `<section class="panel"><div class="board-title"><h2>${esc(title)}<small>${esc(sub)}</small></h2><span class="count">${items.length}</span></div>${items.length?`<div class="${state.layout==='preview'?'card-grid':'video-list'}" style="${state.layout==='preview'?'padding:12px':''}">${items.map((v,i)=>renderVideo(v,data,i)).join('')}</div>`:empty(missingTitle,missingDetail,!searching)}</section>`;
 }
 function videoTabs() {
-  return `<div class="primary-feed-tabs">${btnSegment([{id:'hot',text:'HOT'},{id:'popular',text:'Popular'},{id:'emerging',text:'Emerging'}],state.section,'video-tab')}</div>`;
+  // A compact, consistent visual cue for each feed. Labels remain accessible text.
+  const icons={
+    hot:'<path d="M12 22c4.97 0 9-4.03 9-9 0-3.17-1.63-5.47-3.17-7.06-.76 2.17-2.29 3.35-4.13 3.75.64-2.6-.24-5.88-2.46-7.69-1.1 3.36-2.54 5.51-5.62 8.18C4.03 11.56 3 13.42 3 15c0 3.87 4.03 7 9 7Z"/>',
+    popular:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+    emerging:'<path d="m12 3-1.9 5.8L4 11l6.1 2.2L12 19l1.9-5.8L20 11l-6.1-2.2L12 3Z"/><path d="m5 3-.6 1.4L3 5l1.4.6L5 7l.6-1.4L7 5l-1.4-.6L5 3Z"/><path d="m19 17-.6 1.4L17 19l1.4.6L19 21l.6-1.4L21 19l-1.4-.6L19 17Z"/>'
+  };
+  const tabs=[{id:'hot',label:'HOT'},{id:'popular',label:'Popular'},{id:'emerging',label:'Emerging'}];
+  return `<div class="primary-feed-tabs"><div class="segment video-tab-segment" role="group" aria-label="Video feed">
+    ${tabs.map(tab=>`<button type="button" class="video-feed-tab video-feed-tab-${tab.id} ${state.section===tab.id?'active':''}" data-video-tab="${tab.id}" aria-pressed="${state.section===tab.id}">
+      <svg class="video-tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${icons[tab.id]}</svg>
+      <span>${tab.label}</span>
+    </button>`).join('')}
+  </div></div>`;
 }
 function videoSection(data,mode) {
   const isHot=mode==='hot'; const source=data[mode]?.[state.kind]||[];
