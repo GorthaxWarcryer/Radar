@@ -1,8 +1,9 @@
 name: GitHub independent WoW YouTube discovery
 on:
   schedule:
-    # Discover new videos three-hourly during the daytime, before hourly HOT polling.
-    - cron: '8 5,8,11,14,17,20 * * *'
+    # Every hour, including overnight. The discovery script runs a priority query hourly
+    # and all configured queries every three hours to bound free YouTube search quota.
+    - cron: '8 * * * *'
       timezone: Europe/Kyiv
   workflow_dispatch:
   push:
