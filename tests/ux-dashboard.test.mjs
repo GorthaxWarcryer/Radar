@@ -95,6 +95,8 @@ test('Blue Posts lead Stories ahead of other official updates and Reddit',()=>{
     {id:'blue',source:'Official',sourceId:'blue',publishedAt:100}
   ]};
   const output=ctx.storiesSection(data);
+  assert.ok(!output.includes('Official</button>'),'Official filter tab should be removed');
+  assert.ok(output.includes('All</button>')&&output.includes('Reddit</button>'));
   assert.ok(output.indexOf('[blue]')<output.indexOf('[official]'));
   assert.ok(output.indexOf('[official]')<output.indexOf('REDDIT DIRECTORY'));
   ctx.state.storyType='official';
