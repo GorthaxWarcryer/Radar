@@ -150,6 +150,7 @@ function storiesSection(data) {
   const previous=showReddit?order(all.filter(s=>s.source!=="Official")):[];
   // Prioritize Blizzard blue posts before other official updates, then render Reddit below.
   const official=showOfficial?order(all.filter(s=>s.source==="Official")).sort((a,b)=>Number(b.sourceId==="blue")-Number(a.sourceId==="blue")):[];
+  // Official Blizzard posts remain visible in All; a separate Official filter adds no value.
   const storyTool=btnSegment([{id:"all",text:"All"},{id:"reddit",text:"Reddit"}],state.storyType,"story-type");
   const sortTool=(previous.length||official.length)?btnSegment([{id:"new",text:"Newest"},{id:"score",text:"Top score"},{id:"comments",text:"Most comments"}],state.storySort,"story-sort"):"";
   return sectionTitle("","UPDATES","")+
