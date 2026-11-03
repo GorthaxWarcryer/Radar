@@ -9,6 +9,10 @@ const TOPICAL=/\b(wow|world of warcraft|warcraft|azeroth|classic wow|blizzard)\b
 const NON_ENGLISH_SCRIPT=/[¿¡\u00c0-\u024f\u0370-\u052f\u0590-\u0dff\u3040-\u30ff\u3400-\u9fff]/;
 const PERIOD=50*3600000;
 const MAX_SAVED=500;
+// Known official launch videos are checked directly as recovery sentinels when
+// YouTube search/playlist indexing is delayed. The YouTube API still verifies
+// publisher ID and stats; no fabricated videos or view counts are admitted.
+export const VERIFIED_RECOVERY_VIDEO_IDS=Object.freeze(['n2Wg46fwmb0']);
 /** Hourly low-cost coverage with a full multi-term discovery every three hours.
  * With three default terms this uses only 40 search.list calls per day, rather
  * than 72 calls for hourly full discovery. Tracked channel playlists run hourly.
@@ -29,15 +33,30 @@ export function durationSeconds(iso) {
 export function normalizeDiscovery(entry,observedAt,followedIds=new Set()) {
   if(!ID.test(entry?.id||''))return null;
   const s=entry.snippet||{},stats=entry.statistics||{};
-  const publishedAt=Date.parse(s.publishedAt||'');
+  const initialPublishedAt=Date.parse(s.publishedAt||'');
   const views=Number(stats.viewCount);
   const title=String(s.title||''),channelTitle=String(s.channelTitle||'');
   const channelId=String(s.channelId||'');
+  const isOfficial=isOfficialYouTubeChannel(channelId);
   const relevant=TOPICAL.test(title)||TOPICAL.test(String(s.description||'').slice(0,700))||followedIds.has(channelId);
   const lang=s.defaultAudioLanguage||s.defaultLanguage||'';
   const duration=durationSeconds(entry.contentDetails?.duration);
-  const live=!!entry.liveStreamingDetails||(s.liveBroadcastContent&&s.liveBroadcastContent!=='none');
-  if(!title||(!relevant&&!isOfficialYouTubeChannel(s.channelId))||NON_ENGLISH_SCRIPT.test(title)||
+  const broadcastStatus=String(s.liveBroadcastContent||'none');
+  const details=entry.liveStreamingDetails||null;
+  // Premieres are represented by YouTube as scheduled live broadcasts. After
+  // they finish, liveStreamingDetails can remain on an otherwise edited video.
+  // Preserve completed official launch presentations, never current broadcasts
+  // and never an arbitrary creator's livestream archive.
+  const completedOfficialPremiere=isOfficial && !!details && broadcastStatus==='none' &&
+    duration!==null && duration>=120 && duration<=5400 &&
+    !/\b(livestream|live stream|stream replay|twitch vod|full vod|stream archive)\b/i.test(title);
+  const liveArchive=!!details&&!completedOfficialPremiere;
+  const live=(broadcastStatus!=='none')||liveArchive;
+  const broadcastStart=Date.parse(details?.actualStartTime||details?.scheduledStartTime||'');
+  const publishedAt=completedOfficialPremiere&&Number.isFinite(broadcastStart)&&
+    broadcastStart<=observedAt&&broadcastStart>initialPublishedAt
+    ?broadcastStart:initialPublishedAt;
+  if(!title||(!relevant&&!isOfficial)||NON_ENGLISH_SCRIPT.test(title)||
     (lang&&!/^en(?:-|$)/i.test(lang))||!Number.isFinite(publishedAt)||
     publishedAt>observedAt||observedAt-publishedAt>PERIOD||
     !Number.isSafeInteger(views)||views<0||live)return null;
@@ -50,7 +69,8 @@ export function normalizeDiscovery(entry,observedAt,followedIds=new Set()) {
     comments:Number.isFinite(Number(stats.commentCount))?Number(stats.commentCount):null,
     hotMeasuredAt:observedAt,hotLatestViews:views,
     lastSeen:observedAt,observedAt,videoDurationSeconds:duration,
-    isShort:short,isLivestream:false,isVod:false,source:'github-youtube-discovery'
+    isShort:short,isLivestream:false,isVod:false,isOfficialPremiere:completedOfficialPremiere,
+    source:'github-youtube-discovery'
   };
 }
 async function youtube(endpoint,params,key,fetcher) {
@@ -97,8 +117,13 @@ export async function discover(key,{fetcher=fetch,now=Date.now(),queries=QUERIES
       for(const row of playlist.items)if(ID.test(row.contentDetails?.videoId||''))ids.add(row.contentDetails.videoId);
     } catch {console.warn('Tracked channel upload listing unavailable: '+source);}
   }
+  // A tiny bounded direct check catches confirmed official releases missed by
+  // YouTube search/playlist indexing. This joins the existing videos.list batches.
+  for(const id of VERIFIED_RECOVERY_VIDEO_IDS)ids.add(id);
   const videos=[];
-  const list=[...ids].slice(0,250);
+  // Put explicitly confirmed official IDs first so YouTube's 250-candidate cap
+  // cannot silently discard a scheduled premiere.
+  const list=[...new Set([...VERIFIED_RECOVERY_VIDEO_IDS,...ids])].slice(0,250);
   for(let i=0;i<list.length;i+=50) {
     const d=await youtube('videos',{part:'snippet,statistics,contentDetails,liveStreamingDetails',
       id:list.slice(i,i+50).join(',')},key,fetcher);
@@ -110,7 +135,9 @@ export async function discover(key,{fetcher=fetch,now=Date.now(),queries=QUERIES
   }
   return {videos,stats:{searches,officialPlaylistCalls,detailCalls,
     returned:ids.size,qualified:videos.length,
-    officialUploads:videos.filter(v=>isOfficialYouTubeChannel(v.channelId)).length},now};
+    officialUploads:videos.filter(v=>isOfficialYouTubeChannel(v.channelId)).length,
+    officialPremieres:videos.filter(v=>v.isOfficialPremiere).length,
+    recoveryVideos:videos.filter(v=>VERIFIED_RECOVERY_VIDEO_IDS.includes(v.id)).length},now};
 }
 export function merge(previous={},current=[],now=Date.now()) {
   const ids=new Map();
