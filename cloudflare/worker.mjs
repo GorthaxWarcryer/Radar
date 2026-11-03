@@ -389,20 +389,19 @@ export default {
   },
   async scheduled(event,env) {
     const now=Date.now();
-    // Official Blizzard news continues through the night; YouTube remains on the agreed daytime schedule.
+    // All source collectors run hourly, even overnight, to avoid missing late uploads.
     try {console.log('Official Blizzard source sync:',JSON.stringify(await synchronizeOfficial(env,fetch,now)));}
     catch(e) {console.error('Official source sync failure:',fail(e));}
     try {console.log('Blue posts sync:',JSON.stringify(await synchronizeBluePosts(env,fetch,Date.now())));}
     catch(e) {console.error('Blue post sync failure:',fail(e));}
     const hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Kyiv',hour:'2-digit',hourCycle:'h23'}).format(new Date(event.scheduledTime)));
-    if(hour<5||hour>20)return;
     let sourceSyncError=null;
     try{const result=await synchronize(env,fetch,now);console.log('Cloudflare scheduled sync:',JSON.stringify(result));}
     catch(e){sourceSyncError=e;console.error('Cloudflare scheduled sync failure:',fail(e));}
     // Fully automatic AI runs ONLY on cron at 05, 08, 11, 14, 17, 20 Kyiv.
     // This spreads the daily free allowance across morning/evening trends.
     // Browsing or refreshing the public site never triggers inference.
-    if((hour-5)%3===0) {
+    if(hour>=5&&hour<=20&&(hour-5)%3===0) {
       try {
         const feed=await state(env,new Request('https://radar.internal/api/feed'),now);
         console.log('Topic history snapshots:',await saveHistory(env,feed.contentCreation.items,now));
