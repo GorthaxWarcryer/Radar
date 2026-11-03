@@ -186,3 +186,16 @@ test('48h catalog uses true API observation timestamp and newer view count',()=>
  assert.equal(ranked.catalog[0].hotMeasuredAt,T);
  assert.equal(ranked.videos.length,0);
 });
+
+test('official Premiere classification remains attached to HOT and Popular',()=>{
+ const now=T;
+ const premiere={...item('n2Wg46fwmb0',552514,5),isOfficialPremiere:true,
+   title:'Launch Overview | World of Warcraft: Forever',
+   channelId:'UCbLj9QP9FAaHs_647QckGtg'};
+ const ranked=calculate({videos:[premiere]}, {},now);
+ assert.equal(ranked.videos[0].id,premiere.id);
+ assert.equal(ranked.videos[0].isOfficialPremiere,true);
+ assert.equal(ranked.videos[0].officialSource,true);
+ assert.equal(ranked.catalog[0].isOfficialPremiere,true);
+ assert.equal(ranked.catalog[0].officialSource,true);
+});
