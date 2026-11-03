@@ -3,13 +3,14 @@
  * SQL is applied using Wrangler's authenticated remote D1 command in CI.
  */
 import {writeFileSync} from 'node:fs';
-import {fetchBluePosts} from './blue-posts.mjs';
+import {fetchAllBluePosts} from './blue-posts.mjs';
 const out='./.blue-posts-seed.sql';
 const quote=value=>"'"+String(value).replace(/'/g,"''")+"'";
 let statements=['-- Azeroth Radar: non-destructive, source-verified blue post backfill'];
 try{
   const now=Date.now();
-  const posts=await fetchBluePosts(fetch,now);
+  const {posts,errors}=await fetchAllBluePosts(fetch,now);
+  if(errors.length)console.warn('Blue post sources partially unavailable: '+errors.join('; '));
   for(const p of posts)statements.push(
     'INSERT INTO official(id,payload,last_seen) VALUES('+
       [p.id,JSON.stringify(p),now].map(quote).join(',')+
