@@ -389,7 +389,7 @@ export default {
   },
   async scheduled(event,env) {
     const now=Date.now();
-    // All source collectors run hourly, even overnight, to avoid missing late uploads.
+    // All source collectors run hourly, including overnight, to avoid missing late uploads.
     try {console.log('Official Blizzard source sync:',JSON.stringify(await synchronizeOfficial(env,fetch,now)));}
     catch(e) {console.error('Official source sync failure:',fail(e));}
     try {console.log('Blue posts sync:',JSON.stringify(await synchronizeBluePosts(env,fetch,Date.now())));}
