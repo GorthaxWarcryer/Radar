@@ -124,6 +124,7 @@ jobs:
           assert 'hot' in feed and 'popular' in feed and isinstance(feed.get('stories'),list), 'Public feed unavailable'
           print('LIVE UX PASS: homepage, fonts/styles, accessible controls, HOT/Popular/Reddit UI, JSON feed')
           print('Live source counts:',json.dumps({'hotLong':len(feed['hot'].get('long',[])),'hotShorts':len(feed['hot'].get('shorts',[])),'popularLong':len(feed['popular'].get('long',[])),'stories':len(feed['stories'])}))
+          print('Live Blue Post entries:',json.dumps([{'title':p.get('title'),'url':p.get('url'),'publishedAt':p.get('publishedAt')} for p in feed['stories'] if p.get('sourceId')=='blue'][:5]))
           PY
       - name: Deployment confirmation
         run: echo 'Cloudflare deployment and D1 schema completed. Verify the Worker URL in the deployment output and GET /api/health.'
