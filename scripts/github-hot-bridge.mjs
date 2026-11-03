@@ -143,6 +143,7 @@ export function calculate(feed,previous={},now=Date.now(),apiRead={status:'missi
     if(!latest)continue;
     const channelId=apiLatest?.channelId||v.channelId||prior?.channelId||null;
     catalog.push({id:v.id,channelId,officialSource:isOfficialYouTubeChannel(channelId),
+      isOfficialPremiere:v.isOfficialPremiere===true,
       publishedAt:v.publishedAt,views:latest.views,
       hotLatestViews:latest.views,hotMeasuredAt:latest.at,latestObservedAt:latest.at,
       title:v.title||'Untitled',description:String(v.description||prior?.description||'').slice(0,750),
@@ -177,6 +178,7 @@ export function calculate(feed,previous={},now=Date.now(),apiRead={status:'missi
     const channelId=(apiById.get(v.id)||[]).find(s=>s.channelId)?.channelId||v.channelId||before[v.id]?.channelId||null;
     out.push({
       id:v.id,channelId,officialSource:isOfficialYouTubeChannel(channelId),
+      isOfficialPremiere:v.isOfficialPremiere===true,
       title:v.title||'Untitled',description:String(v.description||before[v.id]?.description||'').slice(0,750),
       tags:Array.isArray(v.tags)?v.tags.slice(0,12):[],likes:v.likes??before[v.id]?.likes??null,
       comments:v.comments??before[v.id]?.comments??null,
