@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {durationSeconds,normalizeDiscovery,discover,merge,discoveryQueriesForTime} from '../scripts/github-hot-discover.mjs';
+import {readFileSync} from 'node:fs';
 const T=Date.parse('2026-10-31T10:00:00Z'),H=3600000;
 const good={
  id:'1GEmk7Fci2E',
@@ -95,4 +96,13 @@ test('priority WoW discovery runs hourly, full discovery every 3h including over
   for(let hour=0;hour<24;hour++)
     searches+=discoveryQueriesForTime(terms,Date.parse('2026-11-04T00:00:00+02:00')+hour*3600000).queries.length;
   assert.equal(searches,40,'24/7 priority+full scans use 40 YouTube search.list requests/day');
+});
+
+test('GitHub discovery and view measurement cron entries cover all 24 hours',()=>{
+ const discovery=readFileSync(new URL('../.github/workflows/github-youtube-discovery.yml',import.meta.url),'utf8');
+ const sampling=readFileSync(new URL('../.github/workflows/github-hot-companion.yml',import.meta.url),'utf8');
+ assert.match(discovery,/cron: '8 \* \* \* \*'/);
+ assert.match(sampling,/cron: '17 \* \* \* \*'/);
+ assert.match(discovery,/timezone: Europe\/Kyiv/);
+ assert.match(sampling,/timezone: Europe\/Kyiv/);
 });
