@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {durationSeconds,normalizeDiscovery,discover,merge,discoveryQueriesForTime} from '../scripts/github-hot-discover.mjs';
+import {durationSeconds,normalizeDiscovery,discover,merge,discoveryQueriesForTime,VERIFIED_RECOVERY_VIDEO_IDS} from '../scripts/github-hot-discover.mjs';
 import {readFileSync} from 'node:fs';
 const T=Date.parse('2026-10-31T10:00:00Z'),H=3600000;
 const good={
@@ -105,4 +105,55 @@ test('GitHub discovery and view measurement cron entries cover all 24 hours',()=
  assert.match(sampling,/cron: '17 \* \* \* \*'/);
  assert.match(discovery,/timezone: Europe\/Kyiv/);
  assert.match(sampling,/timezone: Europe\/Kyiv/);
+});
+
+test('completed official 30-minute Premiere is discovered rather than excluded as a livestream',()=>{
+ const eventAt=Date.parse('2026-11-03T17:00:00Z');
+ const now=Date.parse('2026-11-03T21:00:00Z');
+ const premiere={id:'n2Wg46fwmb0',
+   snippet:{title:'Launch Overview | World of Warcraft: Forever',
+     channelTitle:'World of Warcraft',channelId:'UCbLj9QP9FAaHs_647QckGtg',
+     publishedAt:'2026-11-02T20:26:00Z',liveBroadcastContent:'none',
+     defaultAudioLanguage:'en'},
+   statistics:{viewCount:'45700',likeCount:'1200'},
+   contentDetails:{duration:'PT30M'},
+   liveStreamingDetails:{scheduledStartTime:'2026-11-03T17:00:00Z',
+     actualStartTime:'2026-11-03T17:00:00Z',actualEndTime:'2026-11-03T17:30:00Z'}
+ };
+ const item=normalizeDiscovery(premiere,now);
+ assert.ok(item,'Completed Premiere should be accepted');
+ assert.equal(item.isOfficialPremiere,true);
+ assert.equal(item.publishedAt,eventAt,'HOT age must start at actual public Premiere');
+ assert.equal(item.views,45700);
+ assert.equal(item.channelId,'UCbLj9QP9FAaHs_647QckGtg');
+ assert.equal(normalizeDiscovery({...premiere,snippet:{...premiere.snippet,liveBroadcastContent:'live'}},now),null);
+ assert.equal(normalizeDiscovery({...premiere,snippet:{...premiere.snippet,channelId:'UCnotTheOfficialChannel12'}},now),null);
+ assert.equal(normalizeDiscovery({...premiere,snippet:{...premiere.snippet,title:'WoW Forever Livestream Archive'}},now),null);
+});
+test('recovery video ID is requested directly even when YouTube search and uploads playlist omit it',async()=>{
+ const now=Date.parse('2026-11-03T21:00:00Z');
+ const id='n2Wg46fwmb0';
+ assert.ok(VERIFIED_RECOVERY_VIDEO_IDS.includes(id));
+ const calls=[];
+ const fetcher=async u=>{
+   const url=new URL(u);calls.push(url);
+   if(url.pathname.endsWith('/playlistItems'))return {ok:true,json:async()=>({items:[]})};
+   if(url.pathname.endsWith('/search'))return {ok:true,json:async()=>({items:[]})};
+   const vids=url.searchParams.get('id').split(',');
+   assert.ok(vids.includes(id));
+   return {ok:true,json:async()=>({items:[{
+     id,
+     snippet:{title:'Launch Overview | World of Warcraft: Forever',
+       channelTitle:'World of Warcraft',channelId:'UCbLj9QP9FAaHs_647QckGtg',
+       publishedAt:'2026-11-02T20:26:00Z',liveBroadcastContent:'none'},
+     statistics:{viewCount:'15000'},contentDetails:{duration:'PT30M'},
+     liveStreamingDetails:{actualStartTime:'2026-11-03T17:00:00Z',
+       actualEndTime:'2026-11-03T17:30:00Z'}
+   }]})};
+ };
+ const result=await discover('key',{fetcher,now,queries:['WoW Forever']});
+ assert.equal(result.videos.some(v=>v.id===id),true);
+ assert.equal(result.stats.recoveryVideos,1);
+ assert.equal(result.stats.officialPremieres,1);
+ assert.equal(calls.filter(c=>c.pathname.endsWith('/videos')).length,1);
 });
