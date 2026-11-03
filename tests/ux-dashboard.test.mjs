@@ -84,7 +84,7 @@ test('Blue Posts lead Stories ahead of other official updates and Reddit',()=>{
   const code=extract('function storiesSection(data)', '\nfunction ideaCard');
   const ctx={
     state:{storyType:'all',storySort:'new'},
-    sectionTitle:()=>'',btnSegment:()=>'',
+    sectionTitle:()=>'',btnSegment:opts=>opts.map(o=>`<button>${o.text}</button>`).join(''),
     redditDirectory:()=>'<div>REDDIT DIRECTORY</div>',
     renderStory:s=>`[${s.id}]`,empty:()=>'',Date,Number
   };
