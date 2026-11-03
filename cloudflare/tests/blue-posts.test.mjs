@@ -65,7 +65,7 @@ test('source failures are recorded without deleting existing posts',async()=>{
 
 test('a fresh Kaivax reply to the old September Development Notes topic appears as a November update',()=>{
   const now=Date.parse('2026-11-03T06:00:00Z');
-  const topic={id:631316,slug:'wow-forever-beta-development-notes-updated-3-november',
+  const topic={id:631316,slug:'wow-forever-beta-development-notes-%E2%80%93-updated-3-november',
     title:'WoW Forever Beta Development Notes – Updated 3 November',
     post_stream:{posts:[
       {id:1,post_number:1,username:'Kaivax',created_at:'2026-09-24T22:37:00Z',cooked:'September original'},
@@ -81,6 +81,7 @@ test('a fresh Kaivax reply to the old September Development Notes topic appears 
   assert.equal(got[0].author,'Kaivax');
   assert.equal(got[0].publishedAt,Date.parse('2026-11-03T03:21:00Z'));
   assert.match(got[0].url,/^https:\/\/eu\.forums\.blizzard\.com\/en\/wow\/t\/.*\/631316\/9$/);
+  assert.ok(got[0].url.includes('%E2%80%93'),'Preserve URL-encoded en dash in forum slug');
   assert.match(got[0].summary,/New launch update/);
   assert.doesNotMatch(got[0].summary,/<p>/);
 });
