@@ -9,6 +9,17 @@ const TOPICAL=/\b(wow|world of warcraft|warcraft|azeroth|classic wow|blizzard)\b
 const NON_ENGLISH_SCRIPT=/[¿¡\u00c0-\u024f\u0370-\u052f\u0590-\u0dff\u3040-\u30ff\u3400-\u9fff]/;
 const PERIOD=50*3600000;
 const MAX_SAVED=500;
+/** Hourly low-cost coverage with a full multi-term discovery every three hours.
+ * With three default terms this uses only 40 search.list calls per day, rather
+ * than 72 calls for hourly full discovery. Tracked channel playlists run hourly.
+ */
+export function discoveryQueriesForTime(queries=QUERIES,now=Date.now()) {
+  const terms=(Array.isArray(queries)?queries:QUERIES).filter(x=>typeof x==='string'&&x.trim()).slice(0,6);
+  const hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Kyiv',
+    hour:'2-digit',hourCycle:'h23'}).format(new Date(now)));
+  const full=hour%3===2; // 02:08, 05:08, ... 23:08 Kyiv
+  return {queries:full?terms:terms.slice(0,1),mode:full?'full':'priority',kyivHour:hour};
+}
 
 export function durationSeconds(iso) {
   const m=/^P(?:\d+D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/.exec(iso||'');
@@ -150,10 +161,12 @@ async function main(){
   if(!gh||!repo)throw Error('GitHub write identity missing');
   const prior=await file(gh,repo,'GET');
   const settings=await readPublicConfig();
-  const result=await discover(key,{...settings});
+  const plan=discoveryQueriesForTime(settings.queries);
+  const result=await discover(key,{...settings,queries:plan.queries});
   const joined=merge(prior.data,result.videos,result.now);
   await file(gh,repo,'PUT',joined,prior.sha);
-  const status={outcome:'complete',source:'youtube-independent',...result.stats,
+  const status={outcome:'complete',source:'youtube-independent',scanMode:plan.mode,
+    kyivHour:plan.kyivHour,searchTerms:plan.queries,...result.stats,
     retained:joined.videos.length,sourceGeneratedAt:joined.generatedAt};
   console.log(JSON.stringify(status));
   if(process.env.GITHUB_STEP_SUMMARY)
