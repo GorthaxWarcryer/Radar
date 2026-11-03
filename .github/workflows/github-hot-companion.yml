@@ -1,8 +1,8 @@
 name: GitHub HOT companion (hourly YouTube view sampling)
 on:
   schedule:
-    # Use batched YouTube videos.list to poll fresh views hourly when secret is configured.
-    - cron: '17 5-20 * * *'
+    # Poll video views hourly, 24/7, including evening and overnight uploads.
+    - cron: '17 * * * *'
       timezone: Europe/Kyiv
   workflow_dispatch:
   push:
