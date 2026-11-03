@@ -79,8 +79,13 @@ export function parseForumTopicReplies(data,topic,now=Date.now()){
      !Array.isArray(data.post_stream?.posts))throw Error('Unexpected Blizzard forum topic response');
   const forumTitle=clean(data.title||topic.label,200);
   if(!/wow\s*forever\s*beta\s*development\s*notes/i.test(forumTitle))throw Error('Unexpected Blizzard forum topic title');
-  const slug=String(data.slug||'wow-forever-beta-development-notes')
-    .toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,140)||'wow-forever-beta-development-notes';
+  // Discourse slugs can already contain %-encoded punctuation (e.g. %E2%80%93).
+  // Decode once and encode once; stripping '%' would turn the dash into 'e28093'.
+  const rawSlug=String(data.slug||'wow-forever-beta-development-notes').slice(0,180);
+  let normalizedSlug=rawSlug;
+  try{normalizedSlug=decodeURIComponent(rawSlug);}catch{}
+  const slug=encodeURIComponent(normalizedSlug.toLowerCase().replace(/[^a-z0-9\-\u2013\u2014 ]/g,'')
+    .trim().replace(/\s+/g,'-').slice(0,140))||'wow-forever-beta-development-notes';
   const results=[];
   for(const post of data.post_stream.posts.slice(-100)){
     const user=String(post?.username||'').toLowerCase().trim();
