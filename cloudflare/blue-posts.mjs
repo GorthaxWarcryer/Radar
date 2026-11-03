@@ -2,6 +2,7 @@
  * WoW Forever Blizzard forum blue posts, discovered from The Forever Era's
  * public RSS (an independent tracker, NOT a Blizzard-operated API).
  * Only direct US/EU Blizzard WoW forum links enter the official Stories feed.
+ * We also watch staff replies in the long-running EU Development Notes topic.
  */
 export const BLUE_RSS = 'https://theforeverera.com/en/blue.xml';
 const MAX_AGE=48*3600000;
