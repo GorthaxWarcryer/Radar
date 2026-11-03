@@ -80,7 +80,7 @@ export function parseForumTopicReplies(data,topic,now=Date.now()){
   const forumTitle=clean(data.title||topic.label,200);
   if(!/wow\s*forever\s*beta\s*development\s*notes/i.test(forumTitle))throw Error('Unexpected Blizzard forum topic title');
   // Discourse slugs can already contain %-encoded punctuation (e.g. %E2%80%93).
-  // Decode once and encode once; stripping '%' would turn the dash into 'e28093'.
+  // Decode and re-encode once; stripping '%' would turn the dash into 'e28093'.
   const rawSlug=String(data.slug||'wow-forever-beta-development-notes').slice(0,180);
   let normalizedSlug=rawSlug;
   try{normalizedSlug=decodeURIComponent(rawSlug);}catch{}
