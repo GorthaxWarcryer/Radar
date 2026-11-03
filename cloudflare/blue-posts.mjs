@@ -61,9 +61,80 @@ export async function fetchBluePosts(fetcher=fetch,now=Date.now()){
   if(!res.ok)throw Error('Blue RSS HTTP '+res.status);
   return parseBluePosts(await res.text(),now);
 }
+
+/**
+ * Keep important Blizzard announcement threads under direct observation.
+ * A September topic can receive a November reply; only the reply's created_at
+ * must be subject to the 48-hour freshness window.
+ * This is a public forum read; no Blizzard API key or paid model calls.
+ */
+export const WATCHED_FORUM_TOPICS=Object.freeze([
+  {region:'eu',id:631316,host:'eu.forums.blizzard.com',label:'WoW Forever Beta Development Notes',
+    json:'https://eu.forums.blizzard.com/en/wow/t/631316.json'}
+]);
+const STAFF_USERNAMES=new Set(['kaivax','aggrend','nethaera','zorbrix','fwoibles','blizzard']);
+export function parseForumTopicReplies(data,topic,now=Date.now()){
+  if(!data||typeof data!=='object'||data.id!==topic.id||
+     !Array.isArray(data.post_stream?.posts))throw Error('Unexpected Blizzard forum topic response');
+  const forumTitle=clean(data.title||topic.label,200);
+  if(!/wow\s*forever\s*beta\s*development\s*notes/i.test(forumTitle))throw Error('Unexpected Blizzard forum topic title');
+  const slug=String(data.slug||'wow-forever-beta-development-notes')
+    .toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,140)||'wow-forever-beta-development-notes';
+  const results=[];
+  for(const post of data.post_stream.posts.slice(-100)){
+    const user=String(post?.username||'').toLowerCase().trim();
+    const number=Number(post?.post_number);
+    const date=Date.parse(post?.created_at||'');
+    if(!STAFF_USERNAMES.has(user)||!Number.isInteger(number)||number<=1||
+       !Number.isFinite(date)||date>now||now-date>=MAX_AGE)continue;
+    const url=verifiedForumUrl('https://'+topic.host+'/en/wow/t/'+slug+'/'+topic.id+'/'+number);
+    if(!url)continue;
+    const summary=clean(post.cooked||post.raw||'',650);
+    results.push({id:'bluepost:forum:'+topic.region+':'+topic.id+':'+number,
+      source:'Official',sourceId:'blue',sourceName:'WoW Forever Blue Posts',
+      title:forumTitle+' · New update ('+new Date(date).toISOString().slice(0,10)+')',
+      url,publishedAt:date,author:post.username,summary,
+      provider:'blizzard-forum-thread',provenance:'Direct Blizzard forum staff reply'});
+  }
+  return results.sort((a,b)=>b.publishedAt-a.publishedAt);
+}
+export async function fetchForumTopicReplies(fetcher=fetch,now=Date.now()){
+  const results=[];
+  const failures=[];
+  for(const topic of WATCHED_FORUM_TOPICS){
+    try{
+      const response=await fetcher(topic.json,{headers:{accept:'application/json',
+        'user-agent':'AzerothRadar/1.0 (public Blizzard forum updates)'},
+        signal:AbortSignal.timeout(12000)});
+      if(!response.ok)throw Error('Forum topic HTTP '+response.status);
+      results.push(...parseForumTopicReplies(await response.json(),topic,now));
+    }catch(e){failures.push(topic.region+': '+String(e?.message||e).slice(0,90));}
+  }
+  if(failures.length===WATCHED_FORUM_TOPICS.length)throw Error(failures.join('; '));
+  return results;
+}
+export async function fetchAllBluePosts(fetcher=fetch,now=Date.now()){
+  const inputs=await Promise.allSettled([
+    fetchBluePosts(fetcher,now),
+    fetchForumTopicReplies(fetcher,now)
+  ]);
+  const errors=inputs.flatMap((r,i)=>r.status==='rejected'?
+    [(i===0?'tracker RSS: ':'Blizzard forum: ')+String(r.reason?.message||r.reason).slice(0,90)]:[]);
+  if(inputs.every(r=>r.status==='rejected'))throw Error(errors.join('; '));
+  const found=new Map();
+  for(const result of inputs)if(result.status==='fulfilled')for(const p of result.value){
+    const match=new URL(p.url).pathname.match(/\/631316\/(\d+)\/?$/);
+    const key=match?'eu:631316:'+match[1]:p.url;
+    const previous=found.get(key);
+    if(!previous||p.provider==='blizzard-forum-thread')found.set(key,p);
+  }
+  return {posts:[...found.values()].sort((a,b)=>b.publishedAt-a.publishedAt).slice(0,120),
+    errors,sourceStatus:inputs.map(r=>r.status)};
+}
+
 export async function synchronizeBluePosts(env,fetcher=fetch,now=Date.now()){
   try{
-    const posts=await fetchBluePosts(fetcher,now);
+    const {posts,errors}=await fetchAllBluePosts(fetcher,now);
     const stmts=[];
     for(let i=0;i<posts.length;i+=20){
       const part=posts.slice(i,i+20);
@@ -73,9 +144,9 @@ export async function synchronizeBluePosts(env,fetcher=fetch,now=Date.now()){
         .bind(...part.flatMap(p=>[p.id,JSON.stringify(p),now])));
     }
     stmts.push(env.DB.prepare('INSERT INTO scans(at,provider,status,count,error) VALUES(?,?,?,?,?)')
-      .bind(now,'blizzard-blue','complete',posts.length,''));
+      .bind(now,'blizzard-blue',errors.length?'partial':'complete',posts.length,errors.join('; ').slice(0,180)));
     await env.DB.batch(stmts);
-    return {status:'complete',posts:posts.length};
+    return {status:errors.length?'partial':'complete',posts:posts.length,errors};
   }catch(e){
     const error=String(e?.message||e).slice(0,180);
     try{await env.DB.prepare('INSERT INTO scans(at,provider,status,count,error) VALUES(?,?,?,?,?)')
