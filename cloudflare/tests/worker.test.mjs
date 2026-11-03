@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import worker,{synchronize} from '../worker.mjs';
 import {fromGithubVideo,buildFeed,normalizeIncomingStory} from '../transform.mjs';
+import {readFileSync} from 'node:fs';
 
 const H=3600000,T=Date.parse('2026-10-31T10:00:00Z');
 const video={id:'1GEmk7Fci2E',title:'WoW Forever Addons',channel:'Example',
@@ -111,4 +112,12 @@ test('public discovery config is bounded and does not expose credentials',async(
   assert.ok(body.queries.includes('WoW Forever'));
   assert.equal(body.channels.length,0);
   assert.equal(JSON.stringify(body).includes('API_TOKEN'),false);
+});
+
+test('Cloudflare cron imports YouTube data overnight without extra AI generations',()=>{
+  const source=readFileSync(new URL('../worker.mjs',import.meta.url),'utf8');
+  const scheduled=source.slice(source.indexOf('async scheduled(event,env)'));
+  assert.match(scheduled,/await synchronize\(env,fetch,now\)/);
+  assert.doesNotMatch(scheduled,/if\(hour<5\|\|hour>20\)return/);
+  assert.match(scheduled,/if\(hour>=5&&hour<=20&&\(hour-5\)%3===0\)/);
 });
