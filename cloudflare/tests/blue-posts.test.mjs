@@ -48,7 +48,7 @@ test('blue posts sync is scoped to the official D1 table and records success',as
    'Fri, 30 Oct 2026 18:00:00 GMT'));
  const fetcher=async()=>({ok:true,text:async()=>xml});
  const result=await synchronizeBluePosts({DB:db},fetcher,NOW);
- assert.equal(result.status,'complete');
+ assert.equal(result.status,'partial'); // Mocked RSS succeeds, direct forum JSON is unavailable.
  assert.equal(result.posts,1);
  assert.ok(statements.some(x=>x.sql.startsWith('INSERT INTO official')));
  assert.ok(statements.some(x=>x.sql.startsWith('INSERT INTO scans')&&x.args[1]==='blizzard-blue'));
