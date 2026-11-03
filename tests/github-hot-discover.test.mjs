@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {durationSeconds,normalizeDiscovery,discover,merge} from '../scripts/github-hot-discover.mjs';
+import {durationSeconds,normalizeDiscovery,discover,merge,discoveryQueriesForTime} from '../scripts/github-hot-discover.mjs';
 const T=Date.parse('2026-10-31T10:00:00Z'),H=3600000;
 const good={
  id:'1GEmk7Fci2E',
@@ -80,4 +80,19 @@ test('display name imitation never grants official verified channel identity',()
   const x=normalizeDiscovery(spoof,T);
   assert.equal(x.channelId,'UCcreator0000000000000001');
   assert.notEqual(x.channelId,'UCbLj9QP9FAaHs_647QckGtg');
+});
+
+test('priority WoW discovery runs hourly, full discovery every 3h including overnight',()=>{
+  const terms=['WoW Forever','World of Warcraft Forever','WoW Classic'];
+  const plan=iso=>discoveryQueriesForTime(terms,Date.parse(iso));
+  assert.deepEqual(plan('2026-11-03T19:08:00Z').queries,terms.slice(0,1)); // 21:08 Kyiv
+  assert.equal(plan('2026-11-03T19:08:00Z').mode,'priority');
+  assert.deepEqual(plan('2026-11-03T21:08:00Z').queries,terms); // 23:08 Kyiv
+  assert.equal(plan('2026-11-03T21:08:00Z').mode,'full');
+  assert.equal(plan('2026-11-03T23:08:00Z').queries.length,1); // 01:08 Kyiv
+  assert.equal(plan('2026-11-04T00:08:00Z').mode,'full'); // 02:08 Kyiv
+  let searches=0;
+  for(let hour=0;hour<24;hour++)
+    searches+=discoveryQueriesForTime(terms,Date.parse('2026-11-04T00:00:00+02:00')+hour*3600000).queries.length;
+  assert.equal(searches,40,'24/7 priority+full scans use 40 YouTube search.list requests/day');
 });
